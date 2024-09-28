@@ -1,0 +1,45 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <Preference
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:defaultValue="@string/PreferenceLanguageNotSelected"
+        android:key="@string/PreferenceLanguageKey"
+        android:summary="@string/PreferenceLanguageNotSelected"
+        android:title="@string/PreferenceLanguageTitle" />
+    <PreferenceCategory
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:title="Database preferences">
+
+    </PreferenceCategory>
+    <PreferenceCategory
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:title="Session preferences">
+        <lv.id.arseniuss.linguae.ui.preference.EditIntegerPreference
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:defaultValue="10"
+            android:key="@string/PreferenceTaskCountKey"
+            android:title="Task count per session"
+            app:useSimpleSummaryProvider="true" />
+        <CheckBoxPreference
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:defaultValue="false"
+            android:key="@string/PreferenceNoKeyboardKey"
+            android:title="Enter answers without usage of keyboard"
+            app:singleLineTitle="false" />
+        <CheckBoxPreference
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:defaultValue="false"
+            android:key="@string/PreferenceIgnoreMacronsKey"
+            android:title="Ignore macrons"
+            app:singleLineTitle="false" />
+    </PreferenceCategory>
+    <PreferenceCategory android:title="Task preferences">
+
+    </PreferenceCategory>
+</PreferenceScreen>

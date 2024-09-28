@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="viewmodel"
+            type="lv.id.arseniuss.linguae.viewmodel.LessonsViewModel.EntryViewModel" />
+    </data>
+
+    <LinearLayout
+        android:id="@+id/viewButton"
+        style="@style/MyAppTheme.Rounded"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:focusable="true"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0"
+                    android:paddingLeft="10dp"
+                    android:paddingRight="10dp"
+                    android:contentDescription="TODO"
+                    android:src="@drawable/baseline_menu_book_24"
+                    android:visibility="@{viewmodel.HasTheory()}" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:paddingBottom="5dp"
+                    android:text="@{viewmodel.Name}"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    tools:text="Lesson" />
+
+
+            </LinearLayout>
+
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@{viewmodel.Description}"
+                tools:text="Description" />
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight="0"
+            android:padding="20dp"
+            android:text="@{viewmodel.TaskCount}"
+            tools:text="120" />
+
+
+    </LinearLayout>
+</layout>

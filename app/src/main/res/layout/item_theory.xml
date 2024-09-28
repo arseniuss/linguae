@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="viewmodel"
+            type="lv.id.arseniuss.linguae.viewmodel.TheoriesViewModel.EntryViewModel" />
+
+        <variable
+            name="presenter"
+            type="lv.id.arseniuss.linguae.ui.fragments.TheoriesFragment" />
+    </data>
+
+    <LinearLayout
+        android:id="@+id/viewButton"
+        style="@style/MyAppTheme.Rounded"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:focusable="true"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingBottom="10dp"
+                android:text="@{viewmodel.Title}"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                tools:text="Name" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@{viewmodel.Description}"
+                tools:text="Description" />
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:padding="15dp"
+            android:text="@{viewmodel.getChapterCountStr()}"
+            tools:text="120" />
+
+    </LinearLayout>
+</layout>

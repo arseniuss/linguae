@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <data>
+
+        <variable
+            name="viewmodel"
+            type="lv.id.arseniuss.linguae.viewmodel.FirstViewModel" />
+
+        <variable
+            name="presenter"
+            type="lv.id.arseniuss.linguae.ui.activities.FirstActivity" />
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_margin="10dp"
+            android:layout_weight="1">
+
+            <TextView
+                android:id="@+id/textMessages"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:scrollbars="vertical"
+                android:text="@{viewmodel.Messages}" />
+        </ScrollView>
+
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:enabled="@{viewmodel.CanContinue()}"
+            android:onClick="@{() -> presenter.Continue()}"
+            android:text="@string/ButtonContinueText" />
+    </LinearLayout>
+
+
+</layout>

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="presenter"
+            type="lv.id.arseniuss.linguae.tasks.ui.ChooseFragment.OptionAdapter.ChoseViewHolder" />
+
+        <variable
+            name="viewmodel"
+            type="lv.id.arseniuss.linguae.tasks.viewmodel.ChooseViewModel.OptionViewModel" />
+    </data>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_margin="10dp"
+        android:background="@{viewmodel.IsChecked() ? ( viewmodel.IsValid() ? @drawable/button_ok : @drawable/radio_button_error) : @drawable/radio_button}"
+        android:clickable="@{!viewmodel.IsChecked()}"
+        android:focusable="@{!viewmodel.IsChecked()}"
+        android:gravity="center"
+        android:onClick="@{() -> presenter.OnSelected()}"
+        android:padding="10dp"
+        android:selected="@{presenter.IsSelected()}">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@{viewmodel.Option}"
+            tools:text="Option" />
+    </LinearLayout>
+</layout>

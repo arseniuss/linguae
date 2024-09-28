@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_summary"
+            android:icon="@drawable/baseline_article_24"
+            android:title="@string/TitleSummary" />
+        <item
+            android:id="@+id/nav_lessons"
+            android:icon="@drawable/round_book_24"
+            android:title="@string/TitleLessons" />
+        <item
+            android:id="@+id/nav_training"
+            android:icon="@drawable/round_airplane_ticket_24"
+            android:title="@string/TitleTrainings" />
+        <item
+            android:id="@+id/nav_theory"
+            android:icon="@drawable/baseline_menu_book_24"
+            android:title="@string/TitleTheories" />
+    </group>
+</menu>

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="viewmodel"
+            type="lv.id.arseniuss.linguae.tasks.viewmodel.ConjugateViewModel.PersonViewModel" />
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            android:minWidth="75dp"
+            android:text="@{viewmodel.PersonName()}"
+            tools:text="datīvus" />
+
+        <ViewSwitcher
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="3"
+            android:gravity="center_vertical"
+            android:switchIndex="@{viewmodel.IsChecked() ? 0 : 1}">
+
+            <TextView
+                android:id="@+id/textView4"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:text="@{viewmodel.GetResult()}" />
+
+            <EditText
+                android:id="@+id/answerEditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="text"
+                android:text="@={viewmodel.Answer()}" />
+
+
+        </ViewSwitcher>
+    </LinearLayout>
+</layout>

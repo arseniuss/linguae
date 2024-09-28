@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="presenter"
+            type="lv.id.arseniuss.linguae.tasks.ui.TranslateFragment.WordAdapter.WordViewHolder" />
+
+        <variable
+            name="viewmodel"
+            type="lv.id.arseniuss.linguae.tasks.viewmodel.TranslateViewModel.WordViewModel" />
+    </data>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:background="@{viewmodel.HasError() ? @drawable/button_error : @drawable/button2}"
+        android:clickable="true"
+        android:focusable="true"
+        android:gravity="center"
+        android:onClick="@{() -> presenter.OnSelected()}"
+        android:padding="10dp"
+        android:text="@{viewmodel.Option}"
+        tools:text="A word" />
+</layout>

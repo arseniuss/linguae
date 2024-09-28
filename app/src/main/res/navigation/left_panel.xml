@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/left_panel"
+    app:startDestination="@+id/nav_summary">
+    <fragment
+        android:id="@+id/nav_summary"
+        android:name="lv.id.arseniuss.linguae.ui.fragments.SummaryFragment"
+        android:label="@string/TitleSummary"
+        tools:layout="@layout/fragment_summary" />
+    <fragment
+        android:id="@+id/nav_lessons"
+        android:name="lv.id.arseniuss.linguae.ui.fragments.LessonsFragment"
+        android:label="@string/TitleLessons"
+        tools:layout="@layout/fragment_lessons" />
+
+    <fragment
+        android:id="@+id/nav_training"
+        android:name="lv.id.arseniuss.linguae.ui.fragments.TrainingsFragment"
+        android:label="@string/TitleTrainings"
+        tools:layout="@layout/fragment_trainings" />
+    <fragment
+        android:id="@+id/nav_theory"
+        android:name="lv.id.arseniuss.linguae.ui.fragments.TheoriesFragment"
+        android:label="@string/TitleTheories"
+        tools:layout="@layout/fragment_theories" />
+</navigation>

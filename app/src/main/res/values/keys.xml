@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="PreferenceLanguageKey" translatable="false">PREF_LANG</string>
+    <string name="PreferenceLanguageLocationKey">PREF_LANGLOC</string>
+    <string name="PreferenceLanguageListKey">PREF_LANGS</string>
+    <string name="PreferenceNoKeyboardKey">PREF_KEYBOARD</string>
+    <string name="PreferenceIgnoreMacronsKey">PREF_MACRONS</string>
+    <string name="PreferenceTaskCountKey">PREF_TASK_COUNT</string>
+</resources>
