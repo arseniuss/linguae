@@ -5,11 +5,11 @@
 
         <variable
             name="viewmodel"
-            type="lv.id.arseniuss.linguae.viewmodel.FirstViewModel" />
+            type="lv.id.arseniuss.linguae.viewmodel.StartViewModel" />
 
         <variable
             name="presenter"
-            type="lv.id.arseniuss.linguae.ui.activities.FirstActivity" />
+            type="lv.id.arseniuss.linguae.ui.activities.StartActivity" />
     </data>
 
     <LinearLayout
@@ -40,6 +40,4 @@
             android:onClick="@{() -> presenter.Continue()}"
             android:text="@string/ButtonContinueText" />
     </LinearLayout>
-
-
 </layout>

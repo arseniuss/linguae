@@ -15,12 +15,10 @@ import lv.id.arseniuss.linguae.tasks.viewmodel.NumberViewModel;
 
 public class NumberFragment extends AbstractTaskFragment<NumberViewModel> {
 
-
     public NumberFragment(SessionTaskData current)
     {
         super(current);
     }
-
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
@@ -28,6 +26,5 @@ public class NumberFragment extends AbstractTaskFragment<NumberViewModel> {
     {
         return inflater.inflate(R.layout.fragment_task_number, container, false);
     }
-
 
 }

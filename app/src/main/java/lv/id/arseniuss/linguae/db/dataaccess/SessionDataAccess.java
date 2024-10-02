@@ -21,7 +21,6 @@ public abstract class SessionDataAccess {
     @Insert
     protected abstract Completable InsertTaskResults(Collection<TaskResult> taskResultList);
 
-
     public Completable SaveResult(SessionResultWithTaskResults result) {
         return InsertSessionResult(result.SessionResult).flatMapCompletable(id -> InsertTaskResults(
                 result.TaskResults.stream()

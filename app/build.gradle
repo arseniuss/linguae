@@ -22,12 +22,12 @@ android {
     buildTypes {
         debug {
             applicationIdSuffix '.debug'
-            resValue("string", "DefaultLanguageName", "Latin")
-            resValue("string", "DefaultLanguageLocation", "http://10.0.2.2:8000/Latin/")
+            resValue("string", "DefaultLanguagePortal", "[\\\"http://10.0.2.2:8000/\\\"]")
         }
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            resValue("string", "DefaultLanguagePortal", "[\\\"https://raw.githubusercontent.com/arseniuss/linguae-data/refs/heads/master/\\\"]")
         }
     }
     compileOptions {

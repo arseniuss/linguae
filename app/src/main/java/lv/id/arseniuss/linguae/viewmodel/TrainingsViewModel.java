@@ -25,14 +25,14 @@ import lv.id.arseniuss.linguae.db.dataaccess.TrainingDataAccess;
 
 public class TrainingsViewModel extends AndroidViewModel {
 
-    private final SharedPreferences _sharedPreferences = PreferenceManager.getDefaultSharedPreferences(
-            getApplication().getBaseContext());
-    private final String _language = _sharedPreferences.getString(
-            getApplication().getString(R.string.PreferenceLanguageKey), "");
-    private final TrainingDataAccess _trainingDataAccess = LanguageDatabase.GetInstance(getApplication(), _language)
-            .GetTrainingsDataAccess();
-    private final Boolean _ignoreMacrons = _sharedPreferences.getBoolean(
-            getApplication().getString(R.string.PreferenceIgnoreMacronsKey), false);
+    private final SharedPreferences _sharedPreferences =
+            PreferenceManager.getDefaultSharedPreferences(getApplication().getBaseContext());
+    private final String _language =
+            _sharedPreferences.getString(getApplication().getString(R.string.PreferenceLanguageKey), "");
+    private final TrainingDataAccess _trainingDataAccess =
+            LanguageDatabase.GetInstance(getApplication(), _language).GetTrainingsDataAccess();
+    private final Boolean _ignoreMacrons =
+            _sharedPreferences.getBoolean(getApplication().getString(R.string.PreferenceIgnoreMacronsKey), false);
     private final MutableLiveData<List<EntryViewModel>> _trainings;
 
     public TrainingsViewModel(@NonNull Application application) {

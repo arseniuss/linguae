@@ -95,13 +95,12 @@ public class PreferencesActivity extends AppCompatActivity {
             });
         }
 
-        ActivityResultLauncher<Intent> getLanguageRepo = registerForActivityResult(
-                new ActivityResultContracts.StartActivityForResult(), result -> {
+        ActivityResultLauncher<Intent> getLanguageRepo =
+                registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
                     setPreferenceScreen(null);
                     setPreferencesFromResource(R.xml.preferences, _rootKey);
                     setup();
                 });
-
 
     }
 }

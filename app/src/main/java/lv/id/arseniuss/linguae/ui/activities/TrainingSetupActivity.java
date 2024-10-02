@@ -37,8 +37,8 @@ public class TrainingSetupActivity extends AppCompatActivity {
     @BindingAdapter("items")
     public static void BindTrainingList(RecyclerView recyclerView, List<TrainingConfigViewModel> trainings)
     {
-        MyRecyclerViewAdapter<TrainingConfigViewModel, ItemTrainingConfigBinding> adapter
-                = (MyRecyclerViewAdapter<TrainingConfigViewModel, ItemTrainingConfigBinding>) recyclerView.getAdapter();
+        MyRecyclerViewAdapter<TrainingConfigViewModel, ItemTrainingConfigBinding> adapter =
+                (MyRecyclerViewAdapter<TrainingConfigViewModel, ItemTrainingConfigBinding>) recyclerView.getAdapter();
 
         assert adapter != null;
         assert trainings != null;
@@ -86,24 +86,24 @@ public class TrainingSetupActivity extends AppCompatActivity {
     }
 
     private RecyclerView.Adapter getMyAdapter() {
-        MyRecyclerViewAdapter<TrainingConfigViewModel, ItemTrainingConfigBinding> adapter = new MyRecyclerViewAdapter<>(
-                this, R.layout.item_training_config);
+        MyRecyclerViewAdapter<TrainingConfigViewModel, ItemTrainingConfigBinding> adapter =
+                new MyRecyclerViewAdapter<>(this, R.layout.item_training_config);
 
-        MyRecyclerViewAdapter<TrainingConfigViewModel, ItemTrainingConfigBinding>.OnBinded binded
-                = adapter.new OnBinded() {
+        MyRecyclerViewAdapter<TrainingConfigViewModel, ItemTrainingConfigBinding>.OnBinded binded =
+                adapter.new OnBinded() {
 
-            @Override
-            public void Binded(ItemTrainingConfigBinding binding, TrainingConfigViewModel item) {
-                SelectionAdapter caterogyAdapter = new SelectionAdapter(_this, _this, R.layout.item_training_selection,
-                        null);
-                SelectionAdapter descriptionAdapter = new SelectionAdapter(_this, _this,
-                        R.layout.item_training_selection, null);
+                    @Override
+                    public void Binded(ItemTrainingConfigBinding binding, TrainingConfigViewModel item) {
+                        SelectionAdapter caterogyAdapter =
+                                new SelectionAdapter(_this, _this, R.layout.item_training_selection, null);
+                        SelectionAdapter descriptionAdapter =
+                                new SelectionAdapter(_this, _this, R.layout.item_training_selection, null);
 
-                binding.categories.setAdapter(caterogyAdapter);
-                binding.descriptions.setAdapter(descriptionAdapter);
-                binding.setPresenter(_this);
-            }
-        };
+                        binding.categories.setAdapter(caterogyAdapter);
+                        binding.descriptions.setAdapter(descriptionAdapter);
+                        binding.setPresenter(_this);
+                    }
+                };
 
         adapter.SetOnBinded(binded);
 

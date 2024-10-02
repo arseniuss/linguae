@@ -23,8 +23,8 @@ import lv.id.arseniuss.linguae.tasks.entities.SessionTaskData;
 
 public class ConjugateViewModel extends AbstractTaskViewModel {
 
-    private final TaskDataAccess _taskDataAccess = LanguageDatabase.GetInstance(getApplication(), _language)
-            .GetTaskDataAccess();
+    private final TaskDataAccess _taskDataAccess =
+            LanguageDatabase.GetInstance(getApplication(), _language).GetTaskDataAccess();
     private final MutableLiveData<List<PersonViewModel>> _persons = new MutableLiveData<>(new ArrayList<>());
     private final MutableLiveData<String> _word = new MutableLiveData<>("");
 

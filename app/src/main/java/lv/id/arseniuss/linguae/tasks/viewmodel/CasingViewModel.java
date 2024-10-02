@@ -50,9 +50,8 @@ public class CasingViewModel extends AbstractTaskViewModel {
                 .map(String::trim)
                 .filter(s -> !s.isEmpty())
                 .collect(Collectors.toList());
-        List<String> answers = Arrays.stream(casingTask().Answers.split(",", -1))
-                .map(String::trim)
-                .collect(Collectors.toList());
+        List<String> answers =
+                Arrays.stream(casingTask().Answers.split(",", -1)).map(String::trim).collect(Collectors.toList());
 
         assert words.size() == answers.size();
 
@@ -104,9 +103,7 @@ public class CasingViewModel extends AbstractTaskViewModel {
 
         public Boolean CanSelect() { return !Answer.isEmpty(); }
 
-
         public MutableLiveData<Integer> SelectedPosition() { return _selectedPosition; }
-
 
         @Override
         public boolean Validate() {

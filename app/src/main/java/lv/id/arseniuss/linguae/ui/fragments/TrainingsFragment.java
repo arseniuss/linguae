@@ -36,8 +36,8 @@ public class TrainingsFragment extends Fragment {
 
     @BindingAdapter("items")
     public static void BindTrainingList(RecyclerView recyclerView, List<EntryViewModel> trainings) {
-        MyRecyclerViewAdapter<EntryViewModel, ItemTrainingBinding> adapter
-                = (MyRecyclerViewAdapter<EntryViewModel, ItemTrainingBinding>) recyclerView.getAdapter();
+        MyRecyclerViewAdapter<EntryViewModel, ItemTrainingBinding> adapter =
+                (MyRecyclerViewAdapter<EntryViewModel, ItemTrainingBinding>) recyclerView.getAdapter();
 
         assert adapter != null;
         assert trainings != null;
@@ -90,16 +90,16 @@ public class TrainingsFragment extends Fragment {
     @NonNull
     private RecyclerView.Adapter getMyAdapter() {
 
-        MyRecyclerViewAdapter<EntryViewModel, ItemTrainingBinding> adapter = new MyRecyclerViewAdapter<>(this,
-                R.layout.item_training, 0, selection -> {
+        MyRecyclerViewAdapter<EntryViewModel, ItemTrainingBinding> adapter =
+                new MyRecyclerViewAdapter<>(this, R.layout.item_training, 0, selection -> {
 
-            String trainingId = _model.GetTraining(selection);
-            Intent i = new Intent(getContext(), SessionActivity.class);
+                    String trainingId = _model.GetTraining(selection);
+                    Intent i = new Intent(getContext(), SessionActivity.class);
 
-            i.putExtra(SessionActivity.TrainingExtraTag, trainingId);
+                    i.putExtra(SessionActivity.TrainingExtraTag, trainingId);
 
-            startActivity(i);
-        });
+                    startActivity(i);
+                });
 
         MyRecyclerViewAdapter<EntryViewModel, ItemTrainingBinding>.OnBinded binded = adapter.new OnBinded() {
 

@@ -14,12 +14,12 @@ import lv.id.arseniuss.linguae.tasks.entities.SessionTaskData;
 
 public abstract class AbstractTaskViewModel extends AndroidViewModel {
 
-    protected final SharedPreferences _sharedPreferences = PreferenceManager.getDefaultSharedPreferences(
-            getApplication().getBaseContext());
-    protected final String _language = _sharedPreferences.getString(
-            getApplication().getString(R.string.PreferenceLanguageKey), "");
-    protected final Boolean _ignoreMacrons = _sharedPreferences.getBoolean(
-            getApplication().getString(R.string.PreferenceIgnoreMacronsKey), false);
+    protected final SharedPreferences _sharedPreferences =
+            PreferenceManager.getDefaultSharedPreferences(getApplication().getBaseContext());
+    protected final String _language =
+            _sharedPreferences.getString(getApplication().getString(R.string.PreferenceLanguageKey), "");
+    protected final Boolean _ignoreMacrons =
+            _sharedPreferences.getBoolean(getApplication().getString(R.string.PreferenceIgnoreMacronsKey), false);
     protected SessionTaskData _taskResult;
 
     protected MutableLiveData<Boolean> _isValidated = new MutableLiveData<>(false);

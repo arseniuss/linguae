@@ -15,6 +15,6 @@ public class LessonWithAttrs {
     public List<Task> Tasks = new ArrayList<>();
 
     @Relation(parentColumn = "lesson_id", entityColumn = "theory_id",
-              associateBy = @Junction(LessonTheoryCrossref.class))
+            associateBy = @Junction(LessonTheoryCrossref.class))
     public List<Theory> Theories = new ArrayList<>();
 }

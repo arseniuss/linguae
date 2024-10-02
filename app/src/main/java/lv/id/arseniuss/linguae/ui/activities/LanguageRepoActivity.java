@@ -105,8 +105,8 @@ public class LanguageRepoActivity extends AppCompatActivity {
         @NonNull
         @Override
         public ItemLanguageRepoViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-            ItemLanguageRepoBinding binding = ItemLanguageRepoBinding.inflate(LayoutInflater.from(parent.getContext()),
-                    parent, false);
+            ItemLanguageRepoBinding binding =
+                    ItemLanguageRepoBinding.inflate(LayoutInflater.from(parent.getContext()), parent, false);
 
             return new ItemLanguageRepoViewHolder(binding);
         }

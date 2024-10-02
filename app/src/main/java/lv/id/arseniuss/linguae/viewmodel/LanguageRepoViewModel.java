@@ -26,8 +26,8 @@ public class LanguageRepoViewModel extends AndroidViewModel {
     private final String _languageKey = getApplication().getString(R.string.PreferenceLanguageKey);
     private final String _languageListKey = getApplication().getString(R.string.PreferenceLanguageListKey);
     private final String _languageLocationKey = getApplication().getString(R.string.PreferenceLanguageLocationKey);
-    private final SharedPreferences _sharedPreferences = PreferenceManager.getDefaultSharedPreferences(
-            getApplication().getBaseContext());
+    private final SharedPreferences _sharedPreferences =
+            PreferenceManager.getDefaultSharedPreferences(getApplication().getBaseContext());
     private final MutableLiveData<List<LanguageRepoItemViewModel>> _repos;
     private final MutableLiveData<Integer> _selected;
 

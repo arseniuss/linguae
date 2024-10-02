@@ -87,7 +87,6 @@ public class EditRepoDialogFragment extends DialogFragment {
 
                 DocumentFile[] files = documentFile.listFiles();
 
-
                 _model.setLocation(uri.toString());
             }
         }

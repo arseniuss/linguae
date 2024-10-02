@@ -56,10 +56,10 @@ public class ChooseFragment extends AbstractTaskFragment<ChooseViewModel> {
         _binding.setViewmodel(_model);
         _binding.setLifecycleOwner(this);
 
-        OptionAdapter adapter = new OptionAdapter(getContext(), getViewLifecycleOwner(),
-                R.layout.item_task_choose_option, position -> {
-            _model.SetSelected(position);
-        });
+        OptionAdapter adapter =
+                new OptionAdapter(getContext(), getViewLifecycleOwner(), R.layout.item_task_choose_option, position -> {
+                    _model.SetSelected(position);
+                });
 
         _binding.options.setAdapter(adapter);
 

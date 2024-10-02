@@ -29,7 +29,6 @@ import lv.id.arseniuss.linguae.viewmodel.SessionResultViewModel;
 public class SessionResultActivity extends AppCompatActivity {
     public static final String ResultTag = "RESULT";
 
-
     protected SessionResultViewModel _model;
     protected ActivitySessionResultBinding _binding;
 
@@ -91,7 +90,6 @@ public class SessionResultActivity extends AppCompatActivity {
         PieDataSet dataSet = new PieDataSet(pieEntryList, null);
 
         _binding.pieChart.setCenterText(_model.GetPoints() + "/" + _model.GetAmount());
-
 
         dataSet.setDrawValues(true);
         dataSet.setValueTextSize(20f); // TODO: get from theme

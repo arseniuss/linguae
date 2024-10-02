@@ -14,7 +14,6 @@ import lv.id.arseniuss.linguae.db.entities.Task;
 
 public class LanguageGenerator {
 
-
     public static String[] Generate(Description description, Task task, String base, String[] options)
             throws GeneratorException
     {

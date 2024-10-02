@@ -8,7 +8,6 @@ import lv.id.arseniuss.linguae.tasks.AbstractTaskViewModel;
 
 public class NumberViewModel extends AbstractTaskViewModel {
 
-
     public NumberViewModel(@NonNull Application application) {
         super(application);
     }

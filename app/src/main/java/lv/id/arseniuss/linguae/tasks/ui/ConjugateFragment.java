@@ -32,8 +32,7 @@ public class ConjugateFragment extends AbstractTaskFragment<ConjugateViewModel> 
 
     @BindingAdapter("items")
     public static void BindLessonList(RecyclerView recyclerView, List<ConjugateViewModel.PersonViewModel> entries) {
-        MyRecyclerViewAdapter<ConjugateViewModel.PersonViewModel, ItemTaskConjugatePersonBinding> adapter
-                =
+        MyRecyclerViewAdapter<ConjugateViewModel.PersonViewModel, ItemTaskConjugatePersonBinding> adapter =
                 (MyRecyclerViewAdapter<ConjugateViewModel.PersonViewModel, ItemTaskConjugatePersonBinding>) recyclerView.getAdapter();
 
         assert adapter != null;
@@ -53,8 +52,8 @@ public class ConjugateFragment extends AbstractTaskFragment<ConjugateViewModel> 
         _binding.setViewmodel(_model);
         _binding.setLifecycleOwner(this);
 
-        MyRecyclerViewAdapter<ConjugateViewModel.PersonViewModel, ItemTaskConjugatePersonBinding> adapter
-                = new MyRecyclerViewAdapter<>(this, R.layout.item_task_conjugate_person);
+        MyRecyclerViewAdapter<ConjugateViewModel.PersonViewModel, ItemTaskConjugatePersonBinding> adapter =
+                new MyRecyclerViewAdapter<>(this, R.layout.item_task_conjugate_person);
 
         _binding.cases.setAdapter(adapter);
 

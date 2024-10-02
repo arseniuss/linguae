@@ -40,8 +40,8 @@ public class ChooseViewModel extends AbstractTaskViewModel {
     public boolean Validate() {
         boolean isValid;
 
-        OptionViewModel selectedViewModel = Objects.requireNonNull(Objects.requireNonNull(Options().getValue()))
-                .get(_selected);
+        OptionViewModel selectedViewModel =
+                Objects.requireNonNull(Objects.requireNonNull(Options().getValue())).get(_selected);
         Optional<OptionViewModel> first = Objects.requireNonNull(Options().getValue())
                 .stream()
                 .filter(o -> Objects.equals(o.Option, Answer()))

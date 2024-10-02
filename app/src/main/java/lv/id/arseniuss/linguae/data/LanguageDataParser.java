@@ -868,6 +868,76 @@ public class LanguageDataParser {
 
     public ParserData GetData() { return _data; }
 
+    public List<LanguagePortal> ParsePortals(List<String> portals) throws Exception {
+        List<LanguagePortal> result = new ArrayList<>();
+
+        for (String portal : portals) {
+
+            inform("Parsing portal " + portal);
+
+            Uri portalUri = Uri.parse(portal);
+            InputStream languageFileStream = getFile(portalUri, "Languages.txt");
+            LineNumberReader r = new LineNumberReader(new BufferedReader(new InputStreamReader(languageFileStream)));
+
+            LanguagePortal languagePortal = new LanguagePortal();
+
+            languagePortal.Location = portal;
+
+            String line;
+            while ((line = r.readLine()) != null) {
+                _line = r.getLineNumber();
+                String[] words = getWords(line, r);
+
+                if (words.length == 0) continue;
+
+                String keyword = words[0].trim().toLowerCase();
+
+                switch (keyword) {
+                    case "name":
+                        if (words.length != 2) {
+                            logError("Expected format: name <name>");
+                            continue;
+                        }
+
+                        if (!languagePortal.Name.isEmpty()) {
+                            logError("Portal name is set: " + languagePortal.Name);
+                            continue;
+                        }
+
+                        languagePortal.Name = words[1];
+                        break;
+                    case "language":
+                        if (words.length != 4) {
+                            logError("Expected format: language <name> <directory> <image>");
+                            continue;
+                        }
+
+                        Language language = new Language();
+
+                        language.Name = words[1];
+                        language.Location = words[2];
+                        language.Image = words[3];
+
+                        if (!language.Location.startsWith(portal)) {
+                            language.Location = portal + "/" + language.Location;
+                        }
+                        if (!language.Image.startsWith(portal)) {
+                            language.Image = portal + "/" + language.Image;
+                        }
+
+                        languagePortal.Languages.add(language);
+                        break;
+                    default:
+                        logError("Unrecognised keyword in portal file: " + keyword);
+                }
+            }
+
+            result.add(languagePortal);
+        }
+
+        return result;
+    }
+
     public interface ParserInterface {
         InputStream GetFile(Uri base, String filename) throws IOException;
 
@@ -888,5 +958,17 @@ public class LanguageDataParser {
         public List<String> Licences = new ArrayList<>();
         public String LanguageVersion = "";
         public List<Config> Config = new ArrayList<>();
+    }
+
+    public static class LanguagePortal {
+        public String Name = "";
+        public String Location = "";
+        public List<Language> Languages = new ArrayList<>();
+    }
+
+    public static class Language {
+        public String Name = "";
+        public String Location = "";
+        public String Image = "";
     }
 }

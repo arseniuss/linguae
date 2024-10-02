@@ -12,7 +12,7 @@
     <CheckBox
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@{viewmodel.Data()}"
         android:checked="@{viewmodel.Selected()}"
+        android:text="@{viewmodel.Data()}"
         tools:text="Test" />
 </layout>

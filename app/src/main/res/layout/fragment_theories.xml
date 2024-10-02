@@ -9,10 +9,12 @@
             name="viewmodel"
             type="lv.id.arseniuss.linguae.viewmodel.TheoriesViewModel" />
     </data>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
+
         <com.google.android.material.appbar.AppBarLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

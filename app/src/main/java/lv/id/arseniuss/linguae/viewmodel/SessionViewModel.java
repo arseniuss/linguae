@@ -33,12 +33,12 @@ import lv.id.arseniuss.linguae.tasks.entities.SessionTaskData;
 
 public class SessionViewModel extends AndroidViewModel {
 
-    private final SharedPreferences _sharedPreferences = PreferenceManager.getDefaultSharedPreferences(
-            getApplication().getBaseContext());
-    private final String _language = _sharedPreferences.getString(
-            getApplication().getString(R.string.PreferenceLanguageKey), "");
-    private final TaskDataAccess _taskDataAccess = LanguageDatabase.GetInstance(getApplication(), _language)
-            .GetTaskDataAccess();
+    private final SharedPreferences _sharedPreferences =
+            PreferenceManager.getDefaultSharedPreferences(getApplication().getBaseContext());
+    private final String _language =
+            _sharedPreferences.getString(getApplication().getString(R.string.PreferenceLanguageKey), "");
+    private final TaskDataAccess _taskDataAccess =
+            LanguageDatabase.GetInstance(getApplication(), _language).GetTaskDataAccess();
     private final MutableLiveData<String> _counterString = new MutableLiveData<>("0");
     private final MutableLiveData<String> _taskProgress = new MutableLiveData<>("");
     private final SessionResultWithTaskResults _result = new SessionResultWithTaskResults();
@@ -92,7 +92,6 @@ public class SessionViewModel extends AndroidViewModel {
         loaded.Loaded(null);
     }
 
-
     private void UpdateTaskProgress() {
         _taskProgress.setValue((CurrentTaskIndex + 1) + "/" + _tasks.size());
     }
@@ -126,7 +125,6 @@ public class SessionViewModel extends AndroidViewModel {
     public void Done() {
         _scheduledExecutorService.shutdown();
     }
-
 
     public String GetResult() {
         _result.SessionResult.StartTime = new Date();

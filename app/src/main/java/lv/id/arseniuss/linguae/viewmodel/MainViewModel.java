@@ -12,8 +12,8 @@ import androidx.preference.PreferenceManager;
 import lv.id.arseniuss.linguae.R;
 
 public class MainViewModel extends AndroidViewModel implements SharedPreferences.OnSharedPreferenceChangeListener {
-    private final SharedPreferences _sharedPreferences = PreferenceManager.getDefaultSharedPreferences(
-            getApplication().getBaseContext());
+    private final SharedPreferences _sharedPreferences =
+            PreferenceManager.getDefaultSharedPreferences(getApplication().getBaseContext());
     private final String _languageKey = getApplication().getString(R.string.PreferenceLanguageKey);
 
     private final MutableLiveData<String> _language;

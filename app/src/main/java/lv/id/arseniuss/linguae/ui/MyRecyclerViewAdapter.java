@@ -53,8 +53,8 @@ public class MyRecyclerViewAdapter<TViewModel extends BaseObservable, TDataBindi
     @NonNull
     @Override
     public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        TDataBinding binding = DataBindingUtil.inflate(LayoutInflater.from(parent.getContext()), _layoutId, parent,
-                false);
+        TDataBinding binding =
+                DataBindingUtil.inflate(LayoutInflater.from(parent.getContext()), _layoutId, parent, false);
 
         return new MyViewHolder(binding);
     }
@@ -103,7 +103,6 @@ public class MyRecyclerViewAdapter<TViewModel extends BaseObservable, TDataBindi
             if (_longClick != null) return _longClick.OnLongClick(_position);
             return false;
         };
-
 
         public MyViewHolder(@NonNull TDataBinding binding) {
             super(binding.getRoot());

@@ -47,4 +47,5 @@
     <string name="ChooseALanguageFile">Choose a language file</string>
     <string name="TitleTheories">Theory</string>
     <string name="ActionSwitchLanguge">Switch language</string>
+    <string name="TitleSelectPortalLanguage">Select portal and language to learn</string>
 </resources>

@@ -21,13 +21,13 @@ import lv.id.arseniuss.linguae.db.entities.TaskResult;
 
 public class SessionResultViewModel extends AndroidViewModel {
 
-    private final SharedPreferences _sharedPreferences = PreferenceManager.getDefaultSharedPreferences(
-            getApplication().getBaseContext());
-    private final String _language = _sharedPreferences.getString(
-            getApplication().getString(R.string.PreferenceLanguageKey), "");
+    private final SharedPreferences _sharedPreferences =
+            PreferenceManager.getDefaultSharedPreferences(getApplication().getBaseContext());
+    private final String _language =
+            _sharedPreferences.getString(getApplication().getString(R.string.PreferenceLanguageKey), "");
 
-    private final SessionDataAccess _sessionDataAccess = LanguageDatabase.GetInstance(getApplication(), _language)
-            .GetSessionDataAccess();
+    private final SessionDataAccess _sessionDataAccess =
+            LanguageDatabase.GetInstance(getApplication(), _language).GetSessionDataAccess();
     private SessionResultWithTaskResults _result;
 
     public SessionResultViewModel(@NonNull Application application) {

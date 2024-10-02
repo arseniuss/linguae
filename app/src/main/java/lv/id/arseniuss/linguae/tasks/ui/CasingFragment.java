@@ -30,7 +30,6 @@ public class CasingFragment extends AbstractTaskFragment<CasingViewModel> {
     private FragmentTaskCasingBinding _binding;
     private CasingFragment.WordAdapter _wordAdapter;
 
-
     public CasingFragment(SessionTaskData current)
     {
         super(current);
@@ -60,8 +59,9 @@ public class CasingFragment extends AbstractTaskFragment<CasingViewModel> {
         _binding.setViewmodel(_model);
         _binding.setLifecycleOwner(this);
 
-        _wordAdapter = new CasingFragment.WordAdapter(getContext(), getViewLifecycleOwner(),
-                R.layout.item_task_casing_word, position -> { });
+        _wordAdapter =
+                new CasingFragment.WordAdapter(getContext(), getViewLifecycleOwner(), R.layout.item_task_casing_word,
+                        position -> { });
 
         _binding.words.setAdapter(_wordAdapter);
 
@@ -113,6 +113,5 @@ public class CasingFragment extends AbstractTaskFragment<CasingViewModel> {
             }
         }
     }
-
 
 }

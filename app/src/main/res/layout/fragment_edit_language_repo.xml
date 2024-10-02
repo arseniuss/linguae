@@ -2,9 +2,11 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android">
 
     <data>
+
         <variable
             name="presenter"
             type="lv.id.arseniuss.linguae.ui.fragments.EditRepoDialogFragment" />
+
         <variable
             name="viewmodel"
             type="lv.id.arseniuss.linguae.viewmodel.LanguageRepoItemViewModel" />
@@ -51,17 +53,17 @@
                 android:id="@+id/editLocation"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:ems="10"
                 android:layout_weight="1"
+                android:ems="10"
                 android:inputType="text"
                 android:text="@={viewmodel.Location}" />
 
             <Button
                 android:id="@+id/button"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
                 android:onClick="@{() -> presenter.BrowseFile()}"
                 android:text="@string/BrowseButtonText" />
         </LinearLayout>

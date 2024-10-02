@@ -12,6 +12,6 @@ public class TheoryWithChapters {
     public Theory Theory = new Theory();
 
     @Relation(parentColumn = "theory_id", entityColumn = "chapter_id",
-              associateBy = @Junction(TheoryChapterCrossref.class))
+            associateBy = @Junction(TheoryChapterCrossref.class))
     public List<Chapter> Chapters = new ArrayList<>();
 }

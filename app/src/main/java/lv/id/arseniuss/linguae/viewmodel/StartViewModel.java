@@ -7,6 +7,8 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.provider.DocumentsContract;
 
+import androidx.annotation.NonNull;
+import androidx.databinding.BaseObservable;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
@@ -24,6 +26,8 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.core.Single;
@@ -31,76 +35,81 @@ import io.reactivex.rxjava3.disposables.Disposable;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 import lv.id.arseniuss.linguae.BuildConfig;
 import lv.id.arseniuss.linguae.R;
-import lv.id.arseniuss.linguae.data.ItemLanguageRepo;
 import lv.id.arseniuss.linguae.data.LanguageDataParser;
 import lv.id.arseniuss.linguae.db.LanguageDatabase;
 import lv.id.arseniuss.linguae.db.dataaccess.UpdateDataAccess;
 
-public class FirstViewModel extends AndroidViewModel implements LanguageDataParser.ParserInterface {
-    private final SharedPreferences _sharedPreferences = PreferenceManager.getDefaultSharedPreferences(
-            getApplication().getBaseContext());
+public class StartViewModel extends AndroidViewModel implements LanguageDataParser.ParserInterface {
+    private final SharedPreferences _sharedPreferences =
+            PreferenceManager.getDefaultSharedPreferences(getApplication().getBaseContext());
+    private final LanguageDataParser _dataParser = new LanguageDataParser(this);
+
+    private final String _preferenceLanguageKey = getApplication().getString(R.string.PreferenceLanguageKey);
+    private final String _preferenceLanguageLocationKey =
+            getApplication().getString(R.string.PreferenceLanguageLocationKey);
+    private final String _preferencePortalsKey = getApplication().getString(R.string.PreferencePortalsKey);
+
+    private final String _defaultPortals = getApplication().getString(R.string.DefaultLanguagePortal);
+
+    private final MutableLiveData<List<LanguageDataParser.LanguagePortal>> _portals =
+            new MutableLiveData<>(new ArrayList<>());
+    private final MutableLiveData<List<LanguageViewModel>> _languages = new MutableLiveData<>(new ArrayList<>());
+    private final MutableLiveData<Integer> _selectedPortal = new MutableLiveData<>(0);
     private final MutableLiveData<String> _messages = new MutableLiveData<>("");
     private final MutableLiveData<Boolean> _canContinue = new MutableLiveData<>(false);
-    private final String _preferenceLanguage = getApplication().getString(R.string.PreferenceLanguageKey);
-    private final String _preferenceLanguageList = getApplication().getString(R.string.PreferenceLanguageListKey);
-    private final String _preferenceLanguageLocation = getApplication().getString(
-            R.string.PreferenceLanguageLocationKey);
-    private final LanguageDataParser _dataParser = new LanguageDataParser(this);
+
+    private WarningInterface _warn;
     private String _text = "";
     private String _databaseVersion = "";
     private Callback _continue;
     private RequestConfirmCallback _requestUpdateConfirm;
 
-    public FirstViewModel(Application app) {
-        super(app);
+    public StartViewModel(@NonNull Application application) {
+        super(application);
     }
 
-    public LiveData<String> Messages() { return _messages; }
+    public MutableLiveData<List<LanguageDataParser.LanguagePortal>> Portals() { return _portals; }
+
+    public MutableLiveData<List<LanguageViewModel>> Languages() { return _languages; }
+
+    public MutableLiveData<Integer> SelectedPortal() { return _selectedPortal; }
+
+    public MutableLiveData<String> Messages() { return _messages; }
 
     public LiveData<Boolean> CanContinue() {
         return _canContinue;
     }
 
-    private void checkLanguageRepos() {
-        final String defaultLanguage = getApplication().getString(R.string.DefaultLanguageName);
-        final String defaultLanguageLocation = getApplication().getString(R.string.DefaultLanguageLocation);
-
-        String languageJson = _sharedPreferences.getString(_preferenceLanguageList, "");
-        Type listOfMyClassObject = new TypeToken<ArrayList<ItemLanguageRepo>>() { }.getType();
-        List<ItemLanguageRepo> repos = new Gson().fromJson(languageJson, listOfMyClassObject);
-
-        if (repos == null) repos = new ArrayList<>();
-
-        if (repos.isEmpty()) {
-            repos.add(new ItemLanguageRepo(defaultLanguage, defaultLanguageLocation));
-
-            languageJson = new Gson().toJson(repos, listOfMyClassObject);
-
-            _sharedPreferences.edit().putString(_preferenceLanguageList, languageJson).apply();
-        }
-
-        String language = _sharedPreferences.getString(_preferenceLanguage, "");
-        String languageLocation = _sharedPreferences.getString(_preferenceLanguageLocation, "");
-
-        if (language.isEmpty() && languageLocation.isEmpty()) {
-            _sharedPreferences.edit()
-                    .putString(_preferenceLanguage, defaultLanguage)
-                    .putString(_preferenceLanguageLocation, defaultLanguageLocation)
-                    .apply();
-        }
+    public boolean HasSelectedLanguage() {
+        return !_sharedPreferences.getString(_preferenceLanguageKey, "").trim().isEmpty();
     }
 
     public void Start(Callback continueCallback, RequestConfirmCallback requestUpdateConfirm) {
         _continue = continueCallback;
         _requestUpdateConfirm = requestUpdateConfirm;
-        checkLanguageRepos();
 
-        String language = _sharedPreferences.getString(_preferenceLanguage, "");
-        String languageLocation = _sharedPreferences.getString(_preferenceLanguageLocation, "");
+        Gson gson = new Gson();
 
-        if (!language.isEmpty() && !languageLocation.isEmpty()) {
-            UpdateDataAccess updateDataAccess = LanguageDatabase.GetInstance(getApplication().getBaseContext(),
-                    language).GetUpdateDataAccess();
+        if (!HasSelectedLanguage()) {
+            String jsonPortals = _sharedPreferences.getString(_preferencePortalsKey, _defaultPortals);
+            Type listType = new TypeToken<List<String>>() { }.getType();
+            List<String> portals = gson.fromJson(jsonPortals, listType);
+
+            Disposable d = Single.fromCallable(() -> _dataParser.ParsePortals(portals))
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(value -> {
+                        _portals.setValue(value);
+                        loadLanguages();
+                    }, error -> {
+                        if (_warn != null) _warn.Warn(error.getMessage());
+                    });
+        }
+        else {
+            String language = _sharedPreferences.getString(_preferenceLanguageKey, "");
+
+            UpdateDataAccess updateDataAccess =
+                    LanguageDatabase.GetInstance(getApplication().getBaseContext(), language).GetUpdateDataAccess();
 
             Disposable d = updateDataAccess.GetVersion()
                     .subscribeOn(Schedulers.io())
@@ -108,15 +117,13 @@ public class FirstViewModel extends AndroidViewModel implements LanguageDataPars
                     .subscribe(s -> {
                         _databaseVersion = s;
                         parseLanguageFile();
-                    }, throwable -> { _messages.postValue(throwable.getMessage()); }, this::parseLanguageFile);
-        }
-        else {
-            _continue.Call();
+                    }, error -> Inform(error.getMessage()), this::parseLanguageFile);
+
         }
     }
 
     private void parseLanguageFile() {
-        String languageLocation = _sharedPreferences.getString(_preferenceLanguageLocation, "");
+        String languageLocation = _sharedPreferences.getString(_preferenceLanguageLocationKey, "");
         Uri languageLocationUri = Uri.parse(languageLocation);
 
         Disposable d = Single.fromCallable(() -> _dataParser.Parse(languageLocationUri, false))
@@ -145,10 +152,9 @@ public class FirstViewModel extends AndroidViewModel implements LanguageDataPars
 
     private void updateDatabase(Boolean confirm) {
         if (confirm) {
-            String language = _sharedPreferences.getString(_preferenceLanguage, "");
-            UpdateDataAccess updateDataAccess = LanguageDatabase.GetInstance(getApplication().getBaseContext(),
-                    language).GetUpdateDataAccess();
-
+            String language = _sharedPreferences.getString(_preferenceLanguageKey, "");
+            UpdateDataAccess updateDataAccess =
+                    LanguageDatabase.GetInstance(getApplication().getBaseContext(), language).GetUpdateDataAccess();
 
             Disposable d = updateDataAccess.PerformUpdate(_dataParser.GetData())
                     .subscribeOn(Schedulers.io())
@@ -163,10 +169,19 @@ public class FirstViewModel extends AndroidViewModel implements LanguageDataPars
         }
     }
 
+    private void loadLanguages() {
+        _languages.setValue(new ArrayList<>());
+
+        LanguageDataParser.LanguagePortal languagePortal =
+                Objects.requireNonNull(_portals.getValue()).get(_selectedPortal.getValue());
+
+        _languages.setValue(languagePortal.Languages.stream().map(LanguageViewModel::new).collect(Collectors.toList()));
+    }
+
     private Uri getDocument(Uri base, String filename) {
         ContentResolver resolver = getApplication().getContentResolver();
-        Uri childrenUri = DocumentsContract.buildChildDocumentsUriUsingTree(base,
-                DocumentsContract.getTreeDocumentId(base));
+        Uri childrenUri =
+                DocumentsContract.buildChildDocumentsUriUsingTree(base, DocumentsContract.getTreeDocumentId(base));
         Cursor cursor = resolver.query(childrenUri, new String[]{
                 DocumentsContract.Document.COLUMN_DOCUMENT_ID, DocumentsContract.Document.COLUMN_DISPLAY_NAME,
                 DocumentsContract.Document.COLUMN_MIME_TYPE
@@ -235,16 +250,52 @@ public class FirstViewModel extends AndroidViewModel implements LanguageDataPars
         _messages.postValue(_text);
     }
 
-    public interface Callback {
-        void Call();
+    public void SetWarning(WarningInterface o) {
+        _warn = o;
     }
 
-    public interface RequestConfirmCallback {
-        void Request(ConfirmResponseCallback callback);
+    public void SetSelectedLanguage(int position) {
+        if (position >= 0) {
+            LanguageViewModel languageViewModel = Objects.requireNonNull(_languages.getValue()).get(position);
+
+            if (languageViewModel != null) {
+                LanguageDataParser.LanguagePortal languagePortal =
+                        Objects.requireNonNull(_portals.getValue()).get(_selectedPortal.getValue());
+
+                _sharedPreferences.edit()
+                        .putString(_preferenceLanguageKey, languageViewModel.Language)
+                        .putString(_preferenceLanguageLocationKey, languageViewModel.Location)
+                        .apply();
+            }
+        }
+
     }
 
     public interface ConfirmResponseCallback {
         void ConfirmResponse(boolean confirmed);
     }
 
+    public interface RequestConfirmCallback {
+        void Request(ConfirmResponseCallback callback);
+    }
+
+    public interface Callback {
+        void Call();
+    }
+
+    public interface WarningInterface {
+        void Warn(String message);
+    }
+
+    public static class LanguageViewModel extends BaseObservable {
+        public String Language;
+        public String Image;
+        public String Location;
+
+        public LanguageViewModel(LanguageDataParser.Language l) {
+            Language = l.Name;
+            Image = l.Image;
+            Location = l.Location;
+        }
+    }
 }

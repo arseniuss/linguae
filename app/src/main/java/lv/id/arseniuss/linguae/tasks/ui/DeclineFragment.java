@@ -30,8 +30,7 @@ public class DeclineFragment extends AbstractTaskFragment<DeclineViewModel> {
 
     @BindingAdapter("items")
     public static void BindLessonList(RecyclerView recyclerView, List<DeclineViewModel.CaseViewModel> entries) {
-        MyRecyclerViewAdapter<DeclineViewModel.CaseViewModel, ItemTaskDeclineCaseBinding> adapter
-                =
+        MyRecyclerViewAdapter<DeclineViewModel.CaseViewModel, ItemTaskDeclineCaseBinding> adapter =
                 (MyRecyclerViewAdapter<DeclineViewModel.CaseViewModel, ItemTaskDeclineCaseBinding>) recyclerView.getAdapter();
 
         assert adapter != null;
@@ -60,8 +59,8 @@ public class DeclineFragment extends AbstractTaskFragment<DeclineViewModel> {
 
     @NonNull
     private MyRecyclerViewAdapter<DeclineViewModel.CaseViewModel, ItemTaskDeclineCaseBinding> getAdapter() {
-        MyRecyclerViewAdapter<DeclineViewModel.CaseViewModel, ItemTaskDeclineCaseBinding> adapter
-                = new MyRecyclerViewAdapter<>(this, R.layout.item_task_decline_case);
+        MyRecyclerViewAdapter<DeclineViewModel.CaseViewModel, ItemTaskDeclineCaseBinding> adapter =
+                new MyRecyclerViewAdapter<>(this, R.layout.item_task_decline_case);
 
         return adapter;
     }

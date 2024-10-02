@@ -47,7 +47,7 @@ public class DeclineViewModel extends AbstractTaskViewModel {
             boolean valid = caseViewModel.Validate();
 
             if (valid) points += 1;
-            amount+=1;
+            amount += 1;
 
             allValid &= valid;
         }

@@ -15,7 +15,6 @@ import lv.id.arseniuss.linguae.tasks.viewmodel.MacronViewModel;
 
 public class MacronFragment extends AbstractTaskFragment<MacronViewModel> {
 
-
     public MacronFragment(SessionTaskData current)
     {
         super(current);
