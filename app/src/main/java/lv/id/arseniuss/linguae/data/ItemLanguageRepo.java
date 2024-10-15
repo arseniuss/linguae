@@ -8,6 +8,10 @@ public class ItemLanguageRepo {
 
     }
 
+    public ItemLanguageRepo(String location) {
+        this.Location = location;
+    }
+
     public ItemLanguageRepo(String name, String location) {
         this.Name = name;
         this.Location = location;

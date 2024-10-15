@@ -18,21 +18,22 @@ import java.util.stream.Collectors;
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.disposables.Disposable;
 import io.reactivex.rxjava3.schedulers.Schedulers;
-import lv.id.arseniuss.linguae.R;
+import lv.id.arseniuss.linguae.Constants;
+import lv.id.arseniuss.linguae.Settings;
 import lv.id.arseniuss.linguae.Utilities;
 import lv.id.arseniuss.linguae.db.LanguageDatabase;
+import lv.id.arseniuss.linguae.db.dataaccess.SettingDataAccess;
 import lv.id.arseniuss.linguae.db.dataaccess.TrainingDataAccess;
 
 public class TrainingsViewModel extends AndroidViewModel {
 
     private final SharedPreferences _sharedPreferences =
             PreferenceManager.getDefaultSharedPreferences(getApplication().getBaseContext());
-    private final String _language =
-            _sharedPreferences.getString(getApplication().getString(R.string.PreferenceLanguageKey), "");
+    private final String _language = _sharedPreferences.getString(Constants.PreferenceLanguageKey, "");
     private final TrainingDataAccess _trainingDataAccess =
             LanguageDatabase.GetInstance(getApplication(), _language).GetTrainingsDataAccess();
-    private final Boolean _ignoreMacrons =
-            _sharedPreferences.getBoolean(getApplication().getString(R.string.PreferenceIgnoreMacronsKey), false);
+    private final SettingDataAccess _settingDataAccess =
+            LanguageDatabase.GetInstance(getApplication(), _language).GetSettingDataAccess();
     private final MutableLiveData<List<EntryViewModel>> _trainings;
 
     public TrainingsViewModel(@NonNull Application application) {
@@ -63,28 +64,24 @@ public class TrainingsViewModel extends AndroidViewModel {
         Disposable d = _trainingDataAccess.GetTrainings()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(trainings -> {
-                    _trainings.setValue(trainings.stream()
-                            .map(t -> new EntryViewModel(t, _ignoreMacrons))
-                            .collect(Collectors.toList()));
+                .subscribe(result -> {
+                    _trainings.setValue(result.stream().map(EntryViewModel::new).collect(Collectors.toList()));
                 });
 
     }
 
     public static class EntryViewModel extends BaseObservable {
         private final TrainingDataAccess.TrainingWithCount _training;
-        private final Boolean _ignoreMacrons;
 
-        public EntryViewModel(TrainingDataAccess.TrainingWithCount training, Boolean ignoreMacrons) {
+        public EntryViewModel(TrainingDataAccess.TrainingWithCount training) {
             _training = training;
-            _ignoreMacrons = ignoreMacrons;
         }
 
         public String getId() { return _training.Training.Id; }
 
         @Bindable("Name")
         public String getName() {
-            return _ignoreMacrons ? Utilities.StripAccents(_training.Training.Name) : _training.Training.Name;
+            return Settings.IgnoreMacrons ? Utilities.StripAccents(_training.Training.Name) : _training.Training.Name;
         }
 
         @Bindable("Description")

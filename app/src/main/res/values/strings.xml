@@ -7,8 +7,6 @@
     <string name="btnTraining">Training</string>
     <string name="btnBack">Back</string>
     <string name="btnNext">Next</string>
-    <string name="nav_header_title">Unknown user</string>
-    <string name="nav_header_subtitle">unknown@unknown.tldr</string>
     <string name="nav_header_desc">Navigation header</string>
     <string name="ActionSettings">Settings</string>
     <string name="ActionSetup">Setup</string>
@@ -48,4 +46,11 @@
     <string name="TitleTheories">Theory</string>
     <string name="ActionSwitchLanguge">Switch language</string>
     <string name="TitleSelectPortalLanguage">Select portal and language to learn</string>
+    <string name="TitleEditPortals">Edit language repositories</string>
+    <string name="UnnamedRepository">Unnamed repository</string>
+    <string name="TitleDelete">Delete</string>
+    <string name="DataSaved">Saved</string>
+    <string name="DatabaseUpdateNotRequired">Database update is not required</string>
+    <string name="DatabaseVersion">"Database version: "</string>
+    <string name="RepositoryVersion">"Repository version: "</string>
 </resources>

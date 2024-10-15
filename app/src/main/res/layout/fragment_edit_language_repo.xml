@@ -9,7 +9,7 @@
 
         <variable
             name="viewmodel"
-            type="lv.id.arseniuss.linguae.viewmodel.LanguageRepoItemViewModel" />
+            type="lv.id.arseniuss.linguae.viewmodel.RepoEditViewModel.EditRepoViewModel" />
     </data>
 
     <LinearLayout

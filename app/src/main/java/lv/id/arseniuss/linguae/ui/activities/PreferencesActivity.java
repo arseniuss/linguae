@@ -15,6 +15,7 @@ import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
 import androidx.preference.PreferenceManager;
 
+import lv.id.arseniuss.linguae.Constants;
 import lv.id.arseniuss.linguae.R;
 
 public class PreferencesActivity extends AppCompatActivity {
@@ -78,10 +79,8 @@ public class PreferencesActivity extends AppCompatActivity {
         }
 
         private void setup() {
-            String languageKey = getString(R.string.PreferenceLanguageKey);
-            String language = _sharedPreferences.getString(languageKey, "");
-
-            Preference langPreference = findPreference(languageKey);
+            String language = _sharedPreferences.getString(Constants.PreferenceLanguageKey, "");
+            Preference langPreference = findPreference(Constants.PreferenceLanguageKey);
 
             assert langPreference != null;
 
@@ -90,7 +89,11 @@ public class PreferencesActivity extends AppCompatActivity {
             }
 
             langPreference.setOnPreferenceClickListener(preference -> {
-                getLanguageRepo.launch(new Intent(getContext(), LanguageRepoActivity.class));
+                Intent i = new Intent(getContext(), StartActivity.class);
+
+                i.putExtra(StartActivity.RESTART, true);
+
+                getLanguageRepo.launch(i);
                 return false;
             });
         }

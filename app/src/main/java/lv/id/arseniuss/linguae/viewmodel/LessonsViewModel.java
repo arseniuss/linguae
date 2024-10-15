@@ -20,7 +20,8 @@ import java.util.stream.Collectors;
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.disposables.Disposable;
 import io.reactivex.rxjava3.schedulers.Schedulers;
-import lv.id.arseniuss.linguae.R;
+import lv.id.arseniuss.linguae.Constants;
+import lv.id.arseniuss.linguae.Settings;
 import lv.id.arseniuss.linguae.Utilities;
 import lv.id.arseniuss.linguae.db.LanguageDatabase;
 import lv.id.arseniuss.linguae.db.dataaccess.LessonDataAccess;
@@ -29,12 +30,9 @@ public class LessonsViewModel extends AndroidViewModel {
 
     private final SharedPreferences _sharedPreferences =
             PreferenceManager.getDefaultSharedPreferences(getApplication().getBaseContext());
-    private final String _language =
-            _sharedPreferences.getString(getApplication().getString(R.string.PreferenceLanguageKey), "");
+    private final String _language = _sharedPreferences.getString(Constants.PreferenceLanguageKey, "");
     private final LessonDataAccess _lessonDataAccess =
             LanguageDatabase.GetInstance(getApplication(), _language).GetLessonsDataAccess();
-    private final Boolean _ignoreMacrons =
-            _sharedPreferences.getBoolean(getApplication().getString(R.string.PreferenceIgnoreMacronsKey), false);
     private final MutableLiveData<List<EntryViewModel>> _lessons;
 
     public LessonsViewModel(@NonNull Application application) {
@@ -52,9 +50,7 @@ public class LessonsViewModel extends AndroidViewModel {
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(lessons -> {
-                    _lessons.setValue(lessons.stream()
-                            .map(l -> new EntryViewModel(l, _ignoreMacrons))
-                            .collect(Collectors.toList()));
+                    _lessons.setValue(lessons.stream().map(EntryViewModel::new).collect(Collectors.toList()));
                 });
 
     }
@@ -75,18 +71,16 @@ public class LessonsViewModel extends AndroidViewModel {
 
     public static class EntryViewModel extends BaseObservable {
         private final LessonDataAccess.LessonWithCount _lesson;
-        private final Boolean _ignoreMacrons;
 
-        public EntryViewModel(LessonDataAccess.LessonWithCount lesson, Boolean ignoreMacrons) {
+        public EntryViewModel(LessonDataAccess.LessonWithCount lesson) {
             _lesson = lesson;
-            _ignoreMacrons = ignoreMacrons;
         }
 
         public String getNo() { return _lesson.Lesson.Id; }
 
         @Bindable("Name")
         public String getName() {
-            return _ignoreMacrons ? Utilities.StripAccents(_lesson.Lesson.Name) : _lesson.Lesson.Name;
+            return Settings.IgnoreMacrons ? Utilities.StripAccents(_lesson.Lesson.Name) : _lesson.Lesson.Name;
         }
 
         public boolean HasTheory() {

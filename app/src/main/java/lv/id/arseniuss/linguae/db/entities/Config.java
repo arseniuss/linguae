@@ -3,24 +3,23 @@ package lv.id.arseniuss.linguae.db.entities;
 import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
+import androidx.room.PrimaryKey;
 
-import lv.id.arseniuss.linguae.data.TaskType;
-
-@Entity(tableName = "config", primaryKeys = { "type", "part" })
+@Entity(tableName = "config")
 public class Config {
-    @ColumnInfo(name = "type")
-    @NonNull
-    public TaskType Type = TaskType.UnknownTask;
 
-    @ColumnInfo(name = "part")
+    @PrimaryKey
     @NonNull
-    public String Part = "";
+    @ColumnInfo(name = "key")
+    public String Key = "";
 
     @ColumnInfo(name = "value")
-    @NonNull
-    public String Value = "";
+    public String Value;
 
-    @ColumnInfo(name = "description")
-    @NonNull
-    public String Description;
+    public Config() { }
+
+    public Config(@NonNull String key, String value) {
+        Key = key;
+        Value = value;
+    }
 }

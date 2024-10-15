@@ -2,6 +2,7 @@ package lv.id.arseniuss.linguae.data;
 
 import android.net.Uri;
 import android.util.Log;
+import android.util.Pair;
 
 import androidx.annotation.NonNull;
 
@@ -26,9 +27,9 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import lv.id.arseniuss.linguae.db.entities.Chapter;
-import lv.id.arseniuss.linguae.db.entities.Config;
 import lv.id.arseniuss.linguae.db.entities.LessonWithAttrs;
 import lv.id.arseniuss.linguae.db.entities.Task;
+import lv.id.arseniuss.linguae.db.entities.TaskConfig;
 import lv.id.arseniuss.linguae.db.entities.Theory;
 import lv.id.arseniuss.linguae.db.entities.TheoryWithChapters;
 import lv.id.arseniuss.linguae.db.entities.Training;
@@ -55,6 +56,7 @@ public class LanguageDataParser {
     private int _line = 0;
     private String _filename = "";
     private boolean _hasError = false;
+    private boolean _languageFileParsed = false;
 
     public LanguageDataParser(@NonNull ParserInterface parserInterface) {
         _parserInterface = parserInterface;
@@ -618,31 +620,31 @@ public class LanguageDataParser {
 
                     _references.put(words[1], words[2]);
                     break;
-                case "config":
+                case "task-config":
                     if (words.length != 5) {
-                        logError("Expected format: config <task type> <task part> <value>");
+                        logError("Expected format: task-config <task type> <task part> <value>");
                         continue;
                     }
-                    Config config = new Config();
+                    TaskConfig taskConfig = new TaskConfig();
 
-                    if ((config.Type = TaskType.ValueOf(words[1])) == null) {
+                    if ((taskConfig.Type = TaskType.ValueOf(words[1])) == null) {
                         logError("Config task type is not set");
                         continue;
                     }
-                    if ((config.Part = words[2]) == null) {
+                    if ((taskConfig.Part = words[2]) == null) {
                         logError("Config task part is not set");
                         continue;
                     }
-                    if ((config.Value = words[3]) == null) {
+                    if ((taskConfig.Value = words[3]) == null) {
                         logError("Config value is not set");
                         continue;
                     }
-                    if ((config.Description = words[4]) == null) {
+                    if ((taskConfig.Description = words[4]) == null) {
                         logError("Config description is not set");
                         continue;
                     }
 
-                    _data.Config.add(config);
+                    _data.TaskConfig.add(taskConfig);
                     break;
                 case "name":
                     if (!languageName.isEmpty()) {
@@ -716,7 +718,15 @@ public class LanguageDataParser {
                     }
 
                     _data.LanguageVersion = words[1];
-                    _data.Settings.put("version", _data.LanguageVersion);
+                    _data.Config.put("version", _data.LanguageVersion);
+                    break;
+                case "setting":
+                    if (words.length != 3) {
+                        logError("Expecting format: setting <name> <default value>");
+                        continue;
+                    }
+
+                    _data.Settings.put(words[1], words[2]);
                     break;
                 case "license":
                 case "licence":
@@ -743,13 +753,34 @@ public class LanguageDataParser {
         }
 
         inform("Language file parsed");
+
+        _languageFileParsed = true;
     }
 
-    public boolean Parse(Uri base, Boolean throwExceptions) {
-        _throwError = throwExceptions;
+    public boolean ParseLanguageFile(Uri base, Boolean throwException) {
+        _throwError = throwException;
 
         try {
             parseLanguageFile(base);
+
+            return _throwError || !_hasError;
+        } catch (FileNotFoundException e) {
+            inform("File not found: " + e.getMessage());
+        } catch (ParserException e) {
+            inform("Parsing error: " + e.getMessage());
+        } catch (Exception e) {
+            Log.e("TAG", "Error", e);
+            inform("Error: " + e);
+        }
+
+        return false;
+    }
+
+    public boolean ParseRepository(Uri base, Boolean throwExceptions) {
+        _throwError = throwExceptions;
+
+        try {
+            if (!_languageFileParsed) parseLanguageFile(base);
 
             for (TheoryWithChapters t : _data.Theory.values()) {
                 if (!t.Theory.Id.isEmpty()) t.Chapters.addAll(parseTheoryFile(base, t.Theory));
@@ -795,7 +826,7 @@ public class LanguageDataParser {
     private Collection<Chapter> parseTheoryFile(Uri base, Theory theory) throws Exception {
         _filename = theory.Id;
 
-        inform("Parsing theory file: " + base.toString() + _filename);
+        inform("Parsing theory file: " + _filename);
 
         InputStream languageFileStream = getFile(base, _filename);
         LineNumberReader r = new LineNumberReader(new BufferedReader(new InputStreamReader(languageFileStream)));
@@ -868,20 +899,20 @@ public class LanguageDataParser {
 
     public ParserData GetData() { return _data; }
 
-    public List<LanguagePortal> ParsePortals(List<String> portals) throws Exception {
+    public List<LanguagePortal> ParsePortals(List<Pair<String, String>> portals) throws Exception {
         List<LanguagePortal> result = new ArrayList<>();
 
-        for (String portal : portals) {
+        for (Pair<String, String> portal : portals) {
 
-            inform("Parsing portal " + portal);
+            inform("Parsing portal " + portal.first);
 
-            Uri portalUri = Uri.parse(portal);
+            Uri portalUri = Uri.parse(portal.second);
             InputStream languageFileStream = getFile(portalUri, "Languages.txt");
             LineNumberReader r = new LineNumberReader(new BufferedReader(new InputStreamReader(languageFileStream)));
 
             LanguagePortal languagePortal = new LanguagePortal();
 
-            languagePortal.Location = portal;
+            languagePortal.Location = portal.second;
 
             String line;
             while ((line = r.readLine()) != null) {
@@ -918,11 +949,11 @@ public class LanguageDataParser {
                         language.Location = words[2];
                         language.Image = words[3];
 
-                        if (!language.Location.startsWith(portal)) {
-                            language.Location = portal + "/" + language.Location;
+                        if (!language.Location.startsWith(portal.second)) {
+                            language.Location = portal.second + "/" + language.Location;
                         }
-                        if (!language.Image.startsWith(portal)) {
-                            language.Image = portal + "/" + language.Image;
+                        if (!language.Image.startsWith(portal.second)) {
+                            language.Image = portal.second + "/" + language.Image;
                         }
 
                         languagePortal.Languages.add(language);
@@ -932,6 +963,7 @@ public class LanguageDataParser {
                 }
             }
 
+            if (languagePortal.Name.isEmpty()) languagePortal.Name = portal.first;
             result.add(languagePortal);
         }
 
@@ -957,13 +989,23 @@ public class LanguageDataParser {
         public Map<String, TheoryWithChapters> Theory = new HashMap<>();
         public List<String> Licences = new ArrayList<>();
         public String LanguageVersion = "";
-        public List<Config> Config = new ArrayList<>();
+        public List<TaskConfig> TaskConfig = new ArrayList<>();
+        public Map<String, String> Config = new HashMap<>();
     }
 
     public static class LanguagePortal {
         public String Name = "";
         public String Location = "";
         public List<Language> Languages = new ArrayList<>();
+
+        public LanguagePortal() {
+
+        }
+
+        public LanguagePortal(String name, String location) {
+            Name = name;
+            Location = location;
+        }
     }
 
     public static class Language {

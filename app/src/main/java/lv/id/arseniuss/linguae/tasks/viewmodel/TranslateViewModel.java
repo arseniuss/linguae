@@ -13,7 +13,7 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import lv.id.arseniuss.linguae.R;
+import lv.id.arseniuss.linguae.Constants;
 import lv.id.arseniuss.linguae.db.tasks.TranslateTask;
 import lv.id.arseniuss.linguae.tasks.AbstractTaskViewModel;
 import lv.id.arseniuss.linguae.tasks.entities.SessionTaskData;
@@ -88,8 +88,7 @@ public class TranslateViewModel extends AbstractTaskViewModel {
     public void Load(SessionTaskData task) {
         super.Load(task);
 
-        _isEditMode.setValue(
-                !_sharedPreferences.getBoolean(getApplication().getString(R.string.PreferenceNoKeyboardKey), false));
+        _isEditMode.setValue(!_sharedPreferences.getBoolean(Constants.PreferenceNoKeyboardKey, false));
 
         List<String> answers = Arrays.asList(translateTask().Answer);
         List<String> additional = Arrays.stream(translateTask().Additional.split(","))

@@ -44,7 +44,7 @@
             android:label="@string/title_activity_settings"
             android:theme="@style/MyAppTheme" />
         <activity
-            android:name=".ui.activities.LanguageRepoActivity"
+            android:name=".ui.activities.RepoEditActivity"
             android:exported="false"
             android:label="@string/title_activity_language_repo"
             android:theme="@style/MyAppTheme" />

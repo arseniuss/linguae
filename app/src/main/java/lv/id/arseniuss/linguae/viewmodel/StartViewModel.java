@@ -6,8 +6,11 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
 import android.provider.DocumentsContract;
+import android.util.Log;
+import android.util.Pair;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.databinding.BaseObservable;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
@@ -34,7 +37,9 @@ import io.reactivex.rxjava3.core.Single;
 import io.reactivex.rxjava3.disposables.Disposable;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 import lv.id.arseniuss.linguae.BuildConfig;
+import lv.id.arseniuss.linguae.Constants;
 import lv.id.arseniuss.linguae.R;
+import lv.id.arseniuss.linguae.data.ItemLanguageRepo;
 import lv.id.arseniuss.linguae.data.LanguageDataParser;
 import lv.id.arseniuss.linguae.db.LanguageDatabase;
 import lv.id.arseniuss.linguae.db.dataaccess.UpdateDataAccess;
@@ -44,11 +49,6 @@ public class StartViewModel extends AndroidViewModel implements LanguageDataPars
             PreferenceManager.getDefaultSharedPreferences(getApplication().getBaseContext());
     private final LanguageDataParser _dataParser = new LanguageDataParser(this);
 
-    private final String _preferenceLanguageKey = getApplication().getString(R.string.PreferenceLanguageKey);
-    private final String _preferenceLanguageLocationKey =
-            getApplication().getString(R.string.PreferenceLanguageLocationKey);
-    private final String _preferencePortalsKey = getApplication().getString(R.string.PreferencePortalsKey);
-
     private final String _defaultPortals = getApplication().getString(R.string.DefaultLanguagePortal);
 
     private final MutableLiveData<List<LanguageDataParser.LanguagePortal>> _portals =
@@ -57,7 +57,11 @@ public class StartViewModel extends AndroidViewModel implements LanguageDataPars
     private final MutableLiveData<Integer> _selectedPortal = new MutableLiveData<>(0);
     private final MutableLiveData<String> _messages = new MutableLiveData<>("");
     private final MutableLiveData<Boolean> _canContinue = new MutableLiveData<>(false);
+    private final MutableLiveData<Boolean> _hasError = new MutableLiveData<>(false);
+    private final MutableLiveData<String> _errorMessage = new MutableLiveData<>("");
 
+    private final Gson gson = new Gson();
+    Type listType = new TypeToken<List<ItemLanguageRepo>>() { }.getType();
     private WarningInterface _warn;
     private String _text = "";
     private String _databaseVersion = "";
@@ -80,102 +84,180 @@ public class StartViewModel extends AndroidViewModel implements LanguageDataPars
         return _canContinue;
     }
 
+    public MutableLiveData<Boolean> HasError() { return _hasError; }
+
+    public MutableLiveData<String> ErrorMessage() { return _errorMessage; }
+
     public boolean HasSelectedLanguage() {
-        return !_sharedPreferences.getString(_preferenceLanguageKey, "").trim().isEmpty();
+        return !_sharedPreferences.getString(Constants.PreferenceLanguageKey, "").trim().isEmpty();
     }
 
-    public void Start(Callback continueCallback, RequestConfirmCallback requestUpdateConfirm) {
+    public void StartPortalLoading() {
+        List<ItemLanguageRepo> portals;
+        String jsonPortals = _sharedPreferences.getString(Constants.PreferencePortalsKey, "");
+
+        if (jsonPortals.isEmpty()) {
+            portals = new ArrayList<>();
+        }
+        else {
+            portals = gson.fromJson(jsonPortals, listType);
+        }
+
+        if (portals.isEmpty()) {
+            portals.add(new ItemLanguageRepo(getApplication().getString(R.string.UnnamedRepository), _defaultPortals));
+        }
+
+        savePortals(portals);
+
+        reloadPortals(portals);
+
+    }
+
+    public void StartLanguageParsing(Callback continueCallback, RequestConfirmCallback requestUpdateConfirm) {
+        StartLanguageParsing(_sharedPreferences.getString(Constants.PreferenceLanguageKey, ""),
+                _sharedPreferences.getString(Constants.PreferenceLanguageUrlKey, ""), continueCallback,
+                requestUpdateConfirm);
+    }
+
+    public void StartLanguageParsing(@Nullable String language, @Nullable String languageUrl, Callback continueCallback,
+            RequestConfirmCallback requestUpdateConfirm)
+    {
         _continue = continueCallback;
         _requestUpdateConfirm = requestUpdateConfirm;
 
-        Gson gson = new Gson();
+        UpdateDataAccess updateDataAccess =
+                LanguageDatabase.GetInstance(getApplication().getBaseContext(), language).GetUpdateDataAccess();
 
-        if (!HasSelectedLanguage()) {
-            String jsonPortals = _sharedPreferences.getString(_preferencePortalsKey, _defaultPortals);
-            Type listType = new TypeToken<List<String>>() { }.getType();
-            List<String> portals = gson.fromJson(jsonPortals, listType);
+        String finalLanguageUrl = languageUrl;
+        String finalLanguage = language;
 
-            Disposable d = Single.fromCallable(() -> _dataParser.ParsePortals(portals))
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(value -> {
-                        _portals.setValue(value);
-                        loadLanguages();
-                    }, error -> {
-                        if (_warn != null) _warn.Warn(error.getMessage());
-                    });
-        }
-        else {
-            String language = _sharedPreferences.getString(_preferenceLanguageKey, "");
-
-            UpdateDataAccess updateDataAccess =
-                    LanguageDatabase.GetInstance(getApplication().getBaseContext(), language).GetUpdateDataAccess();
-
-            Disposable d = updateDataAccess.GetVersion()
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(s -> {
-                        _databaseVersion = s;
-                        parseLanguageFile();
-                    }, error -> Inform(error.getMessage()), this::parseLanguageFile);
-
-        }
-    }
-
-    private void parseLanguageFile() {
-        String languageLocation = _sharedPreferences.getString(_preferenceLanguageLocationKey, "");
-        Uri languageLocationUri = Uri.parse(languageLocation);
-
-        Disposable d = Single.fromCallable(() -> _dataParser.Parse(languageLocationUri, false))
+        Disposable d = updateDataAccess.GetVersion()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(success -> {
-                    if (success) validate();
-                    _canContinue.postValue(true);
+                .subscribe(s -> {
+                    Inform(getApplication().getString(R.string.DatabaseVersion) + s);
+                    _databaseVersion = s;
+                    parseLanguageFile(finalLanguage, finalLanguageUrl);
+                }, this::onError, () -> parseLanguageFile(finalLanguage, finalLanguageUrl));
+    }
+
+    private void reloadPortals(List<ItemLanguageRepo> repos) {
+        Disposable d = Single.fromCallable(() -> _dataParser.ParsePortals(
+                        repos.stream().map(r -> new Pair<>(r.Name, r.Location)).collect(Collectors.toList())))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe((value, error) -> {
+                    if (value == null) {
+                        value = repos.stream()
+                                .map(r -> new LanguageDataParser.LanguagePortal(r.Name, r.Location))
+                                .collect(Collectors.toList());
+                    }
+                    savePortals(value.stream()
+                            .map(v -> new ItemLanguageRepo(v.Name, v.Location))
+                            .collect(Collectors.toList()));
+                    _portals.setValue(value);
+                    if (error != null) { warn(error.getMessage()); }
+                    else { loadLanguages(); }
                 });
     }
 
-    private void validate() {
+    private void warn(String message) {
+        _hasError.postValue(true);
+        _errorMessage.postValue(message);
+    }
+
+    private void savePortals(List<ItemLanguageRepo> portals) {
+        String jsonPortals = gson.toJson(portals, listType);
+        _sharedPreferences.edit().putString(Constants.PreferencePortalsKey, jsonPortals).apply();
+    }
+
+    private void parseLanguageFile(String language, String languageUrl) {
+        Uri languageLocationUri = Uri.parse(languageUrl);
+
+        Disposable d = Single.fromCallable(() -> _dataParser.ParseLanguageFile(languageLocationUri, false))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(success -> {
+                    if (success) { validateVersions(language, languageUrl); }
+                    else { _canContinue.postValue(true); }
+                }, this::onError);
+    }
+
+    private void validateVersions(String language, String languageUrl) {
+        String repositoryVersion = _dataParser.GetData().LanguageVersion;
+
+        Inform(getApplication().getString(R.string.RepositoryVersion) + repositoryVersion);
+
         if (_databaseVersion == null || _databaseVersion.isEmpty()) {
-            updateDatabase(true);
+            parseRepository(language, languageUrl);
         }
-        else if (_databaseVersion.compareTo(_dataParser.GetData().LanguageVersion) < 0) {
-            _requestUpdateConfirm.Request(this::updateDatabase);
+        else if (_databaseVersion.compareTo(repositoryVersion) < 0) {
+            _requestUpdateConfirm.Request(r -> onUpdateRequest(r, language, languageUrl));
         }
         else {
-            if (BuildConfig.DEBUG) {
-                updateDatabase(true);
-            }
-            else { _continue.Call(); }
+            Inform(getApplication().getString(R.string.DatabaseUpdateNotRequired));
+            updateLanguagePreferences(language, languageUrl);
+            _continue.Call();
         }
     }
 
-    private void updateDatabase(Boolean confirm) {
-        if (confirm) {
-            String language = _sharedPreferences.getString(_preferenceLanguageKey, "");
-            UpdateDataAccess updateDataAccess =
-                    LanguageDatabase.GetInstance(getApplication().getBaseContext(), language).GetUpdateDataAccess();
-
-            Disposable d = updateDataAccess.PerformUpdate(_dataParser.GetData())
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(() -> {
-                        Inform("Saved"); // TODO: change this
-                        _continue.Call();
-                    });
+    private void onUpdateRequest(boolean doUpdate, String language, String languageUrl) {
+        if (doUpdate) {
+            parseRepository(language, languageUrl);
         }
         else {
-            _canContinue.setValue(true);
+            _canContinue.postValue(true);
         }
+    }
+
+    private void parseRepository(String language, String languageUrl) {
+        Uri languageLocationUri = Uri.parse(languageUrl);
+
+        Disposable d = Single.fromCallable(() -> _dataParser.ParseRepository(languageLocationUri, false))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(success -> {
+                    updateDatabase(success, language, languageUrl);
+                }, this::onError);
+    }
+
+    private void updateDatabase(boolean parseSuccessful, String language, String languageUrl) {
+        UpdateDataAccess updateDataAccess =
+                LanguageDatabase.GetInstance(getApplication().getBaseContext(), language).GetUpdateDataAccess();
+
+        Disposable d = updateDataAccess.PerformUpdate(_dataParser.GetData())
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(() -> {
+                    updateLanguagePreferences(language, languageUrl);
+                    Inform(getApplication().getString(R.string.DataSaved));
+                    if (parseSuccessful) { _continue.Call(); }
+                    else { _canContinue.postValue(true); }
+                }, this::onError);
+    }
+
+    private void updateLanguagePreferences(String language, String languageUrl) {
+        _sharedPreferences.edit()
+                .putString(Constants.PreferenceLanguageKey, language)
+                .putString(Constants.PreferenceLanguageUrlKey, languageUrl)
+                .apply();
     }
 
     private void loadLanguages() {
         _languages.setValue(new ArrayList<>());
 
-        LanguageDataParser.LanguagePortal languagePortal =
-                Objects.requireNonNull(_portals.getValue()).get(_selectedPortal.getValue());
+        List<LanguageDataParser.LanguagePortal> portals = _portals.getValue();
+        Integer selectedPortalValue = _selectedPortal.getValue();
 
-        _languages.setValue(languagePortal.Languages.stream().map(LanguageViewModel::new).collect(Collectors.toList()));
+        assert portals != null;
+        assert selectedPortalValue != null;
+
+        if (selectedPortalValue >= 0 && selectedPortalValue < portals.size()) {
+            LanguageDataParser.LanguagePortal languagePortal = portals.get(selectedPortalValue);
+
+            _languages.setValue(
+                    languagePortal.Languages.stream().map(LanguageViewModel::new).collect(Collectors.toList()));
+        }
     }
 
     private Uri getDocument(Uri base, String filename) {
@@ -245,30 +327,38 @@ public class StartViewModel extends AndroidViewModel implements LanguageDataPars
 
     @Override
     public void Inform(String message) {
+        if (BuildConfig.DEBUG) Log.i("INFORM", message);
         _text += message + "\n";
 
         _messages.postValue(_text);
     }
 
-    public void SetWarning(WarningInterface o) {
-        _warn = o;
-    }
+    public Pair<String, String> GetLanguage(int position) {
+        Pair<String, String> res = new Pair<>(null, null);
 
-    public void SetSelectedLanguage(int position) {
         if (position >= 0) {
             LanguageViewModel languageViewModel = Objects.requireNonNull(_languages.getValue()).get(position);
 
-            if (languageViewModel != null) {
-                LanguageDataParser.LanguagePortal languagePortal =
-                        Objects.requireNonNull(_portals.getValue()).get(_selectedPortal.getValue());
-
-                _sharedPreferences.edit()
-                        .putString(_preferenceLanguageKey, languageViewModel.Language)
-                        .putString(_preferenceLanguageLocationKey, languageViewModel.Location)
-                        .apply();
-            }
+            res = new Pair<>(languageViewModel.Language, languageViewModel.LanguageUrl);
         }
 
+        return res;
+    }
+
+    public String GetPortalsJson() {
+        return _sharedPreferences.getString(Constants.PreferencePortalsKey, "");
+    }
+
+    public void SetPortalsJson(String json) {
+        List<ItemLanguageRepo> portals = gson.fromJson(json, listType);
+
+        _sharedPreferences.edit().putString(Constants.PreferencePortalsKey, json).apply();
+        reloadPortals(portals);
+    }
+
+    private void onError(Throwable error) {
+        Inform(error.getMessage());
+        _canContinue.postValue(true);
     }
 
     public interface ConfirmResponseCallback {
@@ -288,14 +378,14 @@ public class StartViewModel extends AndroidViewModel implements LanguageDataPars
     }
 
     public static class LanguageViewModel extends BaseObservable {
-        public String Language;
-        public String Image;
-        public String Location;
+        public final String Language;
+        public final String Image;
+        public final String LanguageUrl;
 
         public LanguageViewModel(LanguageDataParser.Language l) {
             Language = l.Name;
             Image = l.Image;
-            Location = l.Location;
+            LanguageUrl = l.Location;
         }
     }
 }

@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.disposables.Disposable;
 import io.reactivex.rxjava3.schedulers.Schedulers;
-import lv.id.arseniuss.linguae.R;
+import lv.id.arseniuss.linguae.Constants;
 import lv.id.arseniuss.linguae.data.TaskType;
 import lv.id.arseniuss.linguae.db.LanguageDatabase;
 import lv.id.arseniuss.linguae.db.dataaccess.TrainingDataAccess;
@@ -28,8 +28,7 @@ import lv.id.arseniuss.linguae.db.entities.TrainingConfig;
 public class TrainingSetupViewModel extends AndroidViewModel {
     private final SharedPreferences _sharedPreferences =
             PreferenceManager.getDefaultSharedPreferences(getApplication().getBaseContext());
-    private final String _language =
-            _sharedPreferences.getString(getApplication().getString(R.string.PreferenceLanguageKey), "");
+    private final String _language = _sharedPreferences.getString(Constants.PreferenceLanguageKey, "");
     private final TrainingDataAccess _trainingDataAccess =
             LanguageDatabase.GetInstance(getApplication(), _language).GetTrainingsDataAccess();
 

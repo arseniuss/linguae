@@ -5,7 +5,7 @@
 
         <variable
             name="viewmodel"
-            type="lv.id.arseniuss.linguae.viewmodel.LanguageRepoItemViewModel" />
+            type="lv.id.arseniuss.linguae.viewmodel.RepoEditViewModel.EditRepoViewModel" />
     </data>
 
     <LinearLayout
@@ -13,21 +13,39 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
-        <RadioButton
+        <RadioButton xmlns:tools="http://schemas.android.com/tools"
             android:id="@+id/radioLanguage"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-
+            android:layout_gravity="center_vertical"
             android:layout_weight="1"
-            android:text="@{viewmodel.Name}" />
+            android:text="@{viewmodel.Name}"
+            android:textSize="16sp"
+            tools:text="Radio button" />
 
         <ImageButton
-            android:id="@+id/imageButton"
+            android:id="@+id/editButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_margin="5dp"
             android:layout_weight="0"
+            android:background="@drawable/button"
             android:contentDescription="@string/EditLanguageRepoButtonTitle"
+            android:padding="10dp"
             android:src="@drawable/baseline_edit_24" />
+
+        <ImageButton
+            android:id="@+id/deleteButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_margin="5dp"
+            android:layout_weight="0"
+            android:background="@drawable/button"
+            android:contentDescription="@string/TitleDelete"
+            android:padding="10dp"
+            android:src="@drawable/baseline_delete_24" />
 
     </LinearLayout>
 </layout>

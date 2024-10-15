@@ -6,14 +6,15 @@
 
         <variable
             name="viewmodel"
-            type="lv.id.arseniuss.linguae.viewmodel.LanguageRepoViewModel" />
+            type="lv.id.arseniuss.linguae.viewmodel.RepoEditViewModel" />
     </data>
 
-    <androidx.recyclerview.widget.RecyclerView
+    <androidx.recyclerview.widget.RecyclerView xmlns:tools="http://schemas.android.com/tools"
         android:id="@+id/repos"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:items="@{viewmodel.Data()}"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        tools:listitem="@layout/item_language_repo" />
 
 </layout>

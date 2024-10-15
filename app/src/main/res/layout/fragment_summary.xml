@@ -43,34 +43,6 @@
             tools:context=".ui.fragments.SummaryFragment">
 
 
-            <TextView
-                android:id="@+id/textNoLanguages"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/WarningNoLanguageSelected"
-                android:textAlignment="center"
-                android:visibility="@{!viewmodel.HasSelectedLanguage}" />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="horizontal"
-                android:visibility="@{viewmodel.HasSelectedLanguage}">
-
-                <TextView
-                    android:id="@+id/textView2"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="Language" />
-
-                <TextView
-                    android:id="@+id/textView3"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@{viewmodel.SelectedLanguage}" />
-            </LinearLayout>
         </LinearLayout>
     </LinearLayout>
 </layout>

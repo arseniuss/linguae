@@ -19,6 +19,7 @@ import lv.id.arseniuss.linguae.db.entities.LessonTaskCrossref;
 import lv.id.arseniuss.linguae.db.entities.LessonTheoryCrossref;
 import lv.id.arseniuss.linguae.db.entities.Setting;
 import lv.id.arseniuss.linguae.db.entities.Task;
+import lv.id.arseniuss.linguae.db.entities.TaskConfig;
 import lv.id.arseniuss.linguae.db.entities.Theory;
 import lv.id.arseniuss.linguae.db.entities.TheoryChapterCrossref;
 import lv.id.arseniuss.linguae.db.entities.Training;
@@ -26,8 +27,11 @@ import lv.id.arseniuss.linguae.db.entities.TrainingTaskCrossref;
 
 @Dao
 public abstract class UpdateDataAccess {
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     protected abstract Completable InsertSettings(List<Setting> settings);
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    protected abstract Completable InsertConfig(List<Config> configs);
 
     @Insert
     protected abstract Completable InsertTrainings(List<Training> trainings);
@@ -83,11 +87,11 @@ public abstract class UpdateDataAccess {
     @Query("DELETE FROM lesson_theory")
     public abstract Completable DeleteLessonTheoryCrossref();
 
-    @Query("SELECT value FROM setting WHERE `key` = 'version'")
+    @Query("SELECT value FROM config WHERE `key` = 'version'")
     public abstract Maybe<String> GetVersion();
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    protected abstract Completable InsertConfig(List<Config> configs);
+    protected abstract Completable InsertTaskConfig(List<TaskConfig> taskConfigs);
 
     public Completable PerformUpdate(LanguageDataParser.ParserData data)
     {
@@ -96,7 +100,11 @@ public abstract class UpdateDataAccess {
                 .map(s -> new Setting(s.getKey(), s.getValue()))
                 .collect(Collectors.toList()))
                 // -----
-                .andThen(InsertConfig(data.Config))
+                .andThen(InsertTaskConfig(data.TaskConfig))
+                .andThen(InsertConfig(data.Config.entrySet()
+                        .stream()
+                        .map(c -> new Config(c.getKey(), c.getValue()))
+                        .collect(Collectors.toList())))
                 // -----
                 .andThen(DeleteTrainingsTaskCrossref())
                 .andThen(DeleteTrainings())

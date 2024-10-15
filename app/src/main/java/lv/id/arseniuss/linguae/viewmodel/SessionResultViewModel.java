@@ -13,7 +13,7 @@ import java.util.List;
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.functions.Action;
 import io.reactivex.rxjava3.schedulers.Schedulers;
-import lv.id.arseniuss.linguae.R;
+import lv.id.arseniuss.linguae.Constants;
 import lv.id.arseniuss.linguae.db.LanguageDatabase;
 import lv.id.arseniuss.linguae.db.dataaccess.SessionDataAccess;
 import lv.id.arseniuss.linguae.db.entities.SessionResultWithTaskResults;
@@ -23,8 +23,7 @@ public class SessionResultViewModel extends AndroidViewModel {
 
     private final SharedPreferences _sharedPreferences =
             PreferenceManager.getDefaultSharedPreferences(getApplication().getBaseContext());
-    private final String _language =
-            _sharedPreferences.getString(getApplication().getString(R.string.PreferenceLanguageKey), "");
+    private final String _language = _sharedPreferences.getString(Constants.PreferenceLanguageKey, "");
 
     private final SessionDataAccess _sessionDataAccess =
             LanguageDatabase.GetInstance(getApplication(), _language).GetSessionDataAccess();

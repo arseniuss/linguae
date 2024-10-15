@@ -50,4 +50,11 @@ public class MainActivity extends AppCompatActivity {
 
         return NavigationUI.navigateUp(navController, _appBarConfiguration) || super.onSupportNavigateUp();
     }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        _model.Start();
+    }
 }

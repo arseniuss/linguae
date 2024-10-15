@@ -18,7 +18,7 @@
     <item android:state_pressed="true">
         <shape android:shape="rectangle">
             <corners android:radius="16dp" />
-            <solid android:color="?attr/colorOnTertiaryContainer" />
+            <solid android:color="?attr/colorTertiaryContainer" />
         </shape>
     </item>
 </selector>

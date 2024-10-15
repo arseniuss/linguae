@@ -72,9 +72,4 @@ public class SummaryFragment extends Fragment {
         return _binding.getRoot();
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        _model.Refresh();
-    }
 }

@@ -33,7 +33,7 @@ public class SessionResultActivityTest {
         Context context = ApplicationProvider.getApplicationContext();
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
 
-        sharedPreferences.edit().putString(context.getString(R.string.PreferenceLanguageKey), "Latin").apply();
+        sharedPreferences.edit().putString(Constants.PreferenceLanguageKey, "Latin").apply();
 
         Intent i = new Intent(context, SessionResultActivity.class);
 

@@ -19,15 +19,15 @@ import java.util.Objects;
 
 import lv.id.arseniuss.linguae.R;
 import lv.id.arseniuss.linguae.databinding.FragmentEditLanguageRepoBinding;
-import lv.id.arseniuss.linguae.viewmodel.LanguageRepoItemViewModel;
+import lv.id.arseniuss.linguae.viewmodel.RepoEditViewModel;
 
 public class EditRepoDialogFragment extends DialogFragment {
     private static final int REQUEST_CODE_OPEN_DIRECTORY = 101;
-    private final LanguageRepoItemViewModel _model;
+    private final RepoEditViewModel.EditRepoViewModel _model;
     private FragmentEditLanguageRepoBinding _binding;
     private OnSaveListener _onSaved = null;
 
-    public EditRepoDialogFragment(LanguageRepoItemViewModel viewModel) {
+    public EditRepoDialogFragment(RepoEditViewModel.EditRepoViewModel viewModel) {
         super();
         _model = viewModel;
     }
@@ -45,6 +45,7 @@ public class EditRepoDialogFragment extends DialogFragment {
         _binding = DataBindingUtil.inflate(inflater, R.layout.fragment_edit_language_repo, null, false);
 
         builder.setView(_binding.getRoot()).setPositiveButton(R.string.SaveButtonText, (dialog, which) -> {
+            _model.notifyChange();
             if (_onSaved != null) _onSaved.Confirmed();
         }).setNegativeButton(R.string.CancelButtonText, (dialog, which) -> {
             Objects.requireNonNull(this.getDialog()).cancel();
@@ -87,7 +88,7 @@ public class EditRepoDialogFragment extends DialogFragment {
 
                 DocumentFile[] files = documentFile.listFiles();
 
-                _model.setLocation(uri.toString());
+                _model.Location().setValue(uri.toString());
             }
         }
     }

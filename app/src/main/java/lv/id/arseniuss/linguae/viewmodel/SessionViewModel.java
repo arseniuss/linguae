@@ -23,26 +23,25 @@ import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.core.Single;
 import io.reactivex.rxjava3.disposables.Disposable;
 import io.reactivex.rxjava3.schedulers.Schedulers;
-import lv.id.arseniuss.linguae.R;
+import lv.id.arseniuss.linguae.Constants;
 import lv.id.arseniuss.linguae.db.LanguageDatabase;
 import lv.id.arseniuss.linguae.db.dataaccess.TaskDataAccess;
-import lv.id.arseniuss.linguae.db.entities.Config;
 import lv.id.arseniuss.linguae.db.entities.SessionResultWithTaskResults;
 import lv.id.arseniuss.linguae.db.entities.Task;
+import lv.id.arseniuss.linguae.db.entities.TaskConfig;
 import lv.id.arseniuss.linguae.tasks.entities.SessionTaskData;
 
 public class SessionViewModel extends AndroidViewModel {
 
     private final SharedPreferences _sharedPreferences =
             PreferenceManager.getDefaultSharedPreferences(getApplication().getBaseContext());
-    private final String _language =
-            _sharedPreferences.getString(getApplication().getString(R.string.PreferenceLanguageKey), "");
+    private final String _language = _sharedPreferences.getString(Constants.PreferenceLanguageKey, "");
     private final TaskDataAccess _taskDataAccess =
             LanguageDatabase.GetInstance(getApplication(), _language).GetTaskDataAccess();
     private final MutableLiveData<String> _counterString = new MutableLiveData<>("0");
     private final MutableLiveData<String> _taskProgress = new MutableLiveData<>("");
     private final SessionResultWithTaskResults _result = new SessionResultWithTaskResults();
-    private final List<Config> _config = new ArrayList<>();
+    private final List<TaskConfig> _Task_config = new ArrayList<>();
     public int CurrentTaskIndex = -1;
     ScheduledExecutorService _scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
     private int _counter = 0;
@@ -63,10 +62,10 @@ public class SessionViewModel extends AndroidViewModel {
 
     public void LoadLesson(String lessonId, ILoaded loaded) {
 
-        int taskCount = _sharedPreferences.getInt(getApplication().getString(R.string.PreferenceTaskCountKey), 10);
+        int taskCount = _sharedPreferences.getInt(Constants.PreferenceTaskCountKey, 10);
 
         Single<List<Task>> tasks1 = _taskDataAccess.SelectLessonTasks(lessonId, taskCount);
-        Single<List<Config>> tasks2 = _taskDataAccess.GetTaskConfig();
+        Single<List<TaskConfig>> tasks2 = _taskDataAccess.GetTaskConfig();
 
         Disposable d = Single.zip(tasks1, tasks2, Pair::new)
                 .subscribeOn(Schedulers.io())
@@ -74,7 +73,7 @@ public class SessionViewModel extends AndroidViewModel {
                 .subscribe((tasks) -> {
                     _tasks = tasks.first.stream()
                             .map(SessionTaskData::new)
-                            .peek(t -> t.Config = tasks.second.stream()
+                            .peek(t -> t.TaskConfig = tasks.second.stream()
                                     .filter(c -> c.Type == t.Task.Type)
                                     .collect(Collectors.toList()))
                             .collect(Collectors.toList());
@@ -97,10 +96,10 @@ public class SessionViewModel extends AndroidViewModel {
     }
 
     public void LoadTraining(String training, ILoaded loaded) {
-        int taskCount = _sharedPreferences.getInt(getApplication().getString(R.string.PreferenceTaskCountKey), 10);
+        int taskCount = _sharedPreferences.getInt(Constants.PreferenceTaskCountKey, 10);
 
         Single<List<Task>> tasks1 = _taskDataAccess.SelectTrainingTasks(training, taskCount);
-        Single<List<Config>> tasks2 = _taskDataAccess.GetTaskConfig();
+        Single<List<TaskConfig>> tasks2 = _taskDataAccess.GetTaskConfig();
 
         Disposable d = Single.zip(tasks1, tasks2, Pair::new)
                 .subscribeOn(Schedulers.io())
@@ -108,7 +107,7 @@ public class SessionViewModel extends AndroidViewModel {
                 .subscribe((tasks) -> {
                     _tasks = tasks.first.stream()
                             .map(SessionTaskData::new)
-                            .peek(t -> t.Config = tasks.second.stream()
+                            .peek(t -> t.TaskConfig = tasks.second.stream()
                                     .filter(c -> c.Type == t.Task.Type)
                                     .collect(Collectors.toList()))
                             .collect(Collectors.toList());

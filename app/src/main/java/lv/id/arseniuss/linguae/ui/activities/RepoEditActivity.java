@@ -1,6 +1,7 @@
 package lv.id.arseniuss.linguae.ui.activities;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -22,19 +23,23 @@ import java.util.ArrayList;
 import java.util.List;
 
 import lv.id.arseniuss.linguae.R;
-import lv.id.arseniuss.linguae.databinding.ActivityLanguageRepoBinding;
+import lv.id.arseniuss.linguae.databinding.ActivityRepoEditBinding;
 import lv.id.arseniuss.linguae.databinding.ItemLanguageRepoBinding;
 import lv.id.arseniuss.linguae.ui.fragments.EditRepoDialogFragment;
-import lv.id.arseniuss.linguae.viewmodel.LanguageRepoItemViewModel;
-import lv.id.arseniuss.linguae.viewmodel.LanguageRepoViewModel;
+import lv.id.arseniuss.linguae.viewmodel.RepoEditViewModel;
 
-public class LanguageRepoActivity extends AppCompatActivity {
+public class RepoEditActivity extends AppCompatActivity {
 
-    protected LanguageRepoViewModel _model;
+    public static final String DATA_ARRAY_JSON = "DATA_ARRAY_JSON";
+    public static final String TITLE = "TITLE";
+    public static final String SELECT = "SELECT";
+
+    protected RepoEditViewModel _model;
 
     @BindingAdapter("items")
-    public static void BindLanguageRepoList(RecyclerView recyclerView, List<LanguageRepoItemViewModel> repos) {
-        LanguageRepoAdapter adapter = (LanguageRepoAdapter) recyclerView.getAdapter();
+    public static void BindLanguageRepoList(RecyclerView recyclerView, List<RepoEditViewModel.EditRepoViewModel> repos)
+    {
+        RepoEditAdapter adapter = (RepoEditAdapter) recyclerView.getAdapter();
 
         assert adapter != null;
 
@@ -43,24 +48,35 @@ public class LanguageRepoActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
+        Intent i = getIntent();
+
         super.onCreate(savedInstanceState);
 
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
+            if (i.hasExtra(TITLE)) actionBar.setTitle(getString(i.getIntExtra(TITLE, 0)));
             actionBar.setDisplayHomeAsUpEnabled(true);
             actionBar.show();
         }
 
-        ActivityLanguageRepoBinding binding = DataBindingUtil.setContentView(this, R.layout.activity_language_repo);
-        _model = new ViewModelProvider(this).get(LanguageRepoViewModel.class);
+        ActivityRepoEditBinding binding = DataBindingUtil.setContentView(this, R.layout.activity_repo_edit);
+        _model = new ViewModelProvider(this).get(RepoEditViewModel.class);
 
         binding.setViewmodel(_model);
         binding.setLifecycleOwner(this);
 
-        binding.repos.setAdapter(new LanguageRepoAdapter(_model.Selected().getValue(), selection -> {
-            _model.Selected(selection);
-            finish();
+        binding.repos.setAdapter(new RepoEditAdapter(_model.Selected().getValue(), selection -> {
+
         }));
+    }
+
+    @Override
+    protected void onStart() {
+        Intent i = getIntent();
+
+        super.onStart();
+
+        _model.SetData(i.getStringExtra(DATA_ARRAY_JSON));
     }
 
     @Override
@@ -72,12 +88,13 @@ public class LanguageRepoActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (android.R.id.home == item.getItemId()) {
-            _model.SaveData();
-            this.finish();
+            setData();
+            finish();
+
             return true;
         }
         else if (item.getItemId() == R.id.add) {
-            LanguageRepoItemViewModel model = new LanguageRepoItemViewModel();
+            RepoEditViewModel.EditRepoViewModel model = new RepoEditViewModel.EditRepoViewModel();
             EditRepoDialogFragment editRepoDialogFragment = new EditRepoDialogFragment(model);
 
             editRepoDialogFragment.SetOnSaveListener(() -> {
@@ -92,12 +109,21 @@ public class LanguageRepoActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    static class LanguageRepoAdapter extends RecyclerView.Adapter<LanguageRepoAdapter.ItemLanguageRepoViewHolder> {
+    private void setData() {
+        Intent i = new Intent();
+        String data = _model.GetData();
+
+        i.putExtra(DATA_ARRAY_JSON, data);
+
+        setResult(RESULT_OK, i);
+    }
+
+    static class RepoEditAdapter extends RecyclerView.Adapter<RepoEditAdapter.ItemLanguageRepoViewHolder> {
         private final OnSelectionChanged _changed;
         protected int _selected = -1;
-        private List<LanguageRepoItemViewModel> _items = new ArrayList<>();
+        private List<RepoEditViewModel.EditRepoViewModel> _items = new ArrayList<>();
 
-        public LanguageRepoAdapter(Integer selected, @NonNull OnSelectionChanged callback) {
+        public RepoEditAdapter(Integer selected, @NonNull OnSelectionChanged callback) {
             _selected = selected;
             _changed = callback;
         }
@@ -121,7 +147,7 @@ public class LanguageRepoActivity extends AppCompatActivity {
             return _items.size();
         }
 
-        public void Update(List<LanguageRepoItemViewModel> repos) {
+        public void Update(List<RepoEditViewModel.EditRepoViewModel> repos) {
             _items = repos;
             notifyDataSetChanged();
         }
@@ -149,14 +175,17 @@ public class LanguageRepoActivity extends AppCompatActivity {
                 };
 
                 _binding.radioLanguage.setOnClickListener(l);
-                _binding.imageButton.setOnClickListener(v -> {
+                _binding.editButton.setOnClickListener(v -> {
                     EditRepoDialogFragment fragment = new EditRepoDialogFragment(_binding.getViewmodel());
 
                     fragment.show(((AppCompatActivity) v.getContext()).getSupportFragmentManager(), "test");
                 });
+                _binding.deleteButton.setOnClickListener(v -> {
+
+                });
             }
 
-            public void Bind(LanguageRepoItemViewModel item, Boolean checked, int position) {
+            public void Bind(RepoEditViewModel.EditRepoViewModel item, Boolean checked, int position) {
                 _binding.setVariable(lv.id.arseniuss.linguae.BR.viewmodel, item);
                 _binding.radioLanguage.setChecked(checked);
                 _position = position;

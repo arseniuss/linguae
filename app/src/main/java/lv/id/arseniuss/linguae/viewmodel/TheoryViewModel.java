@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.disposables.Disposable;
 import io.reactivex.rxjava3.schedulers.Schedulers;
-import lv.id.arseniuss.linguae.R;
+import lv.id.arseniuss.linguae.Constants;
 import lv.id.arseniuss.linguae.db.LanguageDatabase;
 import lv.id.arseniuss.linguae.db.dataaccess.TheoryDataAccess;
 import lv.id.arseniuss.linguae.db.entities.Chapter;
@@ -26,8 +26,7 @@ public class TheoryViewModel extends AndroidViewModel {
     protected final MutableLiveData<Boolean> _showTranslation = new MutableLiveData<>(true);
     private final SharedPreferences _sharedPreferences =
             PreferenceManager.getDefaultSharedPreferences(getApplication().getBaseContext());
-    private final String _language =
-            _sharedPreferences.getString(getApplication().getString(R.string.PreferenceLanguageKey), "");
+    private final String _language = _sharedPreferences.getString(Constants.PreferenceLanguageKey, "");
     private final TheoryDataAccess _theoryDataAccess =
             LanguageDatabase.GetInstance(getApplication(), _language).GetTheoryDataAccess();
     private final MutableLiveData<List<ChapterViewModel>> _chapters = new MutableLiveData<>(new ArrayList<>());
