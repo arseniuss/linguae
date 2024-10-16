@@ -17,4 +17,8 @@ public class Settings {
             }
         }
     }
+
+    public static List<Setting> Get() {
+        return _settings;
+    }
 }

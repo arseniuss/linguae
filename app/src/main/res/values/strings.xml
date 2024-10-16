@@ -44,7 +44,7 @@
     <string name="BrowseButtonText">Browse</string>
     <string name="ChooseALanguageFile">Choose a language file</string>
     <string name="TitleTheories">Theory</string>
-    <string name="ActionSwitchLanguge">Switch language</string>
+    <string name="ActionSwitchLanguage">Switch language</string>
     <string name="TitleSelectPortalLanguage">Select portal and language to learn</string>
     <string name="TitleEditPortals">Edit language repositories</string>
     <string name="UnnamedRepository">Unnamed repository</string>
@@ -53,4 +53,11 @@
     <string name="DatabaseUpdateNotRequired">Database update is not required</string>
     <string name="DatabaseVersion">"Database version: "</string>
     <string name="RepositoryVersion">"Repository version: "</string>
+    <string name="TitleLanguagePreferences">Language preferences</string>
+    <string name="TitleDatabasePreferences">Database preferences</string>
+    <string name="TitleSaveImages">Save images into database</string>
+    <string name="TitleSessionPreferences">Session preferences</string>
+    <string name="TitleTaskCountPerSession">Task count per session</string>
+    <string name="TitleNoKeyboard">Enter answers without usage of keyboard</string>
+    <string name="TitleTaskPreferences">Task preferences</string>
 </resources>

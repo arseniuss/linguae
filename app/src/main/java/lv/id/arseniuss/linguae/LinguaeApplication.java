@@ -6,5 +6,6 @@ public class LinguaeApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        Constants.Init(getBaseContext());
     }
 }

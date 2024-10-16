@@ -1,38 +1,45 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-    <Preference
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:defaultValue="@string/PreferenceLanguageNotSelected"
-        android:key="PREF_LANG"
-        android:summary="@string/PreferenceLanguageNotSelected"
-        android:title="@string/PreferenceLanguageTitle" />
     <PreferenceCategory
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:title="Database preferences">
-
+        android:key="@string/PreferencesLanguageKey"
+        android:title="@string/TitleLanguagePreferences">
+        <Preference
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:defaultValue="@string/PreferenceLanguageNotSelected"
+            android:key="@string/PreferenceLanguageKey"
+            android:summary="@string/PreferenceLanguageNotSelected"
+            android:title="@string/PreferenceLanguageTitle" />
+        <!-- Other preferences are defined in language file -->
     </PreferenceCategory>
     <PreferenceCategory
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:title="Session preferences">
+        android:title="@string/TitleDatabasePreferences">
+        <SwitchPreference
+            android:key="@string/PreferenceSaveImageKey"
+            android:title="@string/TitleSaveImages" />
+    </PreferenceCategory>
+    <PreferenceCategory
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:title="@string/TitleSessionPreferences">
         <lv.id.arseniuss.linguae.ui.preference.EditIntegerPreference
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:defaultValue="10"
-            android:key="PREF_TASK_COUNT"
-            android:title="Task count per session"
+            android:key="@string/PreferenceTaskCountKey"
+            android:title="@string/TitleTaskCountPerSession"
             app:useSimpleSummaryProvider="true" />
         <CheckBoxPreference
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:defaultValue="false"
-            android:key="PREF_KEYBOARD"
-            android:title="Enter answers without usage of keyboard"
+            android:key="@string/PreferenceNoKeyboardKey"
+            android:title="@string/TitleNoKeyboard"
             app:singleLineTitle="false" />
     </PreferenceCategory>
-    <PreferenceCategory android:title="Task preferences">
+    <PreferenceCategory android:title="@string/TitleTaskPreferences">
 
     </PreferenceCategory>
 </PreferenceScreen>

@@ -6,6 +6,10 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
 import android.provider.DocumentsContract;
+import android.text.Html;
+import android.text.SpannableString;
+import android.text.SpannableStringBuilder;
+import android.text.Spanned;
 import android.util.Log;
 import android.util.Pair;
 
@@ -55,7 +59,7 @@ public class StartViewModel extends AndroidViewModel implements LanguageDataPars
             new MutableLiveData<>(new ArrayList<>());
     private final MutableLiveData<List<LanguageViewModel>> _languages = new MutableLiveData<>(new ArrayList<>());
     private final MutableLiveData<Integer> _selectedPortal = new MutableLiveData<>(0);
-    private final MutableLiveData<String> _messages = new MutableLiveData<>("");
+    private final MutableLiveData<Spanned> _messages = new MutableLiveData<>(new SpannableString(""));
     private final MutableLiveData<Boolean> _canContinue = new MutableLiveData<>(false);
     private final MutableLiveData<Boolean> _hasError = new MutableLiveData<>(false);
     private final MutableLiveData<String> _errorMessage = new MutableLiveData<>("");
@@ -63,7 +67,7 @@ public class StartViewModel extends AndroidViewModel implements LanguageDataPars
     private final Gson gson = new Gson();
     Type listType = new TypeToken<List<ItemLanguageRepo>>() { }.getType();
     private WarningInterface _warn;
-    private String _text = "";
+    private Spanned _text = new SpannableString("");
     private String _databaseVersion = "";
     private Callback _continue;
     private RequestConfirmCallback _requestUpdateConfirm;
@@ -78,7 +82,7 @@ public class StartViewModel extends AndroidViewModel implements LanguageDataPars
 
     public MutableLiveData<Integer> SelectedPortal() { return _selectedPortal; }
 
-    public MutableLiveData<String> Messages() { return _messages; }
+    public MutableLiveData<Spanned> Messages() { return _messages; }
 
     public LiveData<Boolean> CanContinue() {
         return _canContinue;
@@ -114,9 +118,10 @@ public class StartViewModel extends AndroidViewModel implements LanguageDataPars
     }
 
     public void StartLanguageParsing(Callback continueCallback, RequestConfirmCallback requestUpdateConfirm) {
-        StartLanguageParsing(_sharedPreferences.getString(Constants.PreferenceLanguageKey, ""),
-                _sharedPreferences.getString(Constants.PreferenceLanguageUrlKey, ""), continueCallback,
-                requestUpdateConfirm);
+        String language = _sharedPreferences.getString(Constants.PreferenceLanguageKey, "");
+        String languageUrl = _sharedPreferences.getString(Constants.PreferenceLanguageUrlKey, "");
+
+        StartLanguageParsing(language, languageUrl, continueCallback, requestUpdateConfirm);
     }
 
     public void StartLanguageParsing(@Nullable String language, @Nullable String languageUrl, Callback continueCallback,
@@ -135,7 +140,7 @@ public class StartViewModel extends AndroidViewModel implements LanguageDataPars
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(s -> {
-                    Inform(getApplication().getString(R.string.DatabaseVersion) + s);
+                    Inform(Log.INFO, getApplication().getString(R.string.DatabaseVersion) + s);
                     _databaseVersion = s;
                     parseLanguageFile(finalLanguage, finalLanguageUrl);
                 }, this::onError, () -> parseLanguageFile(finalLanguage, finalLanguageUrl));
@@ -186,7 +191,7 @@ public class StartViewModel extends AndroidViewModel implements LanguageDataPars
     private void validateVersions(String language, String languageUrl) {
         String repositoryVersion = _dataParser.GetData().LanguageVersion;
 
-        Inform(getApplication().getString(R.string.RepositoryVersion) + repositoryVersion);
+        Inform(Log.INFO, getApplication().getString(R.string.RepositoryVersion) + repositoryVersion);
 
         if (_databaseVersion == null || _databaseVersion.isEmpty()) {
             parseRepository(language, languageUrl);
@@ -195,7 +200,7 @@ public class StartViewModel extends AndroidViewModel implements LanguageDataPars
             _requestUpdateConfirm.Request(r -> onUpdateRequest(r, language, languageUrl));
         }
         else {
-            Inform(getApplication().getString(R.string.DatabaseUpdateNotRequired));
+            Inform(Log.INFO, getApplication().getString(R.string.DatabaseUpdateNotRequired));
             updateLanguagePreferences(language, languageUrl);
             _continue.Call();
         }
@@ -230,7 +235,7 @@ public class StartViewModel extends AndroidViewModel implements LanguageDataPars
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(() -> {
                     updateLanguagePreferences(language, languageUrl);
-                    Inform(getApplication().getString(R.string.DataSaved));
+                    Inform(Log.INFO, getApplication().getString(R.string.DataSaved));
                     if (parseSuccessful) { _continue.Call(); }
                     else { _canContinue.postValue(true); }
                 }, this::onError);
@@ -326,9 +331,28 @@ public class StartViewModel extends AndroidViewModel implements LanguageDataPars
     }
 
     @Override
-    public void Inform(String message) {
-        if (BuildConfig.DEBUG) Log.i("INFORM", message);
-        _text += message + "\n";
+    public void Inform(int type, String message) {
+        Spanned spanned;
+
+        switch (type) {
+            case Log.ERROR:
+                if (BuildConfig.DEBUG) Log.i("INFORM", message);
+                spanned = Html.fromHtml("<font color='#FF0000'>" + message + "</font>", Html.FROM_HTML_MODE_LEGACY);
+                break;
+            case Log.INFO:
+                if (BuildConfig.DEBUG) Log.i("INFORM", message);
+            default:
+                spanned = Html.fromHtml(message, Html.FROM_HTML_MODE_LEGACY);
+                break;
+        }
+
+        SpannableStringBuilder spannableStringBuilder = new SpannableStringBuilder();
+
+        spannableStringBuilder.append(_text);
+        spannableStringBuilder.append(Html.fromHtml("<br>", Html.FROM_HTML_MODE_LEGACY));
+        spannableStringBuilder.append(spanned);
+
+        _text = spannableStringBuilder;
 
         _messages.postValue(_text);
     }
@@ -357,7 +381,7 @@ public class StartViewModel extends AndroidViewModel implements LanguageDataPars
     }
 
     private void onError(Throwable error) {
-        Inform(error.getMessage());
+        Inform(Log.INFO, error.getMessage());
         _canContinue.postValue(true);
     }
 

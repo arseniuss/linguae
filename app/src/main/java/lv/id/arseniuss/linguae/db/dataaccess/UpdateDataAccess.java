@@ -5,6 +5,7 @@ import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -28,7 +29,7 @@ import lv.id.arseniuss.linguae.db.entities.TrainingTaskCrossref;
 @Dao
 public abstract class UpdateDataAccess {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    protected abstract Completable InsertSettings(List<Setting> settings);
+    protected abstract Completable InsertSettings(Collection<Setting> settings);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     protected abstract Completable InsertConfig(List<Config> configs);
@@ -95,10 +96,7 @@ public abstract class UpdateDataAccess {
 
     public Completable PerformUpdate(LanguageDataParser.ParserData data)
     {
-        return InsertSettings(data.Settings.entrySet()
-                .stream()
-                .map(s -> new Setting(s.getKey(), s.getValue()))
-                .collect(Collectors.toList()))
+        return InsertSettings(data.Settings.values())
                 // -----
                 .andThen(InsertTaskConfig(data.TaskConfig))
                 .andThen(InsertConfig(data.Config.entrySet()

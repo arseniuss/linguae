@@ -28,6 +28,7 @@ import java.util.stream.Stream;
 
 import lv.id.arseniuss.linguae.db.entities.Chapter;
 import lv.id.arseniuss.linguae.db.entities.LessonWithAttrs;
+import lv.id.arseniuss.linguae.db.entities.Setting;
 import lv.id.arseniuss.linguae.db.entities.Task;
 import lv.id.arseniuss.linguae.db.entities.TaskConfig;
 import lv.id.arseniuss.linguae.db.entities.Theory;
@@ -73,8 +74,8 @@ public class LanguageDataParser {
         return result;
     }
 
-    private void inform(String message) {
-        _parserInterface.Inform(message);
+    private void log(int type, String message) {
+        _parserInterface.Inform(type, message);
     }
 
     private InputStream getFile(Uri base, String filename) throws IOException {
@@ -88,7 +89,7 @@ public class LanguageDataParser {
             throw new ParserException(_filename, _line, error);
         }
         else {
-            inform(_filename + ":" + _line + ": " + error);
+            log(Log.ERROR, _filename + ":" + _line + ": " + error);
             _hasError = true;
         }
     }
@@ -411,7 +412,7 @@ public class LanguageDataParser {
     private List<Task> parseTrainingFile(Uri base, Training t) throws Exception {
         _filename = t.Filename;
 
-        inform("Parsing training file: " + t.Filename);
+        log(Log.INFO, "Parsing training file: " + t.Filename);
 
         InputStream trainingFileStream = getFile(base, t.Filename);
         LineNumberReader r = new LineNumberReader(new BufferedReader(new InputStreamReader(trainingFileStream)));
@@ -456,7 +457,7 @@ public class LanguageDataParser {
             }
         }
 
-        inform("Training file " + t.Filename + " parsed");
+        log(Log.INFO, "Training file " + t.Filename + " parsed");
 
         return new ArrayList<>(tasks.values());
     }
@@ -464,7 +465,7 @@ public class LanguageDataParser {
     private Collection<Task> parseLessonFile(Uri base, LessonWithAttrs l) throws Exception {
         _filename = l.Lesson.Id;
 
-        inform("Parsing lesson file " + l.Lesson.Id);
+        log(Log.INFO, "Parsing lesson file " + l.Lesson.Id);
 
         InputStream lessonFileStream = getFile(base, l.Lesson.Id);
         LineNumberReader r = new LineNumberReader(new BufferedReader(new InputStreamReader(lessonFileStream)));
@@ -552,7 +553,7 @@ public class LanguageDataParser {
             }
         }
 
-        inform("Lesson file " + l.Lesson.Id + " parsed");
+        log(Log.INFO, "Lesson file " + l.Lesson.Id + " parsed");
 
         return lessonTasks.values();
     }
@@ -560,7 +561,7 @@ public class LanguageDataParser {
     private void parseLanguageFile(Uri base) throws Exception {
         _filename = "/Language.txt";
 
-        inform("Parsing language file: " + base.toString() + _filename);
+        log(Log.INFO, "Parsing language file: " + base.toString() + _filename);
 
         InputStream languageFileStream = getFile(base, "Language.txt");
         LineNumberReader r = new LineNumberReader(new BufferedReader(new InputStreamReader(languageFileStream)));
@@ -721,12 +722,26 @@ public class LanguageDataParser {
                     _data.Config.put("version", _data.LanguageVersion);
                     break;
                 case "setting":
-                    if (words.length != 3) {
-                        logError("Expecting format: setting <name> <default value>");
+                    if (words.length != 5) {
+                        logError("Expecting format: setting <key> <description> <type> <default value>");
                         continue;
                     }
 
-                    _data.Settings.put(words[1], words[2]);
+                    Setting s = new Setting();
+
+                    s.Key = resolveReferences(words[1], _references);
+                    s.Description = resolveReferences(words[2], _references);
+
+                    String type = resolveReferences(words[3], _references);
+
+                    if ((s.Type = SettingType.ValueOf(type)) == null) {
+                        logError("Unrecognised setting type: " + type);
+                        continue;
+                    }
+
+                    s.Value = resolveReferences(words[4], _references);
+
+                    _data.Settings.put(s.Key, s);
                     break;
                 case "license":
                 case "licence":
@@ -749,10 +764,10 @@ public class LanguageDataParser {
         }
 
         if (!hasSpecialTraining) {
-            inform("No special *all* training"); // Only warn
+            log(Log.INFO, "No special *all* training"); // Only warn
         }
 
-        inform("Language file parsed");
+        log(Log.INFO, "Language file parsed");
 
         _languageFileParsed = true;
     }
@@ -765,12 +780,12 @@ public class LanguageDataParser {
 
             return _throwError || !_hasError;
         } catch (FileNotFoundException e) {
-            inform("File not found: " + e.getMessage());
+            log(Log.INFO, "File not found: " + e.getMessage());
         } catch (ParserException e) {
-            inform("Parsing error: " + e.getMessage());
+            log(Log.INFO, "Parsing error: " + e.getMessage());
         } catch (Exception e) {
             Log.e("TAG", "Error", e);
-            inform("Error: " + e);
+            log(Log.INFO, "Error: " + e);
         }
 
         return false;
@@ -812,12 +827,12 @@ public class LanguageDataParser {
 
             return _throwError || !_hasError;
         } catch (FileNotFoundException e) {
-            inform("File not found: " + e.getMessage());
+            log(Log.INFO, "File not found: " + e.getMessage());
         } catch (ParserException e) {
-            inform("Parsing error: " + e.getMessage());
+            log(Log.INFO, "Parsing error: " + e.getMessage());
         } catch (Exception e) {
             Log.e("TAG", "Error", e);
-            inform("Error: " + e);
+            log(Log.INFO, "Error: " + e);
         }
 
         return false;
@@ -826,7 +841,7 @@ public class LanguageDataParser {
     private Collection<Chapter> parseTheoryFile(Uri base, Theory theory) throws Exception {
         _filename = theory.Id;
 
-        inform("Parsing theory file: " + _filename);
+        log(Log.INFO, "Parsing theory file: " + _filename);
 
         InputStream languageFileStream = getFile(base, _filename);
         LineNumberReader r = new LineNumberReader(new BufferedReader(new InputStreamReader(languageFileStream)));
@@ -892,7 +907,7 @@ public class LanguageDataParser {
 
         }
 
-        inform("Theory file " + theory.Id + " parsed");
+        log(Log.INFO, "Theory file " + theory.Id + " parsed");
 
         return theoryChapters.values();
     }
@@ -904,7 +919,7 @@ public class LanguageDataParser {
 
         for (Pair<String, String> portal : portals) {
 
-            inform("Parsing portal " + portal.first);
+            log(Log.INFO, "Parsing portal " + portal.first);
 
             Uri portalUri = Uri.parse(portal.second);
             InputStream languageFileStream = getFile(portalUri, "Languages.txt");
@@ -973,7 +988,7 @@ public class LanguageDataParser {
     public interface ParserInterface {
         InputStream GetFile(Uri base, String filename) throws IOException;
 
-        void Inform(String message);
+        void Inform(int type, String message);
     }
 
     public static class ParserException extends Exception {
@@ -983,7 +998,7 @@ public class LanguageDataParser {
     }
 
     public static class ParserData {
-        public Map<String, String> Settings = new HashMap<>();
+        public Map<String, Setting> Settings = new HashMap<>();
         public Map<String, TrainingWithTasks> Trainings = new HashMap<>();
         public Map<String, LessonWithAttrs> Lessons = new HashMap<>();
         public Map<String, TheoryWithChapters> Theory = new HashMap<>();

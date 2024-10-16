@@ -1,10 +1,22 @@
 package lv.id.arseniuss.linguae;
 
+import android.content.Context;
+
 public class Constants {
-    public static final String PreferenceLanguageKey = "PREF_LANG";
-    public static final String PreferencePortalsKey = "PREF_PORTALS";
-    public static final String PreferenceLanguageUrlKey = "PREF_LANGLOC";
-    public static final String PreferenceNoKeyboardKey = "PREF_KEYBOARD";
-    public static final String PreferenceTaskCountKey = "PREF_TASK_COUNT";
-    public static final String IgnoreMacronsKey = "ignore-macrons";
+    public static String PreferenceLanguageKey;
+    public static String PreferencePortalsKey;
+    public static String PreferenceLanguageUrlKey;
+    public static String PreferenceNoKeyboardKey;
+    public static String PreferenceTaskCountKey;
+    public static String IgnoreMacronsKey;
+
+    public static void Init(Context context) {
+        PreferenceLanguageKey = context.getString(R.string.PreferenceLanguageKey);
+        PreferencePortalsKey = context.getString(R.string.PreferencePortalsKey);
+        PreferenceLanguageUrlKey = context.getString(R.string.PreferenceLanguageUrlKey);
+        PreferenceNoKeyboardKey = context.getString(R.string.PreferenceNoKeyboardKey);
+        PreferenceTaskCountKey = context.getString(R.string.PreferenceTaskCountKey);
+
+        IgnoreMacronsKey = context.getString(R.string.IgnoreMacronsKey);
+    }
 }
