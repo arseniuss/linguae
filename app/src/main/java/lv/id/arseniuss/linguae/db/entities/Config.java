@@ -22,4 +22,10 @@ public class Config {
         Key = key;
         Value = value;
     }
+
+    public String GetKey() { return Key; }
+
+    public String GetValue() {
+        return Value;
+    }
 }

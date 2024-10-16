@@ -1,6 +1,8 @@
 package lv.id.arseniuss.linguae.ui.activities;
 
+import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.widget.ImageView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -12,8 +14,10 @@ import androidx.navigation.ui.NavigationUI;
 
 import com.google.android.material.navigation.NavigationView;
 
+import lv.id.arseniuss.linguae.Configuration;
 import lv.id.arseniuss.linguae.R;
 import lv.id.arseniuss.linguae.databinding.ActivityMainBinding;
+import lv.id.arseniuss.linguae.ui.BindingAdapters;
 import lv.id.arseniuss.linguae.viewmodel.MainViewModel;
 
 public class MainActivity extends AppCompatActivity {
@@ -34,6 +38,7 @@ public class MainActivity extends AppCompatActivity {
 
         _appBarConfiguration = new AppBarConfiguration.Builder(R.id.nav_summary, R.id.nav_lessons, R.id.nav_training,
                 R.id.nav_theory).setOpenableLayout(drawer).build();
+
     }
 
     public void SetupDrawer() {
@@ -55,6 +60,20 @@ public class MainActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
 
-        _model.Start();
+        _model.Start(this::onStarted);
+    }
+
+    private void onStarted() {
+        ImageView imageView = _binding.drawerLayout.findViewById(R.id.header_image);
+        if (imageView != null) {
+            Bitmap bitmap = Configuration.GetLanguageImage();
+
+            if (bitmap != null) {
+                imageView.setImageBitmap(bitmap);
+            }
+            else {
+                BindingAdapters.SetImageByUrl(imageView, Configuration.GetLanguageImageUrl());
+            }
+        }
     }
 }

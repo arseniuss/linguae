@@ -130,6 +130,7 @@ public class StartActivity extends AppCompatActivity {
 
                 ri.putExtra(Constants.PreferenceLanguageKey, languageData.first);
                 ri.putExtra(Constants.PreferenceLanguageUrlKey, languageData.second);
+                if (getIntent().hasExtra(RESTART)) ri.putExtra(RESTART, true);
 
                 startActivity(ri);
                 finish();
@@ -140,9 +141,9 @@ public class StartActivity extends AppCompatActivity {
     protected boolean shouldParseLanguage() {
         Intent i = getIntent();
 
-        if (i.hasExtra(RESTART)) return false;
-
         if (i.hasExtra(Constants.PreferenceLanguageKey) && i.hasExtra(Constants.PreferenceLanguageUrlKey)) return true;
+
+        if (i.hasExtra(RESTART)) return false;
 
         return _model.HasSelectedLanguage();
     }
@@ -154,14 +155,14 @@ public class StartActivity extends AppCompatActivity {
         super.onStart();
 
         if (i.hasExtra(Constants.PreferenceLanguageKey) && i.hasExtra(Constants.PreferenceLanguageUrlKey)) {
-            _model.StartLanguageParsing(i.getStringExtra(Constants.PreferenceLanguageKey),
+            _model.StartLanguageParsing(i.hasExtra(RESTART), i.getStringExtra(Constants.PreferenceLanguageKey),
                     i.getStringExtra(Constants.PreferenceLanguageUrlKey), this::Continue, this::requestDatabaseUpdate);
         }
         else if (i.hasExtra(RESTART)) {
             _model.StartPortalLoading();
         }
         else if (_model.HasSelectedLanguage()) {
-            _model.StartLanguageParsing(this::Continue, this::requestDatabaseUpdate);
+            _model.StartLanguageParsing(i.hasExtra(RESTART), this::Continue, this::requestDatabaseUpdate);
         }
         else {
             _model.StartPortalLoading();

@@ -10,8 +10,8 @@ import androidx.room.TypeConverters;
 import java.util.Objects;
 
 import lv.id.arseniuss.linguae.db.dataaccess.LessonDataAccess;
+import lv.id.arseniuss.linguae.db.dataaccess.MainDataAccess;
 import lv.id.arseniuss.linguae.db.dataaccess.SessionDataAccess;
-import lv.id.arseniuss.linguae.db.dataaccess.SettingDataAccess;
 import lv.id.arseniuss.linguae.db.dataaccess.SummaryDataAccess;
 import lv.id.arseniuss.linguae.db.dataaccess.TaskDataAccess;
 import lv.id.arseniuss.linguae.db.dataaccess.TheoryDataAccess;
@@ -63,7 +63,7 @@ public abstract class LanguageDatabase extends RoomDatabase {
 
     public abstract SessionDataAccess GetSessionDataAccess();
 
-    public abstract SettingDataAccess GetSettingDataAccess();
+    public abstract MainDataAccess GetMainDataAccess();
 
     public abstract TheoryDataAccess GetTheoryDataAccess();
 }

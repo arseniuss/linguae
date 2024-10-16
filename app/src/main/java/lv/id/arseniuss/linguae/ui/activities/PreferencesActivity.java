@@ -25,11 +25,11 @@ import lv.id.arseniuss.linguae.Constants;
 import lv.id.arseniuss.linguae.R;
 import lv.id.arseniuss.linguae.Settings;
 import lv.id.arseniuss.linguae.db.LanguageDatabase;
-import lv.id.arseniuss.linguae.db.dataaccess.SettingDataAccess;
+import lv.id.arseniuss.linguae.db.dataaccess.MainDataAccess;
 import lv.id.arseniuss.linguae.db.entities.Setting;
 
 public class PreferencesActivity extends AppCompatActivity {
-    private SettingDataAccess _settingDataAccess;
+    private MainDataAccess _mainDataAccess;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,7 +52,7 @@ public class PreferencesActivity extends AppCompatActivity {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
         String language = sharedPreferences.getString(Constants.PreferenceLanguageKey, "");
 
-        _settingDataAccess = LanguageDatabase.GetInstance(getBaseContext(), language).GetSettingDataAccess();
+        _mainDataAccess = LanguageDatabase.GetInstance(getBaseContext(), language).GetMainDataAccess();
     }
 
     @Override
@@ -64,7 +64,7 @@ public class PreferencesActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (android.R.id.home == item.getItemId()) {
-            Disposable d = _settingDataAccess.SaveSetting(Settings.Get())
+            Disposable d = _mainDataAccess.SaveSetting(Settings.Get())
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(this::finish);

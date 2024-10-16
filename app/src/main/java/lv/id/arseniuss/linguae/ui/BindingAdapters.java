@@ -32,9 +32,11 @@ public class BindingAdapters {
 
     @BindingAdapter("imageUrl")
     public static void SetImageByUrl(ImageView imageView, String urlString) {
-        Disposable d = loadImage(urlString).subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(imageView::setImageBitmap, Throwable::printStackTrace);
+        if (urlString != null && !urlString.isEmpty()) {
+            Disposable d = loadImage(urlString).subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(imageView::setImageBitmap, Throwable::printStackTrace);
+        }
     }
 
     private static Single<Bitmap> loadImage(String imageUrl) {

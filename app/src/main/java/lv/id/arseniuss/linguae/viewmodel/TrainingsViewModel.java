@@ -22,7 +22,7 @@ import lv.id.arseniuss.linguae.Constants;
 import lv.id.arseniuss.linguae.Settings;
 import lv.id.arseniuss.linguae.Utilities;
 import lv.id.arseniuss.linguae.db.LanguageDatabase;
-import lv.id.arseniuss.linguae.db.dataaccess.SettingDataAccess;
+import lv.id.arseniuss.linguae.db.dataaccess.MainDataAccess;
 import lv.id.arseniuss.linguae.db.dataaccess.TrainingDataAccess;
 
 public class TrainingsViewModel extends AndroidViewModel {
@@ -32,8 +32,8 @@ public class TrainingsViewModel extends AndroidViewModel {
     private final String _language = _sharedPreferences.getString(Constants.PreferenceLanguageKey, "");
     private final TrainingDataAccess _trainingDataAccess =
             LanguageDatabase.GetInstance(getApplication(), _language).GetTrainingsDataAccess();
-    private final SettingDataAccess _settingDataAccess =
-            LanguageDatabase.GetInstance(getApplication(), _language).GetSettingDataAccess();
+    private final MainDataAccess _mainDataAccess =
+            LanguageDatabase.GetInstance(getApplication(), _language).GetMainDataAccess();
     private final MutableLiveData<List<EntryViewModel>> _trainings;
 
     public TrainingsViewModel(@NonNull Application application) {

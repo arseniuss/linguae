@@ -51,7 +51,8 @@ import lv.id.arseniuss.linguae.db.dataaccess.UpdateDataAccess;
 public class StartViewModel extends AndroidViewModel implements LanguageDataParser.ParserInterface {
     private final SharedPreferences _sharedPreferences =
             PreferenceManager.getDefaultSharedPreferences(getApplication().getBaseContext());
-    private final LanguageDataParser _dataParser = new LanguageDataParser(this);
+    private final LanguageDataParser _dataParser =
+            new LanguageDataParser(this, _sharedPreferences.getBoolean(Constants.PreferenceSaveImagesKey, false));
 
     private final String _defaultPortals = getApplication().getString(R.string.DefaultLanguagePortal);
 
@@ -117,15 +118,17 @@ public class StartViewModel extends AndroidViewModel implements LanguageDataPars
 
     }
 
-    public void StartLanguageParsing(Callback continueCallback, RequestConfirmCallback requestUpdateConfirm) {
+    public void StartLanguageParsing(boolean restart, Callback continueCallback,
+            RequestConfirmCallback requestUpdateConfirm)
+    {
         String language = _sharedPreferences.getString(Constants.PreferenceLanguageKey, "");
         String languageUrl = _sharedPreferences.getString(Constants.PreferenceLanguageUrlKey, "");
 
-        StartLanguageParsing(language, languageUrl, continueCallback, requestUpdateConfirm);
+        StartLanguageParsing(restart, language, languageUrl, continueCallback, requestUpdateConfirm);
     }
 
-    public void StartLanguageParsing(@Nullable String language, @Nullable String languageUrl, Callback continueCallback,
-            RequestConfirmCallback requestUpdateConfirm)
+    public void StartLanguageParsing(boolean restart, @Nullable String language, @Nullable String languageUrl,
+            Callback continueCallback, RequestConfirmCallback requestUpdateConfirm)
     {
         _continue = continueCallback;
         _requestUpdateConfirm = requestUpdateConfirm;
@@ -142,8 +145,8 @@ public class StartViewModel extends AndroidViewModel implements LanguageDataPars
                 .subscribe(s -> {
                     Inform(Log.INFO, getApplication().getString(R.string.DatabaseVersion) + s);
                     _databaseVersion = s;
-                    parseLanguageFile(finalLanguage, finalLanguageUrl);
-                }, this::onError, () -> parseLanguageFile(finalLanguage, finalLanguageUrl));
+                    parseLanguageFile(restart, finalLanguage, finalLanguageUrl);
+                }, this::onError, () -> parseLanguageFile(restart, finalLanguage, finalLanguageUrl));
     }
 
     private void reloadPortals(List<ItemLanguageRepo> repos) {
@@ -176,24 +179,24 @@ public class StartViewModel extends AndroidViewModel implements LanguageDataPars
         _sharedPreferences.edit().putString(Constants.PreferencePortalsKey, jsonPortals).apply();
     }
 
-    private void parseLanguageFile(String language, String languageUrl) {
+    private void parseLanguageFile(boolean restart, String language, String languageUrl) {
         Uri languageLocationUri = Uri.parse(languageUrl);
 
         Disposable d = Single.fromCallable(() -> _dataParser.ParseLanguageFile(languageLocationUri, false))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(success -> {
-                    if (success) { validateVersions(language, languageUrl); }
+                    if (success) { validateVersions(restart, language, languageUrl); }
                     else { _canContinue.postValue(true); }
                 }, this::onError);
     }
 
-    private void validateVersions(String language, String languageUrl) {
+    private void validateVersions(boolean restart, String language, String languageUrl) {
         String repositoryVersion = _dataParser.GetData().LanguageVersion;
 
         Inform(Log.INFO, getApplication().getString(R.string.RepositoryVersion) + repositoryVersion);
 
-        if (_databaseVersion == null || _databaseVersion.isEmpty()) {
+        if (_databaseVersion == null || _databaseVersion.isEmpty() || restart) {
             parseRepository(language, languageUrl);
         }
         else if (_databaseVersion.compareTo(repositoryVersion) < 0) {

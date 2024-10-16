@@ -1,5 +1,6 @@
 package lv.id.arseniuss.linguae.data;
 
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.util.Log;
 import android.util.Pair;
@@ -26,6 +27,7 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import lv.id.arseniuss.linguae.Utilities;
 import lv.id.arseniuss.linguae.db.entities.Chapter;
 import lv.id.arseniuss.linguae.db.entities.LessonWithAttrs;
 import lv.id.arseniuss.linguae.db.entities.Setting;
@@ -47,12 +49,10 @@ public class LanguageDataParser {
 
     private final ParserData _data = new ParserData();
     private final ParserInterface _parserInterface;
-
     private final Map<String, String> _references = new HashMap<>();
     private final List<LanguageGenerator.Description> _generators = new ArrayList<>();
-
     private final Pattern _referencePattern = Pattern.compile("&([a-zA-Z0-9_]+)");
-
+    private boolean _saveImages = false;
     private boolean _throwError = false;
     private int _line = 0;
     private String _filename = "";
@@ -61,6 +61,11 @@ public class LanguageDataParser {
 
     public LanguageDataParser(@NonNull ParserInterface parserInterface) {
         _parserInterface = parserInterface;
+    }
+
+    public LanguageDataParser(@NonNull ParserInterface parserInterface, boolean saveImages) {
+        _parserInterface = parserInterface;
+        _saveImages = saveImages;
     }
 
     public static <T> List<T> takeWhile(T[] list, Predicate<T> predicate) {
@@ -558,6 +563,21 @@ public class LanguageDataParser {
         return lessonTasks.values();
     }
 
+    private String getLine(String prefix, String line) {
+        String ret = null;
+        Pattern pattern = Pattern.compile("^" + prefix + "[ \\t]+(.*)", Pattern.CASE_INSENSITIVE);
+
+        Matcher matcher = pattern.matcher(line);
+
+        if (matcher.matches()) {
+            if (matcher.groupCount() == 1) {
+                ret = matcher.group(1);
+            }
+        }
+
+        return ret;
+    }
+
     private void parseLanguageFile(Uri base) throws Exception {
         _filename = "/Language.txt";
 
@@ -656,7 +676,47 @@ public class LanguageDataParser {
                         logError("Language name is expected");
                         continue;
                     }
-                    languageName = Arrays.stream(words).skip(1).collect(Collectors.joining(" "));
+
+                    String suffix = getLine("name", line);
+
+                    if (suffix == null) {
+                        logError("Language is empty");
+                        continue;
+                    }
+
+                    languageName = suffix;
+                    break;
+                case "image":
+                    if (_data.Config.containsKey("image")) {
+                        logError("Language image is already set");
+                        continue;
+                    }
+
+                    if (words.length < 2) {
+                        logError("Expected format: image <image url>");
+                        continue;
+                    }
+
+                    String suffix1 = getLine("image", line);
+
+                    if (suffix1 == null) {
+                        logError("Image is empty");
+                        continue;
+                    }
+
+                    String imageUrl = base + "/" + suffix1;
+
+                    _data.Config.put("image-url", imageUrl);
+                    if (_saveImages) {
+                        Bitmap bitmap = Utilities.GetImage(imageUrl);
+
+                        if (bitmap == null) {
+                            logError("Cannot get image: " + imageUrl);
+                            continue;
+                        }
+
+                        _data.Config.put("image", Utilities.BitmapToBase64(bitmap));
+                    }
                     break;
                 case "lesson":
                     if (words.length != 2) {
