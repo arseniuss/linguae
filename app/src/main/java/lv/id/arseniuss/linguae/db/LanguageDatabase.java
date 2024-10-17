@@ -25,7 +25,6 @@ import lv.id.arseniuss.linguae.db.entities.LessonTheoryCrossref;
 import lv.id.arseniuss.linguae.db.entities.SessionResult;
 import lv.id.arseniuss.linguae.db.entities.Setting;
 import lv.id.arseniuss.linguae.db.entities.Task;
-import lv.id.arseniuss.linguae.db.entities.TaskConfig;
 import lv.id.arseniuss.linguae.db.entities.TaskResult;
 import lv.id.arseniuss.linguae.db.entities.Theory;
 import lv.id.arseniuss.linguae.db.entities.TheoryChapterCrossref;
@@ -34,8 +33,8 @@ import lv.id.arseniuss.linguae.db.entities.TrainingTaskCrossref;
 
 @Database(version = 1, exportSchema = false, entities = {
         Lesson.class, LessonTaskCrossref.class, Setting.class, Task.class, Training.class, TrainingTaskCrossref.class,
-        SessionResult.class, TaskResult.class, TaskConfig.class, Chapter.class, Theory.class,
-        TheoryChapterCrossref.class, LessonTheoryCrossref.class, Config.class
+        SessionResult.class, TaskResult.class, Chapter.class, Theory.class, TheoryChapterCrossref.class,
+        LessonTheoryCrossref.class, Config.class
 })
 @TypeConverters({ DatabaseConverters.class })
 public abstract class LanguageDatabase extends RoomDatabase {

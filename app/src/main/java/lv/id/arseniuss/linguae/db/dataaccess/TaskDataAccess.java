@@ -12,7 +12,6 @@ import io.reactivex.rxjava3.core.Maybe;
 import io.reactivex.rxjava3.core.Single;
 import lv.id.arseniuss.linguae.db.entities.Setting;
 import lv.id.arseniuss.linguae.db.entities.Task;
-import lv.id.arseniuss.linguae.db.entities.TaskConfig;
 
 @Dao
 public abstract class TaskDataAccess {
@@ -33,9 +32,6 @@ public abstract class TaskDataAccess {
 
     @Query("SELECT * FROM setting WHERE `key` = :setting LIMIT 1")
     public abstract Maybe<Setting> GetSetting(String setting);
-
-    @Query("SELECT * from task_config")
-    public abstract Single<List<TaskConfig>> GetTaskConfig();
 
     public Single<List<Task>> SelectLessonTasks(String lessonId, int count) {
         return Single.fromCallable(() -> {

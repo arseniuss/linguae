@@ -20,7 +20,6 @@ import lv.id.arseniuss.linguae.db.entities.LessonTaskCrossref;
 import lv.id.arseniuss.linguae.db.entities.LessonTheoryCrossref;
 import lv.id.arseniuss.linguae.db.entities.Setting;
 import lv.id.arseniuss.linguae.db.entities.Task;
-import lv.id.arseniuss.linguae.db.entities.TaskConfig;
 import lv.id.arseniuss.linguae.db.entities.Theory;
 import lv.id.arseniuss.linguae.db.entities.TheoryChapterCrossref;
 import lv.id.arseniuss.linguae.db.entities.Training;
@@ -91,14 +90,10 @@ public abstract class UpdateDataAccess {
     @Query("SELECT value FROM config WHERE `key` = 'version'")
     public abstract Maybe<String> GetVersion();
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    protected abstract Completable InsertTaskConfig(List<TaskConfig> taskConfigs);
-
     public Completable PerformUpdate(LanguageDataParser.ParserData data)
     {
         return InsertSettings(data.Settings.values())
                 // -----
-                .andThen(InsertTaskConfig(data.TaskConfig))
                 .andThen(InsertConfig(data.Config.entrySet()
                         .stream()
                         .map(c -> new Config(c.getKey(), c.getValue()))

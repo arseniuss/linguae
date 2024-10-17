@@ -32,7 +32,6 @@ import lv.id.arseniuss.linguae.db.entities.Chapter;
 import lv.id.arseniuss.linguae.db.entities.LessonWithAttrs;
 import lv.id.arseniuss.linguae.db.entities.Setting;
 import lv.id.arseniuss.linguae.db.entities.Task;
-import lv.id.arseniuss.linguae.db.entities.TaskConfig;
 import lv.id.arseniuss.linguae.db.entities.Theory;
 import lv.id.arseniuss.linguae.db.entities.TheoryWithChapters;
 import lv.id.arseniuss.linguae.db.entities.Training;
@@ -641,32 +640,6 @@ public class LanguageDataParser {
 
                     _references.put(words[1], words[2]);
                     break;
-                case "task-config":
-                    if (words.length != 5) {
-                        logError("Expected format: task-config <task type> <task part> <value>");
-                        continue;
-                    }
-                    TaskConfig taskConfig = new TaskConfig();
-
-                    if ((taskConfig.Type = TaskType.ValueOf(words[1])) == null) {
-                        logError("Config task type is not set");
-                        continue;
-                    }
-                    if ((taskConfig.Part = words[2]) == null) {
-                        logError("Config task part is not set");
-                        continue;
-                    }
-                    if ((taskConfig.Value = words[3]) == null) {
-                        logError("Config value is not set");
-                        continue;
-                    }
-                    if ((taskConfig.Description = words[4]) == null) {
-                        logError("Config description is not set");
-                        continue;
-                    }
-
-                    _data.TaskConfig.add(taskConfig);
-                    break;
                 case "name":
                     if (!languageName.isEmpty()) {
                         logError("Language name repeats");
@@ -1064,7 +1037,6 @@ public class LanguageDataParser {
         public Map<String, TheoryWithChapters> Theory = new HashMap<>();
         public List<String> Licences = new ArrayList<>();
         public String LanguageVersion = "";
-        public List<TaskConfig> TaskConfig = new ArrayList<>();
         public Map<String, String> Config = new HashMap<>();
     }
 
