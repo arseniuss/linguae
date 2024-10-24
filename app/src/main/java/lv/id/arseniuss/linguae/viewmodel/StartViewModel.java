@@ -26,10 +26,10 @@ import com.google.gson.reflect.TypeToken;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Type;
 import java.net.HttpURLConnection;
+import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -40,7 +40,6 @@ import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.core.Single;
 import io.reactivex.rxjava3.disposables.Disposable;
 import io.reactivex.rxjava3.schedulers.Schedulers;
-import lv.id.arseniuss.linguae.BuildConfig;
 import lv.id.arseniuss.linguae.Constants;
 import lv.id.arseniuss.linguae.R;
 import lv.id.arseniuss.linguae.data.ItemLanguageRepo;
@@ -180,9 +179,7 @@ public class StartViewModel extends AndroidViewModel implements LanguageDataPars
     }
 
     private void parseLanguageFile(boolean restart, String language, String languageUrl) {
-        Uri languageLocationUri = Uri.parse(languageUrl);
-
-        Disposable d = Single.fromCallable(() -> _dataParser.ParseLanguageFile(languageLocationUri, false))
+        Disposable d = Single.fromCallable(() -> _dataParser.ParseLanguageFile(languageUrl, false))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(success -> {
@@ -219,9 +216,8 @@ public class StartViewModel extends AndroidViewModel implements LanguageDataPars
     }
 
     private void parseRepository(String language, String languageUrl) {
-        Uri languageLocationUri = Uri.parse(languageUrl);
 
-        Disposable d = Single.fromCallable(() -> _dataParser.ParseRepository(languageLocationUri, false))
+        Disposable d = Single.fromCallable(() -> _dataParser.ParseRepository(languageUrl, false))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(success -> {
@@ -302,13 +298,14 @@ public class StartViewModel extends AndroidViewModel implements LanguageDataPars
     }
 
     @Override
-    public InputStream GetFile(Uri base, String filename) throws IOException {
-        String scheme = base.getScheme();
+    public InputStream GetFile(String base, String filename) throws Exception {
+        Uri baseUri = Uri.parse(base);
+        String scheme = baseUri.getScheme();
 
         if (ContentResolver.SCHEME_CONTENT.equals(scheme)) {
             // Handle content URI
             ContentResolver resolver = getApplication().getContentResolver();
-            Uri documentUri = getDocument(base, filename);
+            Uri documentUri = getDocument(baseUri, filename);
 
             if (documentUri == null) throw new NullPointerException();
 
@@ -321,9 +318,14 @@ public class StartViewModel extends AndroidViewModel implements LanguageDataPars
             return new FileInputStream(new File(path));
         }
         else if ("http".equals(scheme) || "https".equals(scheme)) {
-            // Handle HTTP/HTTPS URL
+            // TODO: Handle HTTP/HTTPS URL
             String path = base + "/" + filename;
-            URL url = new URL(path);
+
+            // I REALLY hate this
+            URI uri = new URI(path);
+            uri = uri.normalize(); // This is important
+            URL url = uri.toURL();
+
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 
             return connection.getInputStream();
@@ -339,11 +341,11 @@ public class StartViewModel extends AndroidViewModel implements LanguageDataPars
 
         switch (type) {
             case Log.ERROR:
-                if (BuildConfig.DEBUG) Log.i("INFORM", message);
+                Log.i("INFORM", message);
                 spanned = Html.fromHtml("<font color='#FF0000'>" + message + "</font>", Html.FROM_HTML_MODE_LEGACY);
                 break;
             case Log.INFO:
-                if (BuildConfig.DEBUG) Log.i("INFORM", message);
+                Log.i("INFORM", message);
             default:
                 spanned = Html.fromHtml(message, Html.FROM_HTML_MODE_LEGACY);
                 break;

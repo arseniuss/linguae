@@ -83,7 +83,7 @@ public class LanguageDataParser {
         _parserInterface.Inform(type, message);
     }
 
-    private InputStream getFile(Uri base, String filename) throws IOException {
+    private InputStream getFile(String base, String filename) throws Exception {
         return _parserInterface.GetFile(base, filename);
     }
 
@@ -414,7 +414,7 @@ public class LanguageDataParser {
         return words;
     }
 
-    private List<Task> parseTrainingFile(Uri base, Training t) throws Exception {
+    private List<Task> parseTrainingFile(String base, Training t) throws Exception {
         _filename = t.Filename;
 
         log(Log.INFO, "Parsing training file: " + t.Filename);
@@ -486,7 +486,7 @@ public class LanguageDataParser {
         return new ArrayList<>(tasks.values());
     }
 
-    private Collection<Task> parseLessonFile(Uri base, LessonWithAttrs l) throws Exception {
+    private Collection<Task> parseLessonFile(String base, LessonWithAttrs l) throws Exception {
         _filename = l.Lesson.Id;
 
         log(Log.INFO, "Parsing lesson file " + l.Lesson.Id);
@@ -597,10 +597,10 @@ public class LanguageDataParser {
         return ret;
     }
 
-    private void parseLanguageFile(Uri base) throws Exception {
+    private void parseLanguageFile(String base) throws Exception {
         _filename = "/Language.txt";
 
-        log(Log.INFO, "Parsing language file: " + base.toString() + _filename);
+        log(Log.INFO, "Parsing language file: " + base + _filename);
 
         InputStream languageFileStream = getFile(base, "Language.txt");
         LineNumberReader r = new LineNumberReader(new BufferedReader(new InputStreamReader(languageFileStream)));
@@ -825,7 +825,7 @@ public class LanguageDataParser {
         _languageFileParsed = true;
     }
 
-    public boolean ParseLanguageFile(Uri base, Boolean throwException) {
+    public boolean ParseLanguageFile(String base, Boolean throwException) {
         _throwError = throwException;
 
         try {
@@ -844,7 +844,7 @@ public class LanguageDataParser {
         return false;
     }
 
-    public boolean ParseRepository(Uri base, Boolean throwExceptions) {
+    public boolean ParseRepository(String base, Boolean throwExceptions) {
         _throwError = throwExceptions;
 
         try {
@@ -891,7 +891,7 @@ public class LanguageDataParser {
         return false;
     }
 
-    private Collection<Chapter> parseTheoryFile(Uri base, Theory theory) throws Exception {
+    private Collection<Chapter> parseTheoryFile(String base, Theory theory) throws Exception {
         _filename = theory.Id;
 
         log(Log.INFO, "Parsing theory file: " + _filename);
@@ -974,8 +974,7 @@ public class LanguageDataParser {
 
             log(Log.INFO, "Parsing portal " + portal.first);
 
-            Uri portalUri = Uri.parse(portal.second);
-            InputStream languageFileStream = getFile(portalUri, "Languages.txt");
+            InputStream languageFileStream = getFile(portal.second, "Languages.txt");
             LineNumberReader r = new LineNumberReader(new BufferedReader(new InputStreamReader(languageFileStream)));
 
             LanguagePortal languagePortal = new LanguagePortal();
@@ -1039,7 +1038,7 @@ public class LanguageDataParser {
     }
 
     public interface ParserInterface {
-        InputStream GetFile(Uri base, String filename) throws IOException;
+        InputStream GetFile(String base, String filename) throws Exception;
 
         void Inform(int type, String message);
     }
