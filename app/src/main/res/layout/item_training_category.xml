@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="viewmodel"
+            type="lv.id.arseniuss.linguae.viewmodel.TrainingSetupViewModel.TrainingCategoryViewModel" />
+
+        <variable
+            name="presenter"
+            type="lv.id.arseniuss.linguae.ui.activities.TrainingSetupActivity" />
+    </data>
+
+    <CheckBox
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:checked="@={viewmodel.GetChecked()}"
+        android:text="@{viewmodel.GetCategory()}"
+        tools:text="Task category and task description" />
+</layout>

@@ -60,4 +60,5 @@
     <string name="TitleTaskCountPerSession">Task count per session</string>
     <string name="TitleNoKeyboard">Enter answers without usage of keyboard</string>
     <string name="TitleTaskPreferences">Task preferences</string>
+    <string name="TitleStartTraining">Start training</string>
 </resources>

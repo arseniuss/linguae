@@ -90,5 +90,8 @@ public class TrainingsViewModel extends AndroidViewModel {
         @Bindable("TaskCount")
         public String getTaskCount() { return String.valueOf(_training.TaskCount); }
 
+        @Bindable("CategoryCount")
+        public int getCategoryCount() { return _training.CategoryCount; }
+
     }
 }

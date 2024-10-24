@@ -9,9 +9,16 @@ import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.List;
 
 import lv.id.arseniuss.linguae.R;
 import lv.id.arseniuss.linguae.databinding.ActivitySessionBinding;
+import lv.id.arseniuss.linguae.db.dataaccess.TaskDataAccess;
 import lv.id.arseniuss.linguae.tasks.AbstractTaskFragment;
 import lv.id.arseniuss.linguae.tasks.entities.SessionTaskData;
 import lv.id.arseniuss.linguae.tasks.ui.CasingFragment;
@@ -26,6 +33,7 @@ import lv.id.arseniuss.linguae.viewmodel.SessionViewModel;
 public class SessionActivity extends AppCompatActivity {
     public static final String LessonExtraTag = "LESSON";
     public static final String TrainingExtraTag = "TRAINING";
+    public static final String TrainingCategoriesExtraTag = "TRAINING_CATEGORIES";
 
     private final SessionActivity _this = this;
 
@@ -52,7 +60,14 @@ public class SessionActivity extends AppCompatActivity {
 
         if (i.hasExtra(LessonExtraTag)) { _model.LoadLesson(i.getStringExtra(LessonExtraTag), this::loaded); }
         else if (i.hasExtra(TrainingExtraTag)) {
-            _model.LoadTraining(i.getStringExtra(TrainingExtraTag), this::loaded);
+            Type listType = new TypeToken<List<TaskDataAccess.TrainingCategory>>() { }.getType();
+            List<TaskDataAccess.TrainingCategory> categories = new ArrayList<>();
+
+            if (i.hasExtra(TrainingCategoriesExtraTag)) {
+                categories = new Gson().fromJson(i.getStringExtra(TrainingCategoriesExtraTag), listType);
+            }
+
+            _model.LoadTraining(i.getStringExtra(TrainingExtraTag), categories, this::loaded);
         }
 
         getOnBackPressedDispatcher().addCallback(new OnBackPressedCallback(true) {

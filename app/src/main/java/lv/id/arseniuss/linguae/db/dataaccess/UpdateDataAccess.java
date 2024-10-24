@@ -23,6 +23,7 @@ import lv.id.arseniuss.linguae.db.entities.Task;
 import lv.id.arseniuss.linguae.db.entities.Theory;
 import lv.id.arseniuss.linguae.db.entities.TheoryChapterCrossref;
 import lv.id.arseniuss.linguae.db.entities.Training;
+import lv.id.arseniuss.linguae.db.entities.TrainingCategory;
 import lv.id.arseniuss.linguae.db.entities.TrainingTaskCrossref;
 
 @Dao
@@ -35,6 +36,9 @@ public abstract class UpdateDataAccess {
 
     @Insert
     protected abstract Completable InsertTrainings(List<Training> trainings);
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    protected abstract Completable InsertTrainingCategories(List<TrainingCategory> categories);
 
     @Query("DELETE FROM training")
     protected abstract Completable DeleteTrainings();
@@ -124,6 +128,7 @@ public abstract class UpdateDataAccess {
                         data.Trainings.values().stream().flatMap(t -> t.Tasks.stream()).collect(Collectors.toList())))
                 .andThen(InsertTrainings(
                         data.Trainings.values().stream().map(t -> t.Training).collect(Collectors.toList())))
+                .andThen(InsertTrainingCategories(data.TrainingCategories))
                 .andThen(InsertTrainingTaskCrossref(data.Trainings.values()
                         .stream()
                         .flatMap(t -> t.Tasks.stream()

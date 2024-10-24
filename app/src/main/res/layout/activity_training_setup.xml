@@ -14,12 +14,27 @@
             type="lv.id.arseniuss.linguae.ui.activities.TrainingSetupActivity" />
     </data>
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/categories"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:items="@{viewmodel.TrainingConfigs()}"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        tools:itemCount="5"
-        tools:listitem="@layout/item_training_config" />
+        android:orientation="vertical">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/tasks"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_gravity="top"
+            android:layout_weight="1"
+            app:items="@{viewmodel.Tasks()}"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            tools:itemCount="1"
+            tools:listitem="@layout/item_training_task" />
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:onClick="@{() -> presenter.StartTraining()}"
+            android:text="@string/TitleStartTraining" />
+    </LinearLayout>
 </layout>

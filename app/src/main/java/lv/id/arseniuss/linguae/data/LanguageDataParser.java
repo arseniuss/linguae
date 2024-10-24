@@ -35,6 +35,7 @@ import lv.id.arseniuss.linguae.db.entities.Task;
 import lv.id.arseniuss.linguae.db.entities.Theory;
 import lv.id.arseniuss.linguae.db.entities.TheoryWithChapters;
 import lv.id.arseniuss.linguae.db.entities.Training;
+import lv.id.arseniuss.linguae.db.entities.TrainingCategory;
 import lv.id.arseniuss.linguae.db.entities.TrainingWithTasks;
 import lv.id.arseniuss.linguae.db.tasks.CasingTask;
 import lv.id.arseniuss.linguae.db.tasks.ChooseTask;
@@ -454,6 +455,25 @@ public class LanguageDataParser {
                     }
 
                     tasks.put(task.Id, task);
+                    break;
+                case "category":
+                    if (words.length != 4) {
+                        logError("Expected format: category <task type> <category> <description>");
+                        continue;
+                    }
+
+                    TrainingCategory trainingCategory = new TrainingCategory();
+
+                    if ((trainingCategory.Task = TaskType.ValueOf(words[1])) == null) {
+                        logError("Unrecognized training category: " + words[1]);
+                        continue;
+                    }
+
+                    trainingCategory.TrainingId = t.Id;
+                    trainingCategory.Category = resolveReferences(words[2], references);
+                    trainingCategory.Description = resolveReferences(words[3], references);
+
+                    _data.TrainingCategories.add(trainingCategory);
                     break;
                 default:
                     logError("Unrecognized keyword in " + t.Filename + ": " + keyword);
@@ -1038,6 +1058,7 @@ public class LanguageDataParser {
         public List<String> Licences = new ArrayList<>();
         public String LanguageVersion = "";
         public Map<String, String> Config = new HashMap<>();
+        public List<TrainingCategory> TrainingCategories = new ArrayList<>();
     }
 
     public static class LanguagePortal {

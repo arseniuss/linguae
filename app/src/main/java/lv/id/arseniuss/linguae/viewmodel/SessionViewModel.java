@@ -83,10 +83,10 @@ public class SessionViewModel extends AndroidViewModel {
         _taskProgress.setValue((CurrentTaskIndex + 1) + "/" + _tasks.size());
     }
 
-    public void LoadTraining(String training, ILoaded loaded) {
+    public void LoadTraining(String training, List<TaskDataAccess.TrainingCategory> categories, ILoaded loaded) {
         int taskCount = _sharedPreferences.getInt(Constants.PreferenceTaskCountKey, 10);
 
-        Disposable d = _taskDataAccess.SelectTrainingTasks(training, taskCount)
+        Disposable d = _taskDataAccess.SelectTrainingTasks(training, taskCount, categories)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe((tasks) -> {

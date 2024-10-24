@@ -1,9 +1,5 @@
 package lv.id.arseniuss.linguae.ui.activities;
 
-import static lv.id.arseniuss.linguae.viewmodel.TrainingSetupViewModel.TrainingConfigViewModel;
-import static lv.id.arseniuss.linguae.viewmodel.TrainingSetupViewModel.TrainingConfigViewModel.SelectionViewModel;
-
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
@@ -13,18 +9,17 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.BindingAdapter;
 import androidx.databinding.DataBindingUtil;
-import androidx.databinding.ViewDataBinding;
-import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.gson.Gson;
 
 import java.util.List;
 
 import lv.id.arseniuss.linguae.R;
 import lv.id.arseniuss.linguae.databinding.ActivityTrainingSetupBinding;
-import lv.id.arseniuss.linguae.databinding.ItemTrainingConfigBinding;
-import lv.id.arseniuss.linguae.ui.AdapterLinearLayout;
-import lv.id.arseniuss.linguae.ui.MyAdapter;
+import lv.id.arseniuss.linguae.databinding.ItemTrainingCategoryBinding;
+import lv.id.arseniuss.linguae.databinding.ItemTrainingTaskBinding;
 import lv.id.arseniuss.linguae.ui.MyRecyclerViewAdapter;
 import lv.id.arseniuss.linguae.viewmodel.TrainingSetupViewModel;
 
@@ -35,10 +30,11 @@ public class TrainingSetupActivity extends AppCompatActivity {
     private ActivityTrainingSetupBinding _binding;
 
     @BindingAdapter("items")
-    public static void BindTrainingList(RecyclerView recyclerView, List<TrainingConfigViewModel> trainings)
+    public static void BindTrainingList(RecyclerView recyclerView,
+            List<TrainingSetupViewModel.TrainingTaskViewModel> trainings)
     {
-        MyRecyclerViewAdapter<TrainingConfigViewModel, ItemTrainingConfigBinding> adapter =
-                (MyRecyclerViewAdapter<TrainingConfigViewModel, ItemTrainingConfigBinding>) recyclerView.getAdapter();
+        MyRecyclerViewAdapter<TrainingSetupViewModel.TrainingTaskViewModel, ItemTrainingTaskBinding> adapter =
+                (MyRecyclerViewAdapter<TrainingSetupViewModel.TrainingTaskViewModel, ItemTrainingTaskBinding>) recyclerView.getAdapter();
 
         assert adapter != null;
         assert trainings != null;
@@ -47,17 +43,30 @@ public class TrainingSetupActivity extends AppCompatActivity {
     }
 
     @BindingAdapter("items")
-    public static void BindSelectionList(AdapterLinearLayout adapterLinearLayout,
-            List<TrainingConfigViewModel.SelectionViewModel> entries)
+    public static void BindCategoryList(RecyclerView recyclerView,
+            List<TrainingSetupViewModel.TrainingCategoryViewModel> categories)
     {
-        SelectionAdapter adapter = (SelectionAdapter) adapterLinearLayout.getAdapter();
+        MyRecyclerViewAdapter<TrainingSetupViewModel.TrainingCategoryViewModel, ItemTrainingCategoryBinding> adapter =
+                (MyRecyclerViewAdapter<TrainingSetupViewModel.TrainingCategoryViewModel, ItemTrainingCategoryBinding>) recyclerView.getAdapter();
 
         assert adapter != null;
-        assert entries != null;
+        assert categories != null;
 
-        adapter.clear();
-        adapter.addAll(entries);
-        adapter.notifyDataSetChanged();
+        adapter.Update(categories);
+    }
+
+    public void StartTraining() {
+        Intent i = getIntent();
+        String trainingId = i.getStringExtra(TRAINING);
+        Intent ni = new Intent(this, SessionActivity.class);
+
+        String json = new Gson().toJson(_model.GetTrainingCategories());
+
+        ni.putExtra(SessionActivity.TrainingExtraTag, trainingId);
+        ni.putExtra(SessionActivity.TrainingCategoriesExtraTag, json);
+
+        startActivity(ni);
+        finish();
     }
 
     @Override
@@ -78,7 +87,7 @@ public class TrainingSetupActivity extends AppCompatActivity {
         _binding.setLifecycleOwner(this);
 
         RecyclerView.Adapter adapter = getMyAdapter();
-        _binding.categories.setAdapter(adapter);
+        _binding.tasks.setAdapter(adapter);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
@@ -86,27 +95,27 @@ public class TrainingSetupActivity extends AppCompatActivity {
     }
 
     private RecyclerView.Adapter getMyAdapter() {
-        MyRecyclerViewAdapter<TrainingConfigViewModel, ItemTrainingConfigBinding> adapter =
-                new MyRecyclerViewAdapter<>(this, R.layout.item_training_config);
+        MyRecyclerViewAdapter<TrainingSetupViewModel.TrainingTaskViewModel, ItemTrainingTaskBinding> adapter =
+                new MyRecyclerViewAdapter<>(this, R.layout.item_training_task);
 
-        MyRecyclerViewAdapter<TrainingConfigViewModel, ItemTrainingConfigBinding>.OnBinded binded =
+        MyRecyclerViewAdapter<TrainingSetupViewModel.TrainingTaskViewModel, ItemTrainingTaskBinding>.OnBinded binded =
                 adapter.new OnBinded() {
 
                     @Override
-                    public void Binded(ItemTrainingConfigBinding binding, TrainingConfigViewModel item) {
-                        SelectionAdapter caterogyAdapter =
-                                new SelectionAdapter(_this, _this, R.layout.item_training_selection, null);
-                        SelectionAdapter descriptionAdapter =
-                                new SelectionAdapter(_this, _this, R.layout.item_training_selection, null);
-
-                        binding.categories.setAdapter(caterogyAdapter);
-                        binding.descriptions.setAdapter(descriptionAdapter);
+                    public void Binded(ItemTrainingTaskBinding binding,
+                            TrainingSetupViewModel.TrainingTaskViewModel item)
+                    {
                         binding.setPresenter(_this);
+                        if (binding.categories.getAdapter() == null) {
+                            binding.categories.setAdapter(
+                                    new MyRecyclerViewAdapter<TrainingSetupViewModel.TrainingCategoryViewModel,
+                                            ItemTrainingCategoryBinding>(
+                                            _this, R.layout.item_training_category));
+                        }
                     }
                 };
 
         adapter.SetOnBinded(binded);
-
         return adapter;
     }
 
@@ -118,28 +127,5 @@ public class TrainingSetupActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
-    }
-
-    public static class SelectionAdapter extends MyAdapter<SelectionViewModel> {
-
-        public SelectionAdapter(Context context, LifecycleOwner lifecycleOwner, int layout,
-                OnItemSelectedListener selectedListener)
-        {
-            super(context, lifecycleOwner, layout, selectedListener);
-        }
-
-        @Override
-        public MyAdapter<TrainingConfigViewModel.SelectionViewModel>.ViewHolder createViewHolder(
-                ViewDataBinding viewDataBinding)
-        {
-            return new SelectionViewHolder(viewDataBinding);
-        }
-
-        public class SelectionViewHolder extends MyAdapter<SelectionViewModel>.ViewHolder {
-
-            public SelectionViewHolder(ViewDataBinding viewDataBinding) {
-                super(viewDataBinding);
-            }
-        }
     }
 }

@@ -75,6 +75,7 @@
             android:contentDescription="@string/TrainingSettingsDescription"
             android:onClick="@{() -> presenter.OnSettingsClicked(viewmodel)}"
             android:padding="10dp"
+            android:visibility="@{viewmodel.categoryCount > 0}"
             app:srcCompat="@drawable/baseline_settings_24" />
     </LinearLayout>
 </layout>

@@ -92,7 +92,6 @@ public class TrainingsFragment extends Fragment {
 
         MyRecyclerViewAdapter<EntryViewModel, ItemTrainingBinding> adapter =
                 new MyRecyclerViewAdapter<>(this, R.layout.item_training, 0, selection -> {
-
                     String trainingId = _model.GetTraining(selection);
                     Intent i = new Intent(getContext(), SessionActivity.class);
 
