@@ -68,15 +68,14 @@ public class RepoEditActivity extends AppCompatActivity {
         binding.repos.setAdapter(new RepoEditAdapter(_model.Selected().getValue(), selection -> {
 
         }));
-    }
 
-    @Override
-    protected void onStart() {
-        Intent i = getIntent();
+        Integer selectedIndex = null;
 
-        super.onStart();
+        if (i.hasExtra(SELECT)) {
+            selectedIndex = i.getIntExtra(SELECT, 0);
+        }
 
-        _model.SetData(i.getStringExtra(DATA_ARRAY_JSON));
+        _model.SetData(i.getStringExtra(DATA_ARRAY_JSON), selectedIndex);
     }
 
     @Override
@@ -94,7 +93,8 @@ public class RepoEditActivity extends AppCompatActivity {
             return true;
         }
         else if (item.getItemId() == R.id.add) {
-            RepoEditViewModel.EditRepoViewModel model = new RepoEditViewModel.EditRepoViewModel();
+            Intent i = getIntent();
+            RepoEditViewModel.EditRepoViewModel model = new RepoEditViewModel.EditRepoViewModel(i.hasExtra(SELECT));
             EditRepoDialogFragment editRepoDialogFragment = new EditRepoDialogFragment(model);
 
             editRepoDialogFragment.SetOnSaveListener(() -> {
@@ -118,7 +118,7 @@ public class RepoEditActivity extends AppCompatActivity {
         setResult(RESULT_OK, i);
     }
 
-    static class RepoEditAdapter extends RecyclerView.Adapter<RepoEditAdapter.ItemLanguageRepoViewHolder> {
+    public static class RepoEditAdapter extends RecyclerView.Adapter<RepoEditAdapter.ItemLanguageRepoViewHolder> {
         private final OnSelectionChanged _changed;
         protected int _selected = -1;
         private List<RepoEditViewModel.EditRepoViewModel> _items = new ArrayList<>();
@@ -156,7 +156,7 @@ public class RepoEditActivity extends AppCompatActivity {
             void Changed(int selection);
         }
 
-        class ItemLanguageRepoViewHolder extends RecyclerView.ViewHolder {
+        public class ItemLanguageRepoViewHolder extends RecyclerView.ViewHolder {
             private final ItemLanguageRepoBinding _binding;
             private int _position;
 
@@ -175,18 +175,25 @@ public class RepoEditActivity extends AppCompatActivity {
                 };
 
                 _binding.radioLanguage.setOnClickListener(l);
-                _binding.editButton.setOnClickListener(v -> {
-                    EditRepoDialogFragment fragment = new EditRepoDialogFragment(_binding.getViewmodel());
+            }
 
-                    fragment.show(((AppCompatActivity) v.getContext()).getSupportFragmentManager(), "test");
-                });
-                _binding.deleteButton.setOnClickListener(v -> {
+            public void OnDeleteClick() {
+                if (_position >= 0 && _position < _items.size()) {
+                    _items.remove(_position);
+                    notifyItemRemoved(_position);
+                }
+            }
 
-                });
+            public void OnEditClick() {
+                EditRepoDialogFragment fragment = new EditRepoDialogFragment(_items.get(_position));
+                AppCompatActivity context = (AppCompatActivity) _binding.editButton.getContext();
+
+                fragment.show(context.getSupportFragmentManager(), "fragment-" + _position);
             }
 
             public void Bind(RepoEditViewModel.EditRepoViewModel item, Boolean checked, int position) {
-                _binding.setVariable(lv.id.arseniuss.linguae.BR.viewmodel, item);
+                _binding.setViewmodel(item);
+                _binding.setPresenter(this);
                 _binding.radioLanguage.setChecked(checked);
                 _position = position;
                 item.addOnPropertyChangedCallback(new Observable.OnPropertyChangedCallback() {

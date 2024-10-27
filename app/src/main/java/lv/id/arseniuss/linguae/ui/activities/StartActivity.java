@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.util.Pair;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -74,7 +75,6 @@ public class StartActivity extends AppCompatActivity {
 
         i.putExtra(RepoEditActivity.DATA_ARRAY_JSON, portalsJson);
         i.putExtra(RepoEditActivity.TITLE, R.string.TitleEditPortals);
-        i.putExtra(RepoEditActivity.SELECT, _model.SelectedPortal().getValue());
 
         startActivityForResult(i, REQUEST_EDIT_REPO);
     }
@@ -118,6 +118,24 @@ public class StartActivity extends AppCompatActivity {
         _binding.setLifecycleOwner(this);
         _binding.setVariable(BR.viewmodel, _model);
         _binding.setVariable(BR.presenter, this);
+
+        if (i.hasExtra(Constants.PreferenceLanguageKey) && i.hasExtra(Constants.PreferenceLanguageUrlKey)) {
+            _model.StartLanguageParsing(i.hasExtra(RESTART), i.getStringExtra(Constants.PreferenceLanguageKey),
+                    i.getStringExtra(Constants.PreferenceLanguageUrlKey), this::Continue, this::requestDatabaseUpdate);
+        }
+        else if (i.hasExtra(RESTART)) {
+            _model.StartPortalLoading(this::Inform);
+        }
+        else if (_model.HasSelectedLanguage()) {
+            _model.StartLanguageParsing(i.hasExtra(RESTART), this::Continue, this::requestDatabaseUpdate);
+        }
+        else {
+            _model.StartPortalLoading(this::Inform);
+        }
+    }
+
+    private void Inform(String message) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 
     private MyRecyclerViewAdapter<StartViewModel.LanguageViewModel, ItemStartLanguageBinding> getAdapter() {
@@ -146,27 +164,6 @@ public class StartActivity extends AppCompatActivity {
         if (i.hasExtra(RESTART)) return false;
 
         return _model.HasSelectedLanguage();
-    }
-
-    @Override
-    protected void onStart() {
-        Intent i = getIntent();
-
-        super.onStart();
-
-        if (i.hasExtra(Constants.PreferenceLanguageKey) && i.hasExtra(Constants.PreferenceLanguageUrlKey)) {
-            _model.StartLanguageParsing(i.hasExtra(RESTART), i.getStringExtra(Constants.PreferenceLanguageKey),
-                    i.getStringExtra(Constants.PreferenceLanguageUrlKey), this::Continue, this::requestDatabaseUpdate);
-        }
-        else if (i.hasExtra(RESTART)) {
-            _model.StartPortalLoading();
-        }
-        else if (_model.HasSelectedLanguage()) {
-            _model.StartLanguageParsing(i.hasExtra(RESTART), this::Continue, this::requestDatabaseUpdate);
-        }
-        else {
-            _model.StartPortalLoading();
-        }
     }
 
     public void Continue() {

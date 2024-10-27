@@ -970,70 +970,72 @@ public class LanguageDataParser {
 
     public ParserData GetData() { return _data; }
 
-    public List<LanguagePortal> ParsePortals(List<Pair<String, String>> portals) throws Exception {
+    public List<LanguagePortal> ParsePortals(List<Pair<String, String>> portals) {
         List<LanguagePortal> result = new ArrayList<>();
 
         for (Pair<String, String> portal : portals) {
 
-            log(Log.INFO, "Parsing portal " + portal.first);
-
-            InputStream languageFileStream = getFile(portal.second, "Languages.txt");
-            LineNumberReader r = new LineNumberReader(new BufferedReader(new InputStreamReader(languageFileStream)));
-
             LanguagePortal languagePortal = new LanguagePortal();
 
+            languagePortal.Name = portal.first;
             languagePortal.Location = portal.second;
 
-            String line;
-            while ((line = r.readLine()) != null) {
-                _line = r.getLineNumber();
-                String[] words = getWords(line, r);
+            try {
 
-                if (words.length == 0) continue;
+                InputStream languageFileStream = getFile(portal.second, "Languages.txt");
+                LineNumberReader r =
+                        new LineNumberReader(new BufferedReader(new InputStreamReader(languageFileStream)));
 
-                String keyword = words[0].trim().toLowerCase();
+                String line;
+                while ((line = r.readLine()) != null) {
+                    _line = r.getLineNumber();
+                    String[] words = getWords(line, r);
 
-                switch (keyword) {
-                    case "name":
-                        if (words.length != 2) {
-                            logError("Expected format: name <name>");
-                            continue;
-                        }
+                    if (words.length == 0) continue;
 
-                        if (!languagePortal.Name.isEmpty()) {
-                            logError("Portal name is set: " + languagePortal.Name);
-                            continue;
-                        }
+                    String keyword = words[0].trim().toLowerCase();
 
-                        languagePortal.Name = words[1];
-                        break;
-                    case "language":
-                        if (words.length != 4) {
-                            logError("Expected format: language <name> <directory> <image>");
-                            continue;
-                        }
+                    switch (keyword) {
+                        case "name":
+                            if (words.length != 2) {
+                                logError("Expected format: name <name>");
+                                continue;
+                            }
 
-                        Language language = new Language();
+                            languagePortal.Name = words[1];
+                            break;
+                        case "language":
+                            if (words.length != 4) {
+                                logError("Expected format: language <name> <directory> <image>");
+                                continue;
+                            }
 
-                        language.Name = words[1];
-                        language.Location = words[2];
-                        language.Image = words[3];
+                            Language language = new Language();
 
-                        if (!language.Location.startsWith(portal.second)) {
-                            language.Location = portal.second + "/" + language.Location;
-                        }
-                        if (!language.Image.startsWith(portal.second)) {
-                            language.Image = portal.second + "/" + language.Image;
-                        }
+                            language.Name = words[1];
+                            language.Location = words[2];
+                            language.Image = words[3];
 
-                        languagePortal.Languages.add(language);
-                        break;
-                    default:
-                        logError("Unrecognised keyword in portal file: " + keyword);
+                            if (!language.Location.startsWith(portal.second)) {
+                                language.Location = portal.second + "/" + language.Location;
+                            }
+                            if (!language.Image.startsWith(portal.second)) {
+                                language.Image = portal.second + "/" + language.Image;
+                            }
+
+                            languagePortal.Languages.add(language);
+                            break;
+                        default:
+                            logError("Unrecognised keyword in portal file: " + keyword);
+                    }
                 }
+
+                if (languagePortal.Name.isEmpty()) languagePortal.Name = portal.first;
+
+            } catch (Exception e) {
+                languagePortal.Error = e.toString();
             }
 
-            if (languagePortal.Name.isEmpty()) languagePortal.Name = portal.first;
             result.add(languagePortal);
         }
 
@@ -1067,6 +1069,7 @@ public class LanguageDataParser {
         public String Name = "";
         public String Location = "";
         public List<Language> Languages = new ArrayList<>();
+        public String Error = "";
 
         public LanguagePortal() {
 

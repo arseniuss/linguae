@@ -45,13 +45,14 @@ public class EditRepoDialogFragment extends DialogFragment {
         _binding = DataBindingUtil.inflate(inflater, R.layout.fragment_edit_language_repo, null, false);
 
         builder.setView(_binding.getRoot()).setPositiveButton(R.string.SaveButtonText, (dialog, which) -> {
-            _model.notifyChange();
+            //_model.notifyChange();
             if (_onSaved != null) _onSaved.Confirmed();
         }).setNegativeButton(R.string.CancelButtonText, (dialog, which) -> {
             Objects.requireNonNull(this.getDialog()).cancel();
         });
         _binding.setViewmodel(_model);
         _binding.setPresenter(this);
+        _binding.setLifecycleOwner(this);
 
         return builder.create();
     }

@@ -37,6 +37,7 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
+import io.reactivex.rxjava3.core.Completable;
 import io.reactivex.rxjava3.core.Single;
 import io.reactivex.rxjava3.disposables.Disposable;
 import io.reactivex.rxjava3.schedulers.Schedulers;
@@ -74,6 +75,9 @@ public class StartViewModel extends AndroidViewModel implements LanguageDataPars
 
     public StartViewModel(@NonNull Application application) {
         super(application);
+        _selectedPortal.observeForever(o -> {
+            loadLanguages();
+        });
     }
 
     public MutableLiveData<List<LanguageDataParser.LanguagePortal>> Portals() { return _portals; }
@@ -96,7 +100,9 @@ public class StartViewModel extends AndroidViewModel implements LanguageDataPars
         return !_sharedPreferences.getString(Constants.PreferenceLanguageKey, "").trim().isEmpty();
     }
 
-    public void StartPortalLoading() {
+    public void StartPortalLoading(WarningInterface warn) {
+        _warn = warn;
+
         List<ItemLanguageRepo> portals;
         String jsonPortals = _sharedPreferences.getString(Constants.PreferencePortalsKey, "");
 
@@ -114,7 +120,6 @@ public class StartViewModel extends AndroidViewModel implements LanguageDataPars
         savePortals(portals);
 
         reloadPortals(portals);
-
     }
 
     public void StartLanguageParsing(boolean restart, Callback continueCallback,
@@ -259,12 +264,25 @@ public class StartViewModel extends AndroidViewModel implements LanguageDataPars
         if (selectedPortalValue >= 0 && selectedPortalValue < portals.size()) {
             LanguageDataParser.LanguagePortal languagePortal = portals.get(selectedPortalValue);
 
-            _languages.setValue(
-                    languagePortal.Languages.stream().map(LanguageViewModel::new).collect(Collectors.toList()));
+            if (languagePortal.Error != null && !languagePortal.Error.isEmpty()) {
+                _hasError.setValue(true);
+                _errorMessage.setValue(languagePortal.Error);
+            }
+            else {
+                _hasError.setValue(false);
+                _errorMessage.setValue("");
+                _languages.setValue(
+                        languagePortal.Languages.stream().map(LanguageViewModel::new).collect(Collectors.toList()));
+            }
         }
     }
 
     private Uri getDocument(Uri base, String filename) {
+        return getDocument(base, filename, 0);
+    }
+
+    private Uri getDocument(Uri base, String filename, int lvl) {
+        Uri result = null;
         ContentResolver resolver = getApplication().getContentResolver();
         Uri childrenUri =
                 DocumentsContract.buildChildDocumentsUriUsingTree(base, DocumentsContract.getTreeDocumentId(base));
@@ -284,17 +302,21 @@ public class StartViewModel extends AndroidViewModel implements LanguageDataPars
 
                     // TODO: we shoudn't go deeper
 
-                    return getDocument(newTreeUri, filename);
+                    if (lvl < 3) result = getDocument(newTreeUri, filename, lvl + 1);
+                    break;
                 }
                 else {
                     if (displayName.equals(filename)) {
-                        return DocumentsContract.buildDocumentUriUsingTree(base, documentId);
+                        result = DocumentsContract.buildDocumentUriUsingTree(base, documentId);
+                        break;
                     }
                 }
             }
+
+            cursor.close();
         }
 
-        return null;
+        return result;
     }
 
     @Override
@@ -307,7 +329,7 @@ public class StartViewModel extends AndroidViewModel implements LanguageDataPars
             ContentResolver resolver = getApplication().getContentResolver();
             Uri documentUri = getDocument(baseUri, filename);
 
-            if (documentUri == null) throw new NullPointerException();
+            if (documentUri == null) throw new Exception("Could not find " + filename);
 
             return resolver.openInputStream(documentUri);
         }
@@ -337,29 +359,39 @@ public class StartViewModel extends AndroidViewModel implements LanguageDataPars
 
     @Override
     public void Inform(int type, String message) {
-        Spanned spanned;
 
-        switch (type) {
-            case Log.ERROR:
-                Log.i("INFORM", message);
-                spanned = Html.fromHtml("<font color='#FF0000'>" + message + "</font>", Html.FROM_HTML_MODE_LEGACY);
-                break;
-            case Log.INFO:
-                Log.i("INFORM", message);
-            default:
-                spanned = Html.fromHtml(message, Html.FROM_HTML_MODE_LEGACY);
-                break;
+        if (_warn != null) {
+            Completable.fromCallable(() -> {
+                _warn.Warn(message);
+                return true;
+            }).subscribeOn(AndroidSchedulers.mainThread()).subscribe();
         }
+        else {
 
-        SpannableStringBuilder spannableStringBuilder = new SpannableStringBuilder();
+            Spanned spanned;
 
-        spannableStringBuilder.append(_text);
-        spannableStringBuilder.append(Html.fromHtml("<br>", Html.FROM_HTML_MODE_LEGACY));
-        spannableStringBuilder.append(spanned);
+            switch (type) {
+                case Log.ERROR:
+                    Log.e("INFORM", message);
+                    spanned = Html.fromHtml("<font color='#FF0000'>" + message + "</font>", Html.FROM_HTML_MODE_LEGACY);
+                    break;
+                case Log.INFO:
+                    Log.i("INFORM", message);
+                default:
+                    spanned = Html.fromHtml(message, Html.FROM_HTML_MODE_LEGACY);
+                    break;
+            }
 
-        _text = spannableStringBuilder;
+            SpannableStringBuilder spannableStringBuilder = new SpannableStringBuilder();
 
-        _messages.postValue(_text);
+            spannableStringBuilder.append(_text);
+            spannableStringBuilder.append(Html.fromHtml("<br>", Html.FROM_HTML_MODE_LEGACY));
+            spannableStringBuilder.append(spanned);
+
+            _text = spannableStringBuilder;
+
+            _messages.postValue(_text);
+        }
     }
 
     public Pair<String, String> GetLanguage(int position) {
