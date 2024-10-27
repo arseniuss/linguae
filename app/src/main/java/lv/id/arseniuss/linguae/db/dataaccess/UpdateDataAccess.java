@@ -18,6 +18,7 @@ import lv.id.arseniuss.linguae.db.entities.Config;
 import lv.id.arseniuss.linguae.db.entities.Lesson;
 import lv.id.arseniuss.linguae.db.entities.LessonTaskCrossref;
 import lv.id.arseniuss.linguae.db.entities.LessonTheoryCrossref;
+import lv.id.arseniuss.linguae.db.entities.License;
 import lv.id.arseniuss.linguae.db.entities.Setting;
 import lv.id.arseniuss.linguae.db.entities.Task;
 import lv.id.arseniuss.linguae.db.entities.Theory;
@@ -76,6 +77,12 @@ public abstract class UpdateDataAccess {
     @Query("DELETE FROM theory_chapter")
     protected abstract Completable DeleteTheoryChapterCrossrefs();
 
+    @Query("DELETE FROM license")
+    protected abstract Completable DeleteLicenses();
+
+    @Insert
+    protected abstract Completable InsertLicenses(List<License> licenses);
+
     @Insert
     protected abstract Completable InsertChapters(List<Chapter> chapters);
 
@@ -112,7 +119,9 @@ public abstract class UpdateDataAccess {
                 .andThen(DeleteTheoryChapterCrossrefs())
                 .andThen(DeleteTheory())
                 .andThen(DeleteChapters())
+                .andThen(DeleteLicenses())
                 // -----
+                .andThen(InsertLicenses(data.Licences))
                 .andThen(InsertChapters(
                         data.Theory.values().stream().flatMap(t -> t.Chapters.stream()).collect(Collectors.toList())))
                 .andThen(InsertTheory(data.Theory.values().stream().map(t -> t.Theory).collect(Collectors.toList())))

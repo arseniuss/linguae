@@ -24,6 +24,7 @@ import io.reactivex.rxjava3.schedulers.Schedulers;
 import lv.id.arseniuss.linguae.Constants;
 import lv.id.arseniuss.linguae.R;
 import lv.id.arseniuss.linguae.Settings;
+import lv.id.arseniuss.linguae.Utilities;
 import lv.id.arseniuss.linguae.db.LanguageDatabase;
 import lv.id.arseniuss.linguae.db.dataaccess.MainDataAccess;
 import lv.id.arseniuss.linguae.db.entities.Setting;
@@ -67,7 +68,10 @@ public class PreferencesActivity extends AppCompatActivity {
             Disposable d = _mainDataAccess.SaveSetting(Settings.Get())
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(this::finish);
+                    .subscribe(this::finish, error -> {
+                        Utilities.printToastError(this, error);
+                        finish();
+                    });
 
             return true;
         }

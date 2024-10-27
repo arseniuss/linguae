@@ -34,7 +34,10 @@ public class TrainingsViewModel extends AndroidViewModel {
             LanguageDatabase.GetInstance(getApplication(), _language).GetTrainingsDataAccess();
     private final MainDataAccess _mainDataAccess =
             LanguageDatabase.GetInstance(getApplication(), _language).GetMainDataAccess();
+
     private final MutableLiveData<List<EntryViewModel>> _trainings;
+    private final MutableLiveData<Boolean> _hasError = new MutableLiveData<>(false);
+    private final MutableLiveData<String> _error = new MutableLiveData<>("");
 
     public TrainingsViewModel(@NonNull Application application) {
         super(application);
@@ -43,6 +46,10 @@ public class TrainingsViewModel extends AndroidViewModel {
 
         loadData();
     }
+
+    public MutableLiveData<Boolean> HasError() { return _hasError; }
+
+    public MutableLiveData<String> GetError() { return _error; }
 
     public LiveData<List<EntryViewModel>> Data() { return _trainings; }
 
@@ -66,8 +73,13 @@ public class TrainingsViewModel extends AndroidViewModel {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(result -> {
                     _trainings.setValue(result.stream().map(EntryViewModel::new).collect(Collectors.toList()));
-                });
+                }, this::handleError);
 
+    }
+
+    private void handleError(Throwable throwable) {
+        _hasError.setValue(true);
+        _error.setValue(throwable.getMessage());
     }
 
     public static class EntryViewModel extends BaseObservable {

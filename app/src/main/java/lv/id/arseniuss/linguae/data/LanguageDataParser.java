@@ -1,7 +1,6 @@
 package lv.id.arseniuss.linguae.data;
 
 import android.graphics.Bitmap;
-import android.net.Uri;
 import android.util.Log;
 import android.util.Pair;
 
@@ -9,7 +8,6 @@ import androidx.annotation.NonNull;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.LineNumberReader;
@@ -30,6 +28,7 @@ import java.util.stream.Stream;
 import lv.id.arseniuss.linguae.Utilities;
 import lv.id.arseniuss.linguae.db.entities.Chapter;
 import lv.id.arseniuss.linguae.db.entities.LessonWithAttrs;
+import lv.id.arseniuss.linguae.db.entities.License;
 import lv.id.arseniuss.linguae.db.entities.Setting;
 import lv.id.arseniuss.linguae.db.entities.Task;
 import lv.id.arseniuss.linguae.db.entities.Theory;
@@ -798,13 +797,17 @@ public class LanguageDataParser {
                     break;
                 case "license":
                 case "licence":
-                    if (words.length < 2) {
-                        logError("Expecting format: licence <text>");
+                    if (words.length < 3) {
+                        logError("Expecting format: licence <id> <text>");
                         continue;
                     }
 
-                    String licenceText = Arrays.stream(words).skip(1).collect(Collectors.joining(" "));
-                    _data.Licences.add(licenceText);
+                    License license = new License();
+
+                    license.Id = words[1];
+                    license.Text = resolveReferences(words[2], _references);
+
+                    _data.Licences.add(license);
                     break;
                 default:
                     logError("Unrecognised keyword in language file: " + keyword);
@@ -1054,7 +1057,7 @@ public class LanguageDataParser {
         public Map<String, TrainingWithTasks> Trainings = new HashMap<>();
         public Map<String, LessonWithAttrs> Lessons = new HashMap<>();
         public Map<String, TheoryWithChapters> Theory = new HashMap<>();
-        public List<String> Licences = new ArrayList<>();
+        public List<License> Licences = new ArrayList<>();
         public String LanguageVersion = "";
         public Map<String, String> Config = new HashMap<>();
         public List<TrainingCategory> TrainingCategories = new ArrayList<>();

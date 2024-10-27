@@ -31,14 +31,27 @@
 
         </com.google.android.material.appbar.AppBarLayout>
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/trainings"
+        <ViewSwitcher
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:items="@{viewmodel.Data()}"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            tools:itemCount="5"
-            tools:listitem="@layout/item_training" />
+            android:switchIndex="@{viewmodel.HasError() ? 1 : 0}">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/trainings"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:items="@{viewmodel.Data()}"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                tools:itemCount="5"
+                tools:listitem="@layout/item_training" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="10dp"
+                android:padding="10dp"
+                android:text="@{viewmodel.GetError()}" />
+        </ViewSwitcher>
 
     </LinearLayout>
 </layout>

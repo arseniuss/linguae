@@ -39,7 +39,11 @@ public class MainViewModel extends AndroidViewModel {
         Disposable d = _mainDataAccess.GetSettings()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(this::gotSettings);
+                .subscribe(this::gotSettings, this::handleError);
+    }
+
+    private void handleError(Throwable error) {
+        /* IGNORE */
     }
 
     private void gotSettings(List<Setting> settings) {

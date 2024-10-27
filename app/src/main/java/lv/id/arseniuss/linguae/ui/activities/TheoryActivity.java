@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -17,8 +16,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
 
-import io.noties.markwon.Markwon;
-import io.noties.markwon.ext.tables.TablePlugin;
 import lv.id.arseniuss.linguae.R;
 import lv.id.arseniuss.linguae.databinding.ActivityTheoryBinding;
 import lv.id.arseniuss.linguae.databinding.ItemChapterBinding;
@@ -45,16 +42,6 @@ public class TheoryActivity extends AppCompatActivity {
         assert chapters != null;
 
         adapter.Update(chapters);
-    }
-
-    @BindingAdapter("markdown")
-    public static void SetMarkdown(TextView textView, String text) {
-        if (text != null && !text.isEmpty()) {
-            final Markwon markwon =
-                    Markwon.builder(textView.getContext()).usePlugin(TablePlugin.create(textView.getContext())).build();
-
-            markwon.setMarkdown(textView, text);
-        }
     }
 
     @Override

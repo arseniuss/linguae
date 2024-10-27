@@ -14,6 +14,7 @@ import androidx.preference.PreferenceManager;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
@@ -29,8 +30,11 @@ public class TheoriesViewModel extends AndroidViewModel {
     private final String _language = _sharedPreferences.getString(Constants.PreferenceLanguageKey, "");
     private final TheoryDataAccess _theoryDataAccess =
             LanguageDatabase.GetInstance(getApplication(), _language).GetTheoryDataAccess();
+
     private final MutableLiveData<List<EntryViewModel>> _theories =
             new MutableLiveData<List<EntryViewModel>>(new ArrayList<>());
+    private final MutableLiveData<Boolean> _hasError = new MutableLiveData<>(false);
+    private final MutableLiveData<String> _error = new MutableLiveData<>("");
 
     public TheoriesViewModel(@NonNull Application application) {
         super(application);
@@ -39,6 +43,10 @@ public class TheoriesViewModel extends AndroidViewModel {
     }
 
     public LiveData<List<EntryViewModel>> Data() { return _theories; }
+
+    public MutableLiveData<Boolean> HasError() { return _hasError; }
+
+    public MutableLiveData<String> GetError() { return _error; }
 
     void loadData() {
         Disposable d = _theoryDataAccess.GetTheories()
@@ -49,19 +57,19 @@ public class TheoriesViewModel extends AndroidViewModel {
                             .sorted(Comparator.comparingInt(t -> t.Theory.Index))
                             .map(EntryViewModel::new)
                             .collect(Collectors.toList()));
-                });
+                }, this::handleError);
+    }
+
+    private void handleError(Throwable throwable) {
+        _hasError.setValue(true);
+        _error.setValue(throwable.getMessage());
     }
 
     public TheoryDataAccess.TheoryWithCount GetTheory(int selection) {
         TheoryDataAccess.TheoryWithCount res = null;
+        EntryViewModel viewModel = Objects.requireNonNull(_theories.getValue()).get(selection);
 
-        try {
-            EntryViewModel viewModel = _theories.getValue().get(selection);
-
-            res = viewModel._theory;
-        } catch (NullPointerException ignore) {
-
-        }
+        res = viewModel._theory;
 
         return res;
     }

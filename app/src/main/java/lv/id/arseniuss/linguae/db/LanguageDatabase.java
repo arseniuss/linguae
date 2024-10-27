@@ -10,6 +10,7 @@ import androidx.room.TypeConverters;
 import java.util.Objects;
 
 import lv.id.arseniuss.linguae.db.dataaccess.LessonDataAccess;
+import lv.id.arseniuss.linguae.db.dataaccess.LicenseDataAccess;
 import lv.id.arseniuss.linguae.db.dataaccess.MainDataAccess;
 import lv.id.arseniuss.linguae.db.dataaccess.SessionDataAccess;
 import lv.id.arseniuss.linguae.db.dataaccess.SummaryDataAccess;
@@ -22,6 +23,7 @@ import lv.id.arseniuss.linguae.db.entities.Config;
 import lv.id.arseniuss.linguae.db.entities.Lesson;
 import lv.id.arseniuss.linguae.db.entities.LessonTaskCrossref;
 import lv.id.arseniuss.linguae.db.entities.LessonTheoryCrossref;
+import lv.id.arseniuss.linguae.db.entities.License;
 import lv.id.arseniuss.linguae.db.entities.SessionResult;
 import lv.id.arseniuss.linguae.db.entities.Setting;
 import lv.id.arseniuss.linguae.db.entities.Task;
@@ -35,20 +37,21 @@ import lv.id.arseniuss.linguae.db.entities.TrainingTaskCrossref;
 @Database(version = 1, exportSchema = false, entities = {
         Lesson.class, LessonTaskCrossref.class, Setting.class, Task.class, Training.class, TrainingTaskCrossref.class,
         SessionResult.class, TaskResult.class, Chapter.class, Theory.class, TheoryChapterCrossref.class,
-        LessonTheoryCrossref.class, Config.class, TrainingCategory.class
+        LessonTheoryCrossref.class, Config.class, TrainingCategory.class, License.class
 })
 @TypeConverters({ DatabaseConverters.class })
 public abstract class LanguageDatabase extends RoomDatabase {
-    private static LanguageDatabase instance;
-    private String language;
+    private static LanguageDatabase _instance;
+    private String _language;
 
     public static synchronized LanguageDatabase GetInstance(Context context, String language) {
-        if (instance == null || !Objects.equals(instance.language, language)) {
-            instance = Room.databaseBuilder(context.getApplicationContext(), LanguageDatabase.class, language)
+        if (_instance == null || !Objects.equals(_instance._language, language)) {
+            _instance = Room.databaseBuilder(context.getApplicationContext(), LanguageDatabase.class, language)
                     .fallbackToDestructiveMigration()
                     .build();
+            _instance._language = language;
         }
-        return instance;
+        return _instance;
     }
 
     public abstract SummaryDataAccess GetSummaryDataAccess();
@@ -66,4 +69,6 @@ public abstract class LanguageDatabase extends RoomDatabase {
     public abstract MainDataAccess GetMainDataAccess();
 
     public abstract TheoryDataAccess GetTheoryDataAccess();
+
+    public abstract LicenseDataAccess GetLicenseDataAccess();
 }

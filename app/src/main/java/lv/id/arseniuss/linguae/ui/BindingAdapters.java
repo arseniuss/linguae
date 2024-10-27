@@ -4,6 +4,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.ViewSwitcher;
 
 import androidx.databinding.BindingAdapter;
@@ -12,12 +13,15 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+import io.noties.markwon.Markwon;
+import io.noties.markwon.ext.tables.TablePlugin;
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.core.Single;
 import io.reactivex.rxjava3.disposables.Disposable;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 
 public class BindingAdapters {
+
     @BindingAdapter("android:switchIndex")
     public static void SetSwitchIndex(ViewSwitcher viewSwitcher, int index) {
         if (index < viewSwitcher.getChildCount()) {
@@ -36,6 +40,16 @@ public class BindingAdapters {
             Disposable d = loadImage(urlString).subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(imageView::setImageBitmap, Throwable::printStackTrace);
+        }
+    }
+
+    @BindingAdapter("markdown")
+    public static void SetMarkdown(TextView textView, String text) {
+        if (text != null && !text.isEmpty()) {
+            final Markwon markwon =
+                    Markwon.builder(textView.getContext()).usePlugin(TablePlugin.create(textView.getContext())).build();
+
+            markwon.setMarkdown(textView, text);
         }
     }
 

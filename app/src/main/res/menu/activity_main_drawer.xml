@@ -20,5 +20,9 @@
             android:id="@+id/nav_theory"
             android:icon="@drawable/baseline_menu_book_24"
             android:title="@string/TitleTheories" />
+        <item
+            android:id="@+id/nav_license"
+            android:icon="@drawable/baseline_library_add_check_24"
+            android:title="@string/TitleLicenses" />
     </group>
 </menu>

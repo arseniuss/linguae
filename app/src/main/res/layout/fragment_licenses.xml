@@ -6,8 +6,12 @@
     <data>
 
         <variable
+            name="presenter"
+            type="lv.id.arseniuss.linguae.ui.fragments.LicensesFragment" />
+
+        <variable
             name="viewmodel"
-            type="lv.id.arseniuss.linguae.viewmodel.TheoriesViewModel" />
+            type="lv.id.arseniuss.linguae.viewmodel.LicenseViewModel" />
     </data>
 
     <LinearLayout
@@ -27,23 +31,23 @@
                 android:layout_height="?attr/actionBarSize"
                 android:elevation="4dp"
                 app:popupTheme="@style/MyAppTheme"
-                app:title="@string/TitleTheories" />
+                app:title="@string/TitleLicenses" />
 
         </com.google.android.material.appbar.AppBarLayout>
 
         <ViewSwitcher
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:switchIndex="@{viewmodel.HasError() ? 1 :0}">
+            android:switchIndex="@{viewmodel.HasError() ? 1 : 0}">
 
             <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/theories"
+                android:id="@+id/licenses"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                app:items="@{viewmodel.Data()}"
+                app:items="@{viewmodel.GetLicenses()}"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 tools:itemCount="5"
-                tools:listitem="@layout/item_theory" />
+                tools:listitem="@layout/item_license" />
 
             <TextView
                 android:layout_width="match_parent"

@@ -33,7 +33,10 @@ public class LessonsViewModel extends AndroidViewModel {
     private final String _language = _sharedPreferences.getString(Constants.PreferenceLanguageKey, "");
     private final LessonDataAccess _lessonDataAccess =
             LanguageDatabase.GetInstance(getApplication(), _language).GetLessonsDataAccess();
+
     private final MutableLiveData<List<EntryViewModel>> _lessons;
+    private final MutableLiveData<Boolean> _hasError = new MutableLiveData<>(false);
+    private final MutableLiveData<String> _error = new MutableLiveData<>("");
 
     public LessonsViewModel(@NonNull Application application) {
         super(application);
@@ -43,6 +46,10 @@ public class LessonsViewModel extends AndroidViewModel {
         Load();
     }
 
+    public MutableLiveData<Boolean> HasError() { return _hasError; }
+
+    public MutableLiveData<String> GetError() { return _error; }
+
     public LiveData<List<EntryViewModel>> Data() { return _lessons; }
 
     public void Load() {
@@ -51,8 +58,13 @@ public class LessonsViewModel extends AndroidViewModel {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(lessons -> {
                     _lessons.setValue(lessons.stream().map(EntryViewModel::new).collect(Collectors.toList()));
-                });
+                }, this::handleError);
 
+    }
+
+    private void handleError(Throwable throwable) {
+        _hasError.setValue(true);
+        _error.setValue(throwable.getMessage());
     }
 
     public LessonDataAccess.LessonWithCount GetLesson(int selection) {

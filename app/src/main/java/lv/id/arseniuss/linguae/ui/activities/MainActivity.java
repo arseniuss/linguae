@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.widget.ImageView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.databinding.DataBindingUtil;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
@@ -31,14 +32,17 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         _model = new ViewModelProvider(this).get(MainViewModel.class);
-        _binding = ActivityMainBinding.inflate(getLayoutInflater());
-        setContentView(_binding.getRoot());
+        _binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
+
+        _binding.setViewmodel(_model);
+        _binding.setPresenter(this);
+        _binding.setLifecycleOwner(this);
 
         DrawerLayout drawer = _binding.drawerLayout;
 
-        _appBarConfiguration = new AppBarConfiguration.Builder(R.id.nav_summary, R.id.nav_lessons, R.id.nav_training,
-                R.id.nav_theory).setOpenableLayout(drawer).build();
-
+        _appBarConfiguration =
+                new AppBarConfiguration.Builder(R.id.nav_summary, R.id.nav_lessons, R.id.nav_training, R.id.nav_theory,
+                        R.id.nav_license).setOpenableLayout(drawer).build();
     }
 
     public void SetupDrawer() {

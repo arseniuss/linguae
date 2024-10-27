@@ -7,6 +7,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.Base64;
 import android.util.TypedValue;
+import android.widget.Toast;
 
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
@@ -108,5 +109,9 @@ public class Utilities {
             e.printStackTrace();
             return null;
         }
+    }
+
+    public static void printToastError(Context context, Throwable error) {
+        Toast.makeText(context, error.getMessage(), Toast.LENGTH_SHORT).show();
     }
 }
