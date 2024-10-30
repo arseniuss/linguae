@@ -1,11 +1,7 @@
 package lv.id.arseniuss.linguae.viewmodel;
 
 import android.app.Application;
-import android.content.ContentResolver;
 import android.content.SharedPreferences;
-import android.database.Cursor;
-import android.net.Uri;
-import android.provider.DocumentsContract;
 import android.text.Html;
 import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
@@ -24,13 +20,8 @@ import androidx.preference.PreferenceManager;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.InputStream;
 import java.lang.reflect.Type;
-import java.net.HttpURLConnection;
-import java.net.URI;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -43,6 +34,7 @@ import io.reactivex.rxjava3.disposables.Disposable;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 import lv.id.arseniuss.linguae.Constants;
 import lv.id.arseniuss.linguae.R;
+import lv.id.arseniuss.linguae.Utilities;
 import lv.id.arseniuss.linguae.data.ItemLanguageRepo;
 import lv.id.arseniuss.linguae.data.LanguageDataParser;
 import lv.id.arseniuss.linguae.db.LanguageDatabase;
@@ -277,84 +269,9 @@ public class StartViewModel extends AndroidViewModel implements LanguageDataPars
         }
     }
 
-    private Uri getDocument(Uri base, String filename) {
-        return getDocument(base, filename, 0);
-    }
-
-    private Uri getDocument(Uri base, String filename, int lvl) {
-        Uri result = null;
-        ContentResolver resolver = getApplication().getContentResolver();
-        Uri childrenUri =
-                DocumentsContract.buildChildDocumentsUriUsingTree(base, DocumentsContract.getTreeDocumentId(base));
-        Cursor cursor = resolver.query(childrenUri, new String[]{
-                DocumentsContract.Document.COLUMN_DOCUMENT_ID, DocumentsContract.Document.COLUMN_DISPLAY_NAME,
-                DocumentsContract.Document.COLUMN_MIME_TYPE
-        }, null, null, null);
-
-        if (cursor != null) {
-            while (cursor.moveToNext()) {
-                String documentId = cursor.getString(0);
-                String displayName = cursor.getString(1);
-                String mimeType = cursor.getString(2);
-
-                if (DocumentsContract.Document.MIME_TYPE_DIR.equals(mimeType)) {
-                    Uri newTreeUri = DocumentsContract.buildChildDocumentsUriUsingTree(base, documentId);
-
-                    // TODO: we shoudn't go deeper
-
-                    if (lvl < 3) result = getDocument(newTreeUri, filename, lvl + 1);
-                    break;
-                }
-                else {
-                    if (displayName.equals(filename)) {
-                        result = DocumentsContract.buildDocumentUriUsingTree(base, documentId);
-                        break;
-                    }
-                }
-            }
-
-            cursor.close();
-        }
-
-        return result;
-    }
-
     @Override
-    public InputStream GetFile(String base, String filename) throws Exception {
-        Uri baseUri = Uri.parse(base);
-        String scheme = baseUri.getScheme();
-
-        if (ContentResolver.SCHEME_CONTENT.equals(scheme)) {
-            // Handle content URI
-            ContentResolver resolver = getApplication().getContentResolver();
-            Uri documentUri = getDocument(baseUri, filename);
-
-            if (documentUri == null) throw new Exception("Could not find " + filename);
-
-            return resolver.openInputStream(documentUri);
-        }
-        else if (ContentResolver.SCHEME_FILE.equals(scheme)) {
-            // Handle file URI
-            String path = base + "/" + filename;
-
-            return new FileInputStream(new File(path));
-        }
-        else if ("http".equals(scheme) || "https".equals(scheme)) {
-            // TODO: Handle HTTP/HTTPS URL
-            String path = base + "/" + filename;
-
-            // I REALLY hate this
-            URI uri = new URI(path);
-            uri = uri.normalize(); // This is important
-            URL url = uri.toURL();
-
-            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-
-            return connection.getInputStream();
-        }
-        else {
-            throw new IllegalArgumentException("Unsupported URI scheme: " + scheme);
-        }
+    public InputStream GetFile(String filename) throws Exception {
+        return Utilities.GetInputStream(getApplication(), filename);
     }
 
     @Override

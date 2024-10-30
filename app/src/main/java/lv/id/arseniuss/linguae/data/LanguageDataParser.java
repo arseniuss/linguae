@@ -1,6 +1,7 @@
 package lv.id.arseniuss.linguae.data;
 
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.util.Log;
 import android.util.Pair;
 
@@ -82,8 +83,8 @@ public class LanguageDataParser {
         _parserInterface.Inform(type, message);
     }
 
-    private InputStream getFile(String base, String filename) throws Exception {
-        return _parserInterface.GetFile(base, filename);
+    private InputStream getFile(String filename) throws Exception {
+        return _parserInterface.GetFile(filename);
     }
 
     private void logError(String error) throws ParserException {
@@ -418,7 +419,7 @@ public class LanguageDataParser {
 
         log(Log.INFO, "Parsing training file: " + t.Filename);
 
-        InputStream trainingFileStream = getFile(base, t.Filename);
+        InputStream trainingFileStream = getFile(base + "/" + t.Filename);
         LineNumberReader r = new LineNumberReader(new BufferedReader(new InputStreamReader(trainingFileStream)));
 
         Map<String, Task> tasks = new HashMap<>();
@@ -490,7 +491,7 @@ public class LanguageDataParser {
 
         log(Log.INFO, "Parsing lesson file " + l.Lesson.Id);
 
-        InputStream lessonFileStream = getFile(base, l.Lesson.Id);
+        InputStream lessonFileStream = getFile(base + "/" + l.Lesson.Id);
         LineNumberReader r = new LineNumberReader(new BufferedReader(new InputStreamReader(lessonFileStream)));
         Map<String, Task> lessonTasks = new HashMap<>();
         Map<String, String> references = new HashMap<>();
@@ -601,7 +602,7 @@ public class LanguageDataParser {
 
         log(Log.INFO, "Parsing language file: " + base + _filename);
 
-        InputStream languageFileStream = getFile(base, "Language.txt");
+        InputStream languageFileStream = getFile(base + "/Language.txt");
         LineNumberReader r = new LineNumberReader(new BufferedReader(new InputStreamReader(languageFileStream)));
 
         String languageName = "";
@@ -700,7 +701,8 @@ public class LanguageDataParser {
 
                     _data.Config.put("image-url", imageUrl);
                     if (_saveImages) {
-                        Bitmap bitmap = Utilities.GetImage(imageUrl);
+                        InputStream inputStream = getFile(imageUrl);
+                        Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
 
                         if (bitmap == null) {
                             logError("Cannot get image: " + imageUrl);
@@ -899,7 +901,7 @@ public class LanguageDataParser {
 
         log(Log.INFO, "Parsing theory file: " + _filename);
 
-        InputStream languageFileStream = getFile(base, _filename);
+        InputStream languageFileStream = getFile(base + "/" + theory.Id);
         LineNumberReader r = new LineNumberReader(new BufferedReader(new InputStreamReader(languageFileStream)));
         Map<String, Chapter> theoryChapters = new HashMap<>();
         Map<String, String> references = new HashMap<>();
@@ -982,7 +984,7 @@ public class LanguageDataParser {
 
             try {
 
-                InputStream languageFileStream = getFile(portal.second, "Languages.txt");
+                InputStream languageFileStream = getFile(portal.second + "/Languages.txt");
                 LineNumberReader r =
                         new LineNumberReader(new BufferedReader(new InputStreamReader(languageFileStream)));
 
@@ -1043,7 +1045,7 @@ public class LanguageDataParser {
     }
 
     public interface ParserInterface {
-        InputStream GetFile(String base, String filename) throws Exception;
+        InputStream GetFile(String filename) throws Exception;
 
         void Inform(int type, String message);
     }
