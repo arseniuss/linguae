@@ -20,7 +20,6 @@ import java.util.List;
 
 import lv.id.arseniuss.linguae.R;
 import lv.id.arseniuss.linguae.databinding.FragmentLessonsBinding;
-import lv.id.arseniuss.linguae.databinding.ItemChapterBinding;
 import lv.id.arseniuss.linguae.databinding.ItemLessonBinding;
 import lv.id.arseniuss.linguae.db.dataaccess.LessonDataAccess;
 import lv.id.arseniuss.linguae.ui.MyRecyclerViewAdapter;
