@@ -86,12 +86,6 @@ public class LicensesFragment extends Fragment {
         return _binding.getRoot();
     }
 
-    @Override
-    public void onStart() {
-        super.onStart();
-        _model.Start();
-    }
-
     @NonNull
     private RecyclerView.Adapter getMyAdapter() {
 

@@ -56,6 +56,11 @@
         <item name="windowNoTitle">true</item>
     </style>
 
+    <style name="MyAppTheme.Button" parent="MyAppTheme.Rounded">
+        <item name="android:clickable">true</item>
+        <item name="android:focusable">true</item>
+    </style>
+
     <style name="MyAppTheme.Rounded" parent="MyAppTheme">
         <item name="android:paddingLeft">10dp</item>
         <item name="android:paddingRight">10dp</item>

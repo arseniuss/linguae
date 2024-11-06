@@ -36,6 +36,8 @@ public class LicenseViewModel extends AndroidViewModel {
 
     public LicenseViewModel(Application app) {
         super(app);
+
+        load();
     }
 
     public MutableLiveData<Boolean> HasError() { return _hasError; }
@@ -44,7 +46,7 @@ public class LicenseViewModel extends AndroidViewModel {
 
     public MutableLiveData<List<EntryViewModel>> GetLicenses() { return _licenses; }
 
-    public void Start() {
+    private void load() {
         Disposable d = _licenseDataAccess.GetLicenses()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())

@@ -560,6 +560,20 @@ public class LanguageDataParser {
 
                     lessonTasks.put(task.Id, task);
                     break;
+                case "chapter":
+                    if (words.length != 4) {
+                        logError("Expected format: chapter <id> <translation> <explanation>");
+                        continue;
+                    }
+
+                    Chapter chapter = new Chapter();
+
+                    chapter.Id = words[1];
+                    chapter.Explanation = resolveReferences(words[3], references);
+                    chapter.Translation = resolveReferences(words[2], references);
+
+                    l.Chapters.add(chapter);
+                    break;
                 case "task-ref":
                     if (words.length != 2) {
                         logError("Expecting format: task-ref <filename-id>");
@@ -954,8 +968,8 @@ public class LanguageDataParser {
                     Chapter chapter = new Chapter();
 
                     chapter.Id = words[1];
-                    chapter.Explanation = resolveReferences(words[2], references);
-                    chapter.Translation = resolveReferences(words[3], references);
+                    chapter.Explanation = resolveReferences(words[3], references);
+                    chapter.Translation = resolveReferences(words[2], references);
 
                     theoryChapters.put(chapter.Id, chapter);
                     break;

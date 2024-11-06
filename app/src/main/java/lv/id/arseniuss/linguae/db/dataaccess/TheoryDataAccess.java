@@ -14,15 +14,14 @@ import lv.id.arseniuss.linguae.db.entities.Theory;
 @Dao
 public abstract class TheoryDataAccess {
     @Query("SELECT t.*, COUNT(tc.chapter_id) AS chapter_count FROM theory t LEFT JOIN theory_chapter tc ON t.id = tc" +
-           ".theory_id  GROUP BY t.id")
+            ".theory_id  GROUP BY t.id")
     public abstract Single<List<TheoryWithCount>> GetTheories();
 
-    @Query("SELECT c.* FROM chapter c INNER JOIN theory_chapter tc ON c.id = tc.chapter_id INNER JOIN lesson_theory " +
-           "lt " + "ON lt.theory_id = tc.theory_id WHERE lt.lesson_id = :lessonId")
+    @Query("SELECT c.* FROM chapter c INNER JOIN lesson_chapter lc ON lc.chapter_id = c.id WHERE lc.lesson_id = :lessonId")
     public abstract Single<List<Chapter>> GetLessonChapters(String lessonId);
 
     @Query("SELECT c.* FROM chapter c INNER JOIN theory_chapter tc ON tc.chapter_id = c.id WHERE tc.theory_id = " +
-           ":theoryId")
+            ":theoryId")
     public abstract Single<List<Chapter>> GetTheoryChapters(String theoryId);
 
     public static class TheoryWithCount {

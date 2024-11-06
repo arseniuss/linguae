@@ -103,8 +103,8 @@ public class LessonsViewModel extends AndroidViewModel {
         public String getFilename() { return _lesson.Lesson.Id; }
 
         @Bindable("Description")
-        public Spanned getDescription() {
-            return Html.fromHtml(_lesson.Lesson.Description, Html.FROM_HTML_MODE_LEGACY);
+        public String getDescription() {
+            return _lesson.Lesson.Description;
         }
 
         @Bindable("TaskCount")
@@ -112,8 +112,9 @@ public class LessonsViewModel extends AndroidViewModel {
             return _lesson.DoneCount + "/" + _lesson.TaskCount;
         }
 
-        public int getTheoryCount() {
-            return _lesson.TheoryCount;
+        @Bindable("TheoryCount")
+        public String getTheoryCount() {
+            return String.valueOf(_lesson.TheoryCount);
         }
     }
 }

@@ -16,6 +16,7 @@ import lv.id.arseniuss.linguae.data.TaskType;
 import lv.id.arseniuss.linguae.db.entities.Chapter;
 import lv.id.arseniuss.linguae.db.entities.Config;
 import lv.id.arseniuss.linguae.db.entities.Lesson;
+import lv.id.arseniuss.linguae.db.entities.LessonChapterCrossref;
 import lv.id.arseniuss.linguae.db.entities.LessonTaskCrossref;
 import lv.id.arseniuss.linguae.db.entities.LessonTheoryCrossref;
 import lv.id.arseniuss.linguae.db.entities.License;
@@ -71,11 +72,14 @@ public abstract class UpdateDataAccess {
     @Query("DELETE FROM chapter")
     protected abstract Completable DeleteChapters();
 
+    @Query("DELETE FROM lesson_chapter")
+    protected abstract Completable DeleteLessonChapters();
+
     @Query("DELETE FROM theory")
     protected abstract Completable DeleteTheory();
 
     @Query("DELETE FROM theory_chapter")
-    protected abstract Completable DeleteTheoryChapterCrossrefs();
+    protected abstract Completable DeleteTheoryChapter();
 
     @Query("DELETE FROM license")
     protected abstract Completable DeleteLicenses();
@@ -95,14 +99,16 @@ public abstract class UpdateDataAccess {
     @Insert
     protected abstract Completable InsertLessonTheoryCrossref(List<LessonTheoryCrossref> crossrefs);
 
+    @Insert
+    protected abstract Completable InsertLessonChapterCrossref(List<LessonChapterCrossref> crossrefs);
+
     @Query("DELETE FROM lesson_theory")
     public abstract Completable DeleteLessonTheoryCrossref();
 
     @Query("SELECT value FROM config WHERE `key` = 'version'")
     public abstract Maybe<String> GetVersion();
 
-    public Completable PerformUpdate(LanguageDataParser.ParserData data)
-    {
+    public Completable PerformUpdate(LanguageDataParser.ParserData data) {
         return InsertSettings(data.Settings.values())
                 // -----
                 .andThen(InsertConfig(data.Config.entrySet()
@@ -116,7 +122,8 @@ public abstract class UpdateDataAccess {
                 .andThen(DeleteLessonTheoryCrossref())
                 .andThen(DeleteLessons())
                 .andThen(DeleteTasks())
-                .andThen(DeleteTheoryChapterCrossrefs())
+                .andThen(DeleteLessonChapters())
+                .andThen(DeleteTheoryChapter())
                 .andThen(DeleteTheory())
                 .andThen(DeleteChapters())
                 .andThen(DeleteLicenses())
@@ -124,6 +131,7 @@ public abstract class UpdateDataAccess {
                 .andThen(InsertLicenses(data.Licences))
                 .andThen(InsertChapters(
                         data.Theory.values().stream().flatMap(t -> t.Chapters.stream()).collect(Collectors.toList())))
+                .andThen(InsertChapters(data.Lessons.values().stream().flatMap(t -> t.Chapters.stream()).collect(Collectors.toList())))
                 .andThen(InsertTheory(data.Theory.values().stream().map(t -> t.Theory).collect(Collectors.toList())))
                 .andThen(InsertTheoryChapterCrossref(data.Theory.values()
                         .stream()
@@ -151,6 +159,13 @@ public abstract class UpdateDataAccess {
                         .stream()
                         .flatMap(l -> l.Tasks.stream())
                         .filter(t -> t.Type != TaskType.UnknownTask)
+                        .collect(Collectors.toList())))
+                .andThen(InsertLessonChapterCrossref(data.Lessons.values()
+                        .stream()
+                        .flatMap(l -> l.Chapters.stream()
+                                .map(c -> new LessonChapterCrossref(l.Lesson.Id, c.Id))
+                                .collect(Collectors.toList())
+                                .stream())
                         .collect(Collectors.toList())))
                 .andThen(InsertLessonTheoryCrossref(data.Lessons.values()
                         .stream()

@@ -20,6 +20,7 @@ import java.util.List;
 
 import lv.id.arseniuss.linguae.R;
 import lv.id.arseniuss.linguae.databinding.FragmentLessonsBinding;
+import lv.id.arseniuss.linguae.databinding.ItemChapterBinding;
 import lv.id.arseniuss.linguae.databinding.ItemLessonBinding;
 import lv.id.arseniuss.linguae.db.dataaccess.LessonDataAccess;
 import lv.id.arseniuss.linguae.ui.MyRecyclerViewAdapter;
@@ -27,17 +28,16 @@ import lv.id.arseniuss.linguae.ui.activities.MainActivity;
 import lv.id.arseniuss.linguae.ui.activities.SessionActivity;
 import lv.id.arseniuss.linguae.ui.activities.TheoryActivity;
 import lv.id.arseniuss.linguae.viewmodel.LessonsViewModel;
-import lv.id.arseniuss.linguae.viewmodel.LessonsViewModel.EntryViewModel;
 
 public class LessonsFragment extends Fragment {
-
+    private final LessonsFragment _this = this;
     private FragmentLessonsBinding _binding;
     private LessonsViewModel _model;
 
     @BindingAdapter("items")
     public static void BindLessonList(RecyclerView recyclerView, List<LessonsViewModel.EntryViewModel> lessons) {
         MyRecyclerViewAdapter<LessonsViewModel.EntryViewModel, ItemLessonBinding> adapter =
-                (MyRecyclerViewAdapter<EntryViewModel, ItemLessonBinding>) recyclerView.getAdapter();
+                (MyRecyclerViewAdapter<LessonsViewModel.EntryViewModel, ItemLessonBinding>) recyclerView.getAdapter();
 
         assert adapter != null;
         assert lessons != null;
@@ -83,7 +83,7 @@ public class LessonsFragment extends Fragment {
     }
 
     private RecyclerView.Adapter getAdapter() {
-        MyRecyclerViewAdapter<EntryViewModel, ItemLessonBinding> adapter =
+        MyRecyclerViewAdapter<LessonsViewModel.EntryViewModel, ItemLessonBinding> adapter =
                 new MyRecyclerViewAdapter<>(this, R.layout.item_lesson, 0, selection -> {
                     LessonDataAccess.LessonWithCount lesson = _model.GetLesson(selection);
 
@@ -96,24 +96,26 @@ public class LessonsFragment extends Fragment {
                     }
                 });
 
-        adapter.SetOnLongClickListener(selection -> {
-            LessonDataAccess.LessonWithCount lesson = _model.GetLesson(selection);
+        MyRecyclerViewAdapter<LessonsViewModel.EntryViewModel, ItemLessonBinding>.OnBinded binded =
+                adapter.new OnBinded() {
+                    @Override
+                    public void Binded(ItemLessonBinding binding, LessonsViewModel.EntryViewModel item) {
+                        binding.setPresenter(_this);
+                    }
+                };
 
-            if (lesson != null && lesson.TheoryCount > 0 && !lesson.Lesson.Id.isEmpty()) {
-                Intent i = new Intent(getContext(), TheoryActivity.class);
-
-                i.putExtra(TheoryActivity.LessonExtraTag, lesson.Lesson.Id);
-                i.putExtra(TheoryActivity.LessonNameExtraTag, lesson.Lesson.Name);
-
-                startActivity(i);
-
-                return true;
-            }
-
-            return true;
-        });
+        adapter.SetOnBinded(binded);
 
         return adapter;
+    }
+
+    public void OnLessonClick(LessonsViewModel.EntryViewModel entryViewModel) {
+        Intent i = new Intent(getContext(), TheoryActivity.class);
+
+        i.putExtra(TheoryActivity.LessonExtraTag, entryViewModel.getNo());
+        i.putExtra(TheoryActivity.LessonNameExtraTag, entryViewModel.getName());
+
+        startActivity(i);
     }
 
     @Override

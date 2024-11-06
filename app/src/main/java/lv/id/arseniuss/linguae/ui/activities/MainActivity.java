@@ -54,17 +54,16 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onStart() {
+        super.onStart();
+        _model.Start(this::onStarted);
+    }
+
+    @Override
     public boolean onSupportNavigateUp() {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
 
         return NavigationUI.navigateUp(navController, _appBarConfiguration) || super.onSupportNavigateUp();
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-
-        _model.Start(this::onStarted);
     }
 
     private void onStarted() {

@@ -59,8 +59,7 @@ public class TheoryActivity extends AppCompatActivity {
 
         if (i.hasExtra(TheoryExtraTag)) {
             _model.LoadTheory(i.getStringExtra(TheoryExtraTag));
-        }
-        else if (i.hasExtra(LessonExtraTag)) {
+        } else if (i.hasExtra(LessonExtraTag)) {
             _model.LoadLesson(i.getStringExtra(LessonExtraTag));
         }
 
@@ -77,8 +76,10 @@ public class TheoryActivity extends AppCompatActivity {
             supportActionBar.setDisplayHomeAsUpEnabled(true);
             supportActionBar.setDisplayShowHomeEnabled(true);
 
-            if (i.hasExtra(TheoryNameExtraTag)) { supportActionBar.setTitle(i.getStringExtra(TheoryNameExtraTag)); }
-            else if (i.hasExtra(LessonNameExtraTag)) supportActionBar.setTitle(i.getStringExtra(LessonNameExtraTag));
+            if (i.hasExtra(TheoryNameExtraTag)) {
+                supportActionBar.setTitle(i.getStringExtra(TheoryNameExtraTag));
+            } else if (i.hasExtra(LessonNameExtraTag))
+                supportActionBar.setTitle(i.getStringExtra(LessonNameExtraTag));
         }
     }
 
@@ -93,8 +94,7 @@ public class TheoryActivity extends AppCompatActivity {
         if (item.getItemId() == android.R.id.home) {
             onBackPressed();
             return true;
-        }
-        else if (item.getItemId() == R.id.item_language) {
+        } else if (item.getItemId() == R.id.item_language) {
             _model.SwitchLanguage();
             return true;
         }
@@ -105,7 +105,7 @@ public class TheoryActivity extends AppCompatActivity {
     @NonNull
     private RecyclerView.Adapter getMyAdapter() {
         MyRecyclerViewAdapter<TheoryViewModel.ChapterViewModel, ItemChapterBinding> adapter =
-                new MyRecyclerViewAdapter<>(this, R.layout.item_chapter);
+                new MyRecyclerViewAdapter<>(_binding.getLifecycleOwner(), R.layout.item_chapter);
 
         MyRecyclerViewAdapter<TheoryViewModel.ChapterViewModel, ItemChapterBinding>.OnBinded binded =
                 adapter.new OnBinded() {

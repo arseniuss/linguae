@@ -23,7 +23,7 @@ import lv.id.arseniuss.linguae.db.dataaccess.TheoryDataAccess;
 import lv.id.arseniuss.linguae.db.entities.Chapter;
 
 public class TheoryViewModel extends AndroidViewModel {
-    protected final MutableLiveData<Boolean> _showTranslation = new MutableLiveData<>(true);
+    protected boolean _showTranslation = false;
     private final SharedPreferences _sharedPreferences =
             PreferenceManager.getDefaultSharedPreferences(getApplication().getBaseContext());
     private final String _language = _sharedPreferences.getString(Constants.PreferenceLanguageKey, "");
@@ -35,35 +35,40 @@ public class TheoryViewModel extends AndroidViewModel {
         super(application);
     }
 
-    public MutableLiveData<List<ChapterViewModel>> Data() { return _chapters; }
+    public MutableLiveData<List<ChapterViewModel>> Data() {
+        return _chapters;
+    }
 
     public void LoadTheory(String theoryId) {
         Disposable d = _theoryDataAccess.GetTheoryChapters(theoryId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(chapters -> {
-                    _chapters.setValue(chapters.stream()
-                            .map(ChapterViewModel::new)
-                            .peek(_showTranslation::observeForever)
-                            .collect(Collectors.toList()));
-                });
+                .subscribe(this::setChapters);
     }
 
     public void LoadLesson(String lessonId) {
         Disposable d = _theoryDataAccess.GetLessonChapters(lessonId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(chapters -> {
-                    _chapters.setValue(chapters.stream().map(ChapterViewModel::new).collect(Collectors.toList()));
-                });
+                .subscribe(this::setChapters);
     }
 
     public void SwitchLanguage() {
-        Boolean showTranslationValue = _showTranslation.getValue();
+        _showTranslation = !_showTranslation;
 
-        assert showTranslationValue != null;
+        List<ChapterViewModel> chapterViewModels = _chapters.getValue();
 
-        _showTranslation.setValue(!showTranslationValue);
+        assert chapterViewModels != null;
+
+        for (ChapterViewModel chapterViewModel : chapterViewModels) {
+            chapterViewModel.onChanged(_showTranslation);
+        }
+    }
+
+    private void setChapters(List<Chapter> chapters) {
+        _chapters.setValue(chapters.stream()
+                .map(ChapterViewModel::new)
+                .collect(Collectors.toList()));
     }
 
     public static class ChapterViewModel extends BaseObservable implements Observer<Boolean> {
@@ -72,17 +77,19 @@ public class TheoryViewModel extends AndroidViewModel {
 
         public ChapterViewModel(Chapter c) {
             _chapter = c;
+            _text.setValue(c.Explanation);
         }
 
-        public MutableLiveData<String> Text() { return _text; }
+        public MutableLiveData<String> Text() {
+            return _text;
+        }
 
         @Override
-        public void onChanged(Boolean aBoolean) {
-            if (aBoolean) {
-                _text.setValue(_chapter.Explanation);
-            }
-            else {
+        public void onChanged(Boolean showTranslation) {
+            if (showTranslation) {
                 _text.setValue(_chapter.Translation);
+            } else {
+                _text.setValue(_chapter.Explanation);
             }
         }
     }

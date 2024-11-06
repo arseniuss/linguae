@@ -1,6 +1,7 @@
 package lv.id.arseniuss.linguae.ui.fragments;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -43,6 +44,7 @@ public class SummaryFragment extends Fragment {
         _binding = DataBindingUtil.inflate(inflater, R.layout.fragment_summary, container, false);
 
         _binding.setViewmodel(_model);
+        _binding.setPresenter(this);
         _binding.setLifecycleOwner(this);
 
         MainActivity mainActivity = (MainActivity) getActivity();
@@ -69,7 +71,13 @@ public class SummaryFragment extends Fragment {
             }
         }, getViewLifecycleOwner(), Lifecycle.State.RESUMED);
 
+        _model.Load(this::setupLogo);
+
         return _binding.getRoot();
+    }
+
+    private void setupLogo(Bitmap bitmap) {
+        _binding.logo.setImageBitmap(bitmap);
     }
 
 }
