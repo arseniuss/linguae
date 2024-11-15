@@ -40,3 +40,6 @@ jobs:
       env:
         USERNAME: ${{ github.actor }}
         TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    - name: Build and Release APK
+      uses: sangatdesai/release-apk@V1.0
+            
