@@ -284,18 +284,18 @@ public class StartViewModel extends AndroidViewModel implements LanguageDataPars
             }).subscribeOn(AndroidSchedulers.mainThread()).subscribe();
         }
         else {
-
             Spanned spanned;
+            String msg = Html.escapeHtml(message);
 
             switch (type) {
                 case Log.ERROR:
                     Log.e("INFORM", message);
-                    spanned = Html.fromHtml("<font color='#FF0000'>" + message + "</font>", Html.FROM_HTML_MODE_LEGACY);
+                    spanned = Html.fromHtml("<font color='#FF0000'>" + msg + "</font>", Html.FROM_HTML_MODE_LEGACY);
                     break;
                 case Log.INFO:
                     Log.i("INFORM", message);
                 default:
-                    spanned = Html.fromHtml(message, Html.FROM_HTML_MODE_LEGACY);
+                    spanned = Html.fromHtml(msg, Html.FROM_HTML_MODE_LEGACY);
                     break;
             }
 

@@ -24,17 +24,25 @@ public class ChooseViewModel extends AbstractTaskViewModel {
         super(application);
     }
 
-    private ChooseTask chooseTask() { return (ChooseTask) _taskResult.Task.Data; }
+    private ChooseTask chooseTask() {
+        return (ChooseTask) _taskResult.Task.Data;
+    }
 
-    public String Description() { return chooseTask().Description; }
+    public String Description() {
+        return chooseTask().Description;
+    }
 
-    public String Word() { return StripAccents(chooseTask().Word); }
+    public String Word() {
+        return StripAccents(chooseTask().Word);
+    }
 
-    public String Meaning() { return chooseTask().Meaning; }
+    public String Answer() {
+        return StripAccents(chooseTask().Answer);
+    }
 
-    public String Answer() { return StripAccents(chooseTask().Answer); }
-
-    public MutableLiveData<List<OptionViewModel>> Options() { return _options; }
+    public MutableLiveData<List<OptionViewModel>> Options() {
+        return _options;
+    }
 
     @Override
     public boolean Validate() {
@@ -52,8 +60,7 @@ public class ChooseViewModel extends AbstractTaskViewModel {
         if (Objects.equals(selectedViewModel.Option, Answer())) {
             isValid = true;
             selectedViewModel.IsValid().setValue(true);
-        }
-        else {
+        } else {
             selectedViewModel.IsValid().setValue(false);
             isValid = false;
             correctViewModel.IsValid().setValue(true);
@@ -78,9 +85,14 @@ public class ChooseViewModel extends AbstractTaskViewModel {
     public void Load(SessionTaskData task) {
         super.Load(task);
 
-        _options.setValue(Arrays.stream(chooseTask().Options.split(","))
-                .map(o -> new OptionViewModel(StripAccents(o)))
-                .collect(Collectors.toList()));
+        List<OptionViewModel> collected = Arrays.stream(chooseTask().Additionals.split(","))
+                .map(o -> new OptionViewModel(StripAccents((o)))).collect(Collectors.toList());
+
+        // TODO: take only part of options
+
+        collected.add(new OptionViewModel(StripAccents(chooseTask().Answer)));
+
+        _options.setValue(collected);
     }
 
     public static class OptionViewModel extends AbstractTaskAnswerViewModel {

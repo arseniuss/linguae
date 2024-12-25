@@ -51,7 +51,7 @@ public class LanguageDataParser {
     private final ParserInterface _parserInterface;
     private final Map<String, String> _references = new HashMap<>();
     private final List<LanguageGenerator.Description> _generators = new ArrayList<>();
-    private final Pattern _referencePattern = Pattern.compile("&([a-zA-Z0-9_]+)");
+    private final Pattern _referencePattern = Pattern.compile("&([a-zA-Z0-9_-]+)");
     private boolean _saveImages = false;
     private boolean _throwError = false;
     private int _line = 0;
@@ -92,16 +92,14 @@ public class LanguageDataParser {
 
         if (_throwError) {
             throw new ParserException(_filename, _line, error);
-        }
-        else {
+        } else {
             log(Log.ERROR, _filename + ":" + _line + ": " + error);
             _hasError = true;
         }
     }
 
     private boolean parseTask(Task task, String line, String[] words, Map<String, String> references)
-            throws ParserException
-    {
+            throws ParserException {
         if (words.length < 3) {
             logError("Expecting format: task <id> <task-type> <task-data>");
             logError("Got: " + line);
@@ -155,7 +153,7 @@ public class LanguageDataParser {
 
                 if (sentence.size() != answers.size()) {
                     logError("Casing sentence and answer not the same: " + casingTask.Sentence + "/" +
-                             casingTask.Answers);
+                            casingTask.Answers);
                     return false;
                 }
 
@@ -165,7 +163,7 @@ public class LanguageDataParser {
             case "decline":
                 if (words.length != 3 + 6) {
                     logError("Expecting format: type #N decline <type> <description> <word> <meaning> <options> " +
-                             "<answers>");
+                            "<answers>");
                     logError("Got: " + line);
                     return false;
                 }
@@ -187,12 +185,12 @@ public class LanguageDataParser {
                 if (references2.startsWith(_gen_prefix)) {
                     Optional<LanguageGenerator.Description> description = _generators.stream()
                             .filter(d -> d.TaskType == task.Type && Objects.equals(d.Category, task.Category) &&
-                                         Objects.equals(d.Description, task.Description))
+                                    Objects.equals(d.Description, task.Description))
                             .findAny();
 
                     if (!description.isPresent()) {
                         logError("There is no generator for " + task.Type.GetName() + " " + task.Category + " " +
-                                 task.Description);
+                                task.Description);
                         return false;
                     }
 
@@ -205,13 +203,12 @@ public class LanguageDataParser {
                         logError(ex.getMessage());
                         return false;
                     }
-                }
-                else {
+                } else {
                     declineTask.Answers = references2.split(",", -1);
 
                     if (declineTask.Cases.length != declineTask.Answers.length) {
                         logError("Decline task case count is not the same as answers: " + declineTask.Cases.length +
-                                 "/" + declineTask.Answers.length);
+                                "/" + declineTask.Answers.length);
                         return false;
                     }
                 }
@@ -222,7 +219,7 @@ public class LanguageDataParser {
             case "conjugate":
                 if (words.length != 3 + 6) {
                     logError("Expecting format: task #n conjugate <conjugation> \"<mood> <tense> <voice>\" <word> " +
-                             "<meaning> <persons> <answers>");
+                            "<meaning> <persons> <answers>");
                     logError("Got: " + line);
                     return false;
                 }
@@ -243,12 +240,12 @@ public class LanguageDataParser {
                 if (references4.startsWith(_gen_prefix)) {
                     Optional<LanguageGenerator.Description> description = _generators.stream()
                             .filter(d -> d.TaskType == task.Type && Objects.equals(d.Category, task.Category) &&
-                                         Objects.equals(d.Description, task.Description))
+                                    Objects.equals(d.Description, task.Description))
                             .findAny();
 
                     if (!description.isPresent()) {
                         logError("There is no generator for " + task.Type.GetName() + " " + task.Category + " " +
-                                 task.Description);
+                                task.Description);
                         return false;
                     }
 
@@ -261,14 +258,13 @@ public class LanguageDataParser {
                         logError(ex.getMessage());
                         return false;
                     }
-                }
-                else {
+                } else {
                     conjugateTask.Answers = references4.split(",", -1);
                 }
 
                 if (conjugateTask.Persons.length != conjugateTask.Answers.length) {
                     logError("Conjugate task person count is not the same as answers: " + conjugateTask.Persons.length +
-                             "/" + conjugateTask.Answers.length);
+                            "/" + conjugateTask.Answers.length);
                     return false;
                 }
 
@@ -276,8 +272,8 @@ public class LanguageDataParser {
                 task.Data = conjugateTask;
                 break;
             case "choose":
-                if (words.length != 3 + 5) {
-                    logError("Expected format: <description> <word> <meaning> <answer> <options>");
+                if (words.length != 3 + 4) {
+                    logError("Expected format: <description> <word> <answer> <additionals>");
                     logError("Got: " + line);
                     return false;
                 }
@@ -290,17 +286,8 @@ public class LanguageDataParser {
 
                 chooseTask.Description = resolveReferences(words[3], references);
                 chooseTask.Word = resolveReferences(words[4], references);
-                chooseTask.Meaning = resolveReferences(words[5], references);
-                chooseTask.Answer = resolveReferences(words[6], references);
-                chooseTask.Options = resolveReferences(words[7], references);
-
-                boolean hasAnswer = Arrays.stream(chooseTask.Options.split(","))
-                        .anyMatch(o -> Objects.equals(o, chooseTask.Answer));
-                if (!hasAnswer) {
-                    logError(
-                            "Choose task answer (" + chooseTask.Answer + ") is not in the list: " + chooseTask.Options);
-                    return false;
-                }
+                chooseTask.Answer = resolveReferences(words[5], references);
+                chooseTask.Additionals = resolveReferences(words[6], references);
 
                 task.Amount = 1;
                 task.Data = chooseTask;
@@ -345,13 +332,11 @@ public class LanguageDataParser {
 
                 if (references.containsKey(ref)) {
                     replacement = references.get(ref);
-                }
-                else {
+                } else {
                     if (_references.containsKey(ref)) {
                         replacement = _references.get(ref);
-                    }
-                    else {
-                        logError("Cannot find reference: " + word);
+                    } else {
+                        logError("Cannot find reference: '" + word + "'");
                         return word;
                     }
                 }
@@ -367,6 +352,18 @@ public class LanguageDataParser {
     }
 
     private String[] getWords(String line, LineNumberReader r) throws Exception {
+        int commentStart = line.contains("#") ? line.indexOf("#") : line.length();
+
+        line = line.substring(0, commentStart);
+
+        while (line.endsWith("\\")) {
+            String nextLine = r.readLine().trim();
+
+            commentStart = nextLine.contains("#") ? nextLine.indexOf("#") : nextLine.length();
+            line = line.substring(0, line.length() - 1);
+            line += nextLine.substring(0, commentStart);
+        }
+
         String[] words = LineParser.Split(line);
 
         words = takeWhile(words, w -> !w.startsWith("#")).toArray(new String[0]);
@@ -374,27 +371,7 @@ public class LanguageDataParser {
         if (words.length != 0) {
             String last = words[words.length - 1];
 
-            if (last.endsWith("\\")) {
-                last = last.substring(0, last.length() - 1);
-                words[words.length - 1] = last;
-
-                if (last.isEmpty()) words = Arrays.copyOfRange(words, 0, words.length - 1);
-
-                String[] next = getWords(r.readLine(), r);
-
-                if (last.isEmpty()) {
-                    words = Stream.concat(Arrays.stream(words), Arrays.stream(next)).toArray(String[]::new);
-                }
-                else {
-                    words[words.length - 1] += next[0];
-
-                    if (next.length > 1) {
-                        words = Stream.concat(Arrays.stream(words),
-                                Arrays.stream(Arrays.copyOfRange(next, 1, next.length))).toArray(String[]::new);
-                    }
-                }
-            }
-            else if (last.equals("<" + _eol_prefix)) {
+            if (last.equals("<" + _eol_prefix)) {
                 String l = r.readLine();
                 List<String> lines = new ArrayList<>();
 
@@ -569,8 +546,8 @@ public class LanguageDataParser {
                     Chapter chapter = new Chapter();
 
                     chapter.Id = words[1];
-                    chapter.Explanation = resolveReferences(words[3], references);
-                    chapter.Translation = resolveReferences(words[2], references);
+                    chapter.Explanation = resolveReferences(words[2], references);
+                    chapter.Translation = resolveReferences(words[3], references);
 
                     l.Chapters.add(chapter);
                     break;
@@ -635,7 +612,7 @@ public class LanguageDataParser {
                 case "gen":
                     if (words.length != 7) {
                         logError("Expected format: gen <task type> <task category> <task description> <list> <gen " +
-                                 "rules>");
+                                "rules>");
                         continue;
                     }
 
@@ -968,8 +945,8 @@ public class LanguageDataParser {
                     Chapter chapter = new Chapter();
 
                     chapter.Id = words[1];
-                    chapter.Explanation = resolveReferences(words[3], references);
-                    chapter.Translation = resolveReferences(words[2], references);
+                    chapter.Explanation = resolveReferences(words[2], references);
+                    chapter.Translation = resolveReferences(words[3], references);
 
                     theoryChapters.put(chapter.Id, chapter);
                     break;
@@ -984,7 +961,9 @@ public class LanguageDataParser {
         return theoryChapters.values();
     }
 
-    public ParserData GetData() { return _data; }
+    public ParserData GetData() {
+        return _data;
+    }
 
     public List<LanguagePortal> ParsePortals(List<Pair<String, String>> portals) {
         List<LanguagePortal> result = new ArrayList<>();

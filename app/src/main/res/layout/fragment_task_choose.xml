@@ -37,15 +37,6 @@
             android:textStyle="bold"
             tools:text="amō, amāre" />
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:text="@{viewmodel.Meaning}"
-            android:textAlignment="center"
-            android:textSize="16sp"
-            tools:text="to love" />
-
         <lv.id.arseniuss.linguae.ui.AdapterGridLayout
             android:id="@+id/options"
             android:layout_width="match_parent"

@@ -5,15 +5,13 @@ import lv.id.arseniuss.linguae.db.entities.Task;
 
 public class ChooseTask extends Task.ITaskData {
 
-    public String Word;
+    public String Description;
 
-    public String Meaning;
+    public String Word;
 
     public String Answer;
 
-    public String Options;
-
-    public String Description;
+    public String Additionals;
 
     public ChooseTask() {
         super(TaskType.ChooseTask);
