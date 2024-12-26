@@ -15,4 +15,9 @@ public class CasingTask extends Task.ITaskData {
     public CasingTask() {
         super(TaskType.CasingTask);
     }
+
+    @Override
+    public String GetTitle() {
+        return Sentence;
+    }
 }

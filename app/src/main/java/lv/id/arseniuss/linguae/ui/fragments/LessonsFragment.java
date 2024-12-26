@@ -25,6 +25,7 @@ import lv.id.arseniuss.linguae.db.dataaccess.LessonDataAccess;
 import lv.id.arseniuss.linguae.ui.MyRecyclerViewAdapter;
 import lv.id.arseniuss.linguae.ui.activities.MainActivity;
 import lv.id.arseniuss.linguae.ui.activities.SessionActivity;
+import lv.id.arseniuss.linguae.ui.activities.TaskListActivity;
 import lv.id.arseniuss.linguae.ui.activities.TheoryActivity;
 import lv.id.arseniuss.linguae.viewmodel.LessonsViewModel;
 
@@ -108,11 +109,20 @@ public class LessonsFragment extends Fragment {
         return adapter;
     }
 
-    public void OnLessonClick(LessonsViewModel.EntryViewModel entryViewModel) {
+    public void OnTheoryClick(LessonsViewModel.EntryViewModel entryViewModel) {
         Intent i = new Intent(getContext(), TheoryActivity.class);
 
         i.putExtra(TheoryActivity.LessonExtraTag, entryViewModel.getNo());
         i.putExtra(TheoryActivity.LessonNameExtraTag, entryViewModel.getName());
+
+        startActivity(i);
+    }
+
+    public void OnSummaryClick(LessonsViewModel.EntryViewModel entryViewModel) {
+        Intent i = new Intent(getContext(), TaskListActivity.class);
+
+        i.putExtra(TaskListActivity.LessonExtraTag, entryViewModel.getNo());
+        i.putExtra(TaskListActivity.LessonNameExtraTag, entryViewModel.getName());
 
         startActivity(i);
     }

@@ -97,6 +97,8 @@ public class Task {
         @SerializedName("type")
         public TaskType Type;
 
+        public abstract String GetTitle();
+
         public ITaskData(TaskType type) {
             this.Type = type;
         }

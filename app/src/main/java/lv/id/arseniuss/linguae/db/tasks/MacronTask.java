@@ -11,4 +11,9 @@ public class MacronTask extends Task.ITaskData {
     public MacronTask() {
         super(TaskType.MacronTask);
     }
+
+    @Override
+    public String GetTitle() {
+        return Text;
+    }
 }

@@ -64,6 +64,11 @@
             android:exported="false"
             android:label="@string/TitleTheories"
             android:theme="@style/MyAppTheme" />
+        <activity
+            android:name=".ui.activities.TaskListActivity"
+            android:exported="false"
+            android:label="@string/TitleTaskList"
+            android:theme="@style/MyAppTheme" />
     </application>
 
 </manifest>

@@ -62,4 +62,5 @@
     <string name="TitleTaskPreferences">Task preferences</string>
     <string name="TitleStartTraining">Start training</string>
     <string name="TitleLicenses">Licenses</string>
+    <string name="TitleTaskList">Task list</string>
 </resources>

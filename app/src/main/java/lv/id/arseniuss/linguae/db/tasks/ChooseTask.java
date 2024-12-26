@@ -16,4 +16,9 @@ public class ChooseTask extends Task.ITaskData {
     public ChooseTask() {
         super(TaskType.ChooseTask);
     }
+
+    @Override
+    public String GetTitle() {
+        return Word;
+    }
 }

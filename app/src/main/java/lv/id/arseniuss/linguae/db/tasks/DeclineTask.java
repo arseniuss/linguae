@@ -15,4 +15,9 @@ public class DeclineTask extends Task.ITaskData {
     public DeclineTask() {
         super(TaskType.DeclineTask);
     }
+
+    @Override
+    public String GetTitle() {
+        return Word;
+    }
 }

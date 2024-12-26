@@ -15,4 +15,9 @@ public class ConjugateTask extends Task.ITaskData {
     public ConjugateTask() {
         super(TaskType.ConjugateTask);
     }
+
+    @Override
+    public String GetTitle() {
+        return Verb;
+    }
 }

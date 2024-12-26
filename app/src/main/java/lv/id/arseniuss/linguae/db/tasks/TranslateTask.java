@@ -13,4 +13,9 @@ public class TranslateTask extends Task.ITaskData {
     public TranslateTask() {
         super(TaskType.TranslateTask);
     }
+
+    @Override
+    public String GetTitle() {
+        return Text;
+    }
 }

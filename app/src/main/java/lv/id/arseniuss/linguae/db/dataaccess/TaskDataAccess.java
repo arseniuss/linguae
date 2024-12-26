@@ -20,6 +20,9 @@ public abstract class TaskDataAccess {
     @Query("SELECT task_id FROM lesson_task WHERE lesson_id = :lessonId")
     protected abstract List<String> GetLessonTasks(String lessonId);
 
+    @Query("SELECT t.* FROM task t INNER JOIN lesson_task lt on lt.task_id = t.id WHERE lt.lesson_id = :lessonId")
+    public abstract Single<List<Task>> GetTasksByLesson(String lessonId);
+
     @Query("SELECT task_id FROM training_task WHERE training_id = :trainingId OR :trainingId = ''")
     protected abstract List<String> GetTrainingTasks(String trainingId);
 

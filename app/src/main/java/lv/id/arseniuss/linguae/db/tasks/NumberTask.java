@@ -13,4 +13,9 @@ public class NumberTask extends Task.ITaskData {
     public NumberTask() {
         super(TaskType.NumberTask);
     }
+
+    @Override
+    public String GetTitle() {
+        return Text;
+    }
 }
