@@ -9,8 +9,10 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Random;
 import java.util.stream.Collectors;
 
+import lv.id.arseniuss.linguae.Settings;
 import lv.id.arseniuss.linguae.db.tasks.ChooseTask;
 import lv.id.arseniuss.linguae.tasks.AbstractTaskAnswerViewModel;
 import lv.id.arseniuss.linguae.tasks.AbstractTaskViewModel;
@@ -57,6 +59,10 @@ public class ChooseViewModel extends AbstractTaskViewModel {
 
         OptionViewModel correctViewModel = first.get();
 
+        for (OptionViewModel optionViewModel : Objects.requireNonNull(Options().getValue())) {
+            optionViewModel.IsValid().setValue(false);
+        }
+
         if (Objects.equals(selectedViewModel.Option, Answer())) {
             isValid = true;
             selectedViewModel.IsValid().setValue(true);
@@ -68,6 +74,7 @@ public class ChooseViewModel extends AbstractTaskViewModel {
 
         // Make everything stay
         for (OptionViewModel optionViewModel : Objects.requireNonNull(Options().getValue())) {
+            optionViewModel.IsEditable().setValue(false);
             optionViewModel.IsChecked().setValue(true);
         }
 
@@ -85,21 +92,38 @@ public class ChooseViewModel extends AbstractTaskViewModel {
     public void Load(SessionTaskData task) {
         super.Load(task);
 
-        List<OptionViewModel> collected = Arrays.stream(chooseTask().Additionals.split(","))
-                .map(o -> new OptionViewModel(StripAccents((o)))).collect(Collectors.toList());
+        List<String> strings = Arrays.stream(chooseTask().Additionals.split(","))
+                .map(String::trim)
+                .collect(Collectors.toList());
 
-        // TODO: take only part of options
+        strings.removeIf(s -> Objects.equals(s, chooseTask().Answer));
 
-        collected.add(new OptionViewModel(StripAccents(chooseTask().Answer)));
+        int[] indexes = new Random().ints(0, strings.size())
+                .distinct().limit(Settings.ChooseOptionCount - 1).toArray();
 
-        _options.setValue(collected);
+        List<String> collected1 = Arrays.stream(indexes).mapToObj(strings::get)
+                .collect(Collectors.toList());
+
+        List<OptionViewModel> collected2 = collected1.stream()
+                .map(o -> new OptionViewModel(StripAccents(o)))
+                .collect(Collectors.toList());
+
+        collected2.add(new OptionViewModel(StripAccents(chooseTask().Answer)));
+
+        _options.setValue(collected2);
     }
 
     public static class OptionViewModel extends AbstractTaskAnswerViewModel {
+        protected final MutableLiveData<Boolean> _editable = new MutableLiveData<>(true);
+
         public String Option;
 
         public OptionViewModel(String option) {
             Option = option;
+        }
+
+        public MutableLiveData<Boolean> IsEditable() {
+            return _editable;
         }
 
     }

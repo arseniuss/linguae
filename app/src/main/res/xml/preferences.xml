@@ -40,6 +40,12 @@
             app:singleLineTitle="false" />
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/TitleTaskPreferences">
-
+        <lv.id.arseniuss.linguae.ui.preference.EditIntegerPreference
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:defaultValue="6"
+            android:key="@string/ChooseOptionCountKey"
+            android:title="Answer option count in choose tasks"
+            app:useSimpleSummaryProvider="true" />
     </PreferenceCategory>
 </PreferenceScreen>

@@ -33,8 +33,7 @@ public class ChooseFragment extends AbstractTaskFragment<ChooseViewModel> {
 
     @BindingAdapter("items")
     public static void BindChoiceList(AdapterGridLayout adapterGridLayout,
-            List<ChooseViewModel.OptionViewModel> entries)
-    {
+                                      List<ChooseViewModel.OptionViewModel> entries) {
         OptionAdapter adapter = (OptionAdapter) adapterGridLayout.getAdapter();
 
         assert adapter != null;
@@ -47,17 +46,18 @@ public class ChooseFragment extends AbstractTaskFragment<ChooseViewModel> {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
-            @Nullable Bundle savedInstanceState)
-    {
+                             @Nullable Bundle savedInstanceState) {
         _model = new ViewModelProvider(this).get(ChooseViewModel.class);
         _model.Load(_task);
         _binding = FragmentTaskChooseBinding.inflate(inflater, container, false);
 
         _binding.setViewmodel(_model);
+        _binding.setPresenter(this);
         _binding.setLifecycleOwner(this);
 
         OptionAdapter adapter =
-                new OptionAdapter(getContext(), getViewLifecycleOwner(), R.layout.item_task_choose_option, position -> {
+                new OptionAdapter(getContext(), getViewLifecycleOwner(),
+                        R.layout.item_task_choose_option, position -> {
                     _model.SetSelected(position);
                 });
 
@@ -68,8 +68,7 @@ public class ChooseFragment extends AbstractTaskFragment<ChooseViewModel> {
 
     public static class OptionAdapter extends MyAdapter<ChooseViewModel.OptionViewModel> {
         public OptionAdapter(Context context, LifecycleOwner lifecycleOwner, int layout,
-                OnItemSelectedListener selectedListener)
-        {
+                             OnItemSelectedListener selectedListener) {
             super(context, lifecycleOwner, layout, selectedListener);
         }
 

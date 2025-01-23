@@ -41,15 +41,18 @@ public class MainActivity extends AppCompatActivity {
         DrawerLayout drawer = _binding.drawerLayout;
 
         _appBarConfiguration =
-                new AppBarConfiguration.Builder(R.id.nav_summary, R.id.nav_lessons, R.id.nav_training, R.id.nav_theory,
-                        R.id.nav_license).setOpenableLayout(drawer).build();
+                new AppBarConfiguration.Builder(R.id.nav_summary, R.id.nav_lessons,
+                        R.id.nav_training, R.id.nav_theory, R.id.nav_license)
+                        .setOpenableLayout(drawer).build();
     }
 
     public void SetupDrawer() {
         NavigationView navigationView = _binding.navView;
 
-        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
-        NavigationUI.setupActionBarWithNavController(this, navController, _appBarConfiguration);
+        NavController navController = Navigation.findNavController(this,
+                R.id.nav_host_fragment_content_main);
+        NavigationUI.setupActionBarWithNavController(this, navController,
+                _appBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
     }
 
@@ -61,9 +64,11 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onSupportNavigateUp() {
-        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
+        NavController navController = Navigation.findNavController(this,
+                R.id.nav_host_fragment_content_main);
 
-        return NavigationUI.navigateUp(navController, _appBarConfiguration) || super.onSupportNavigateUp();
+        return NavigationUI.navigateUp(navController, _appBarConfiguration) ||
+                super.onSupportNavigateUp();
     }
 
     private void onStarted() {
@@ -73,8 +78,7 @@ public class MainActivity extends AppCompatActivity {
 
             if (bitmap != null) {
                 imageView.setImageBitmap(bitmap);
-            }
-            else {
+            } else {
                 BindingAdapters.SetImageByUrl(imageView, Configuration.GetLanguageImageUrl());
             }
         }

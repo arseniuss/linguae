@@ -5,6 +5,9 @@
 
     <data>
 
+        <variable
+            name="presenter"
+            type="lv.id.arseniuss.linguae.tasks.ui.ChooseFragment" />
 
         <variable
             name="viewmodel"
@@ -44,6 +47,7 @@
             android:layout_marginTop="20dp"
             android:layout_weight="1"
             android:columnCount="2"
+            tools:listitem="@layout/item_task_choose_option"
             app:items="@{viewmodel.Options}" />
 
     </LinearLayout>

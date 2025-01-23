@@ -19,17 +19,19 @@
         android:layout_gravity="center"
         android:layout_margin="10dp"
         android:background="@{viewmodel.IsChecked() ? ( viewmodel.IsValid() ? @drawable/button_ok : @drawable/radio_button_error) : @drawable/radio_button}"
-        android:clickable="@{!viewmodel.IsChecked()}"
-        android:focusable="@{!viewmodel.IsChecked()}"
+        android:clickable="@{viewmodel.IsEditable()}"
+        android:focusable="@{!viewmodel.IsEditable()}"
         android:gravity="center"
         android:onClick="@{() -> presenter.OnSelected()}"
         android:padding="10dp"
         android:selected="@{presenter.IsSelected()}">
 
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:singleLine="false"
             android:text="@{viewmodel.Option}"
-            tools:text="Option" />
+            tools:text="an inhabitant" />
     </LinearLayout>
 </layout>
