@@ -2,8 +2,9 @@ package lv.id.arseniuss.linguae.ui.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.PersistableBundle;
+import android.view.MenuItem;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
@@ -74,6 +75,16 @@ public class TaskListActivity extends AppCompatActivity {
             if (i.hasExtra(LessonNameExtraTag))
                 supportActionBar.setTitle(i.getStringExtra(LessonNameExtraTag));
         }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if (android.R.id.home == item.getItemId()) {
+            finish();
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
     private RecyclerView.Adapter getMyAdapter() {
