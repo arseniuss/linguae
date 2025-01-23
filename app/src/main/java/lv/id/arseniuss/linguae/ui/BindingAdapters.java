@@ -45,11 +45,15 @@ public class BindingAdapters {
 
     @BindingAdapter("markdown")
     public static void SetMarkdown(TextView textView, String text) {
-        if (text != null && !text.isEmpty()) {
-            final Markwon markwon =
-                    Markwon.builder(textView.getContext()).usePlugin(TablePlugin.create(textView.getContext())).build();
+        final Markwon markwon =
+                Markwon.builder(textView.getContext())
+                        .usePlugin(TablePlugin.create(textView.getContext()))
+                        .build();
 
+        if (text != null && !text.isEmpty()) {
             markwon.setMarkdown(textView, text);
+        } else {
+            textView.setText("");
         }
     }
 

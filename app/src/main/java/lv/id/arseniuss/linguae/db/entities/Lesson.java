@@ -12,6 +12,9 @@ public class Lesson {
     @NonNull
     public String Id;
 
+    @ColumnInfo(name = "index")
+    public int Index;
+
     @ColumnInfo(name = "name")
     @NonNull
     public String Name = "";

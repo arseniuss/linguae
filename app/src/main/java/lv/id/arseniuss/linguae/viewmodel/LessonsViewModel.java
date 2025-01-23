@@ -2,8 +2,6 @@ package lv.id.arseniuss.linguae.viewmodel;
 
 import android.app.Application;
 import android.content.SharedPreferences;
-import android.text.Html;
-import android.text.Spanned;
 
 import androidx.annotation.NonNull;
 import androidx.databinding.BaseObservable;
@@ -46,11 +44,17 @@ public class LessonsViewModel extends AndroidViewModel {
         Load();
     }
 
-    public MutableLiveData<Boolean> HasError() { return _hasError; }
+    public MutableLiveData<Boolean> HasError() {
+        return _hasError;
+    }
 
-    public MutableLiveData<String> GetError() { return _error; }
+    public MutableLiveData<String> GetError() {
+        return _error;
+    }
 
-    public LiveData<List<EntryViewModel>> Data() { return _lessons; }
+    public LiveData<List<EntryViewModel>> Data() {
+        return _lessons;
+    }
 
     public void Load() {
         Disposable d = _lessonDataAccess.GetLessons()
@@ -88,7 +92,9 @@ public class LessonsViewModel extends AndroidViewModel {
             _lesson = lesson;
         }
 
-        public String getNo() { return _lesson.Lesson.Id; }
+        public String getNo() {
+            return _lesson.Lesson.Id;
+        }
 
         @Bindable("Name")
         public String getName() {
@@ -100,7 +106,9 @@ public class LessonsViewModel extends AndroidViewModel {
         }
 
         @Bindable("Filename")
-        public String getFilename() { return _lesson.Lesson.Id; }
+        public String getFilename() {
+            return _lesson.Lesson.Id;
+        }
 
         @Bindable("Description")
         public String getDescription() {

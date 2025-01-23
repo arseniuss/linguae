@@ -22,7 +22,7 @@ public abstract class LessonDataAccess {
            "LEFT JOIN (SELECT lesson_id, COUNT(*) AS task_count FROM lesson_task GROUP BY lesson_id) t " +
            "ON l.id = t.lesson_id " +
            "LEFT JOIN ( SELECT lesson_id, COUNT(*) AS theory_count FROM lesson_chapter GROUP BY lesson_id) th ON l.id " +
-           "= th.lesson_id ORDER BY l.id")
+           "= th.lesson_id ORDER BY l.`index`")
     public abstract Single<List<LessonWithCount>> GetLessons();
 
     public static class LessonWithCount {
