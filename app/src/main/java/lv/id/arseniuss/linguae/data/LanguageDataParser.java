@@ -413,6 +413,32 @@ public class LanguageDataParser {
             String keyword = words[0].trim().toLowerCase();
 
             switch (keyword) {
+                case "name":
+                    if (words.length != 2) {
+                        logError("Expected format: name <name>");
+                        continue;
+                    }
+
+                    if (!t.Name.isEmpty()) {
+                        logError("Training name is already set");
+                        continue;
+                    }
+
+                    t.Name = resolveReferences(words[1], _references);
+                    break;
+                case "description":
+                    if (words.length != 2) {
+                        logError("Expected format: description <description>");
+                        continue;
+                    }
+
+                    if (!t.Description.isEmpty()) {
+                        logError("Training description is already set");
+                        continue;
+                    }
+
+                    t.Description = resolveReferences(words[1], _references);
+                    break;
                 case "ref":
                     if (words.length != 3) {
                         logError("Expected format: ref <name> <text>");
@@ -597,7 +623,7 @@ public class LanguageDataParser {
         LineNumberReader r = new LineNumberReader(new BufferedReader(new InputStreamReader(languageFileStream)));
 
         String languageName = "";
-        boolean hasSpecialTraining = false;
+        int lessonIndex = 0;
 
         String line;
         while ((line = r.readLine()) != null) {
@@ -716,6 +742,7 @@ public class LanguageDataParser {
                     LessonWithAttrs l = new LessonWithAttrs();
 
                     l.Lesson.Id = words[1];
+                    l.Lesson.Index = lessonIndex++;
 
                     _data.Lessons.put(words[1], l);
                     break;
@@ -733,23 +760,16 @@ public class LanguageDataParser {
                     _data.Theory.put(words[1], theory);
                     break;
                 case "training":
-                    if (words.length != 4) {
-                        logError("Expecting format: training <filename> <name> <description>");
-                        continue;
-                    }
-                    if (words[1].isEmpty() && hasSpecialTraining) {
-                        logError("Multiple trainings with no filename!");
+                    if (words.length != 2) {
+                        logError("Expecting format: training <filename>");
                         continue;
                     }
 
-                    if (words[1].isEmpty()) hasSpecialTraining = true;
                     TrainingWithTasks t = new TrainingWithTasks();
 
                     t.Training = new Training();
-                    t.Training.Filename = words[1];
                     t.Training.Id = words[1];
-                    t.Training.Name = words[2];
-                    t.Training.Description = words[3];
+                    t.Training.Filename = words[1];
 
                     _data.Trainings.put(words[1], t);
                     break;
@@ -810,10 +830,6 @@ public class LanguageDataParser {
 
         if (languageName.isEmpty()) {
             logError("Language name is not set");
-        }
-
-        if (!hasSpecialTraining) {
-            log(Log.INFO, "No special *all* training"); // Only warn
         }
 
         log(Log.INFO, "Language file parsed");
