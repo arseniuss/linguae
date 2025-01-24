@@ -117,7 +117,7 @@ public class LessonsViewModel extends AndroidViewModel {
 
         @Bindable("TaskCount")
         public String getTaskCount() {
-            return _lesson.DoneCount + "/" + _lesson.TaskCount;
+            return String.valueOf(_lesson.TaskCount);
         }
 
         @Bindable("TheoryCount")
