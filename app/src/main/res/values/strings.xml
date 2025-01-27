@@ -47,7 +47,6 @@
     <string name="ActionSwitchLanguage">Switch language</string>
     <string name="TitleSelectRepositoryLanguage">Select repository and language to learn</string>
     <string name="TitleEditRepositories">Edit language repositories</string>
-    <string name="DefaultRepositoryTitle">Default repository</string>
     <string name="TitleDelete">Delete</string>
     <string name="DataSaved">Saved</string>
     <string name="DatabaseUpdateNotRequired">Database update is not required</string>

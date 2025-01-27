@@ -2,6 +2,7 @@ package lv.id.arseniuss.linguae.viewmodel;
 
 import android.app.Application;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.text.Html;
 import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
@@ -133,12 +134,10 @@ public class StartViewModel extends AndroidViewModel implements LanguageDataPars
         }
 
         if (repos.isEmpty()) {
-            final String name = getApplication().getString(R.string.DefaultRepositoryTitle);
-
-            int i = 0;
-
             for (String repo : _defaultLanguageRepositories.split(",")) {
-                repos.add(new ItemLanguageRepo(name + " " + ++i, repo));
+                Uri uri = Uri.parse(repo);
+
+                repos.add(new ItemLanguageRepo(uri.getHost(), repo));
             }
 
             saveRepositories(repos);
