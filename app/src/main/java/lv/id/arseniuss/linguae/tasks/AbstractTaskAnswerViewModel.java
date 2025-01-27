@@ -14,8 +14,12 @@ public abstract class AbstractTaskAnswerViewModel extends BaseObservable {
         return true;
     }
 
-    public MutableLiveData<Boolean> IsChecked() { return _checked; }
+    public MutableLiveData<Boolean> IsChecked() {
+        return _checked;
+    }
 
-    public MutableLiveData<Boolean> IsValid() { return _valid; }
+    public MutableLiveData<Boolean> IsValid() {
+        return _valid;
+    }
 
 }

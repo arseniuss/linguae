@@ -31,8 +31,7 @@ public class TrainingSetupActivity extends AppCompatActivity {
 
     @BindingAdapter("items")
     public static void BindTrainingList(RecyclerView recyclerView,
-            List<TrainingSetupViewModel.TrainingTaskViewModel> trainings)
-    {
+                                        List<TrainingSetupViewModel.TrainingTaskViewModel> trainings) {
         MyRecyclerViewAdapter<TrainingSetupViewModel.TrainingTaskViewModel, ItemTrainingTaskBinding> adapter =
                 (MyRecyclerViewAdapter<TrainingSetupViewModel.TrainingTaskViewModel, ItemTrainingTaskBinding>) recyclerView.getAdapter();
 
@@ -44,8 +43,7 @@ public class TrainingSetupActivity extends AppCompatActivity {
 
     @BindingAdapter("items")
     public static void BindCategoryList(RecyclerView recyclerView,
-            List<TrainingSetupViewModel.TrainingCategoryViewModel> categories)
-    {
+                                        List<TrainingSetupViewModel.TrainingCategoryViewModel> categories) {
         MyRecyclerViewAdapter<TrainingSetupViewModel.TrainingCategoryViewModel, ItemTrainingCategoryBinding> adapter =
                 (MyRecyclerViewAdapter<TrainingSetupViewModel.TrainingCategoryViewModel, ItemTrainingCategoryBinding>) recyclerView.getAdapter();
 
@@ -103,8 +101,7 @@ public class TrainingSetupActivity extends AppCompatActivity {
 
                     @Override
                     public void Binded(ItemTrainingTaskBinding binding,
-                            TrainingSetupViewModel.TrainingTaskViewModel item)
-                    {
+                                       TrainingSetupViewModel.TrainingTaskViewModel item) {
                         binding.setPresenter(_this);
                         if (binding.categories.getAdapter() == null) {
                             binding.categories.setAdapter(

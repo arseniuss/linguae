@@ -29,11 +29,17 @@ public class TranslateViewModel extends AbstractTaskViewModel {
         super(application);
     }
 
-    public MutableLiveData<Boolean> IsEditMode() { return _isEditMode; }
+    public MutableLiveData<Boolean> IsEditMode() {
+        return _isEditMode;
+    }
 
-    public MutableLiveData<String> Answer() { return _answer; }
+    public MutableLiveData<String> Answer() {
+        return _answer;
+    }
 
-    public String Sentence() { return translateTask().Text; }
+    public String Sentence() {
+        return translateTask().Text;
+    }
 
     @Override
     public boolean Validate() {
@@ -78,11 +84,17 @@ public class TranslateViewModel extends AbstractTaskViewModel {
         }
     }
 
-    private TranslateTask translateTask() { return (TranslateTask) _taskResult.Task.Data; }
+    private TranslateTask translateTask() {
+        return (TranslateTask) _taskResult.Task.Data;
+    }
 
-    public MutableLiveData<List<WordViewModel>> Answers() { return _answers; }
+    public MutableLiveData<List<WordViewModel>> Answers() {
+        return _answers;
+    }
 
-    public MutableLiveData<List<WordViewModel>> Options() { return _options; }
+    public MutableLiveData<List<WordViewModel>> Options() {
+        return _options;
+    }
 
     @Override
     public void Load(SessionTaskData task) {
@@ -115,7 +127,9 @@ public class TranslateViewModel extends AbstractTaskViewModel {
             Option = option;
         }
 
-        public MutableLiveData<Boolean> HasError() { return _hasError; }
+        public MutableLiveData<Boolean> HasError() {
+            return _hasError;
+        }
 
         public void SetHasError(boolean hasError) {
             _hasError.setValue(hasError);

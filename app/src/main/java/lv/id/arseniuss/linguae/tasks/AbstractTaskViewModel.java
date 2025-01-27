@@ -26,7 +26,9 @@ public abstract class AbstractTaskViewModel extends AndroidViewModel {
         super(application);
     }
 
-    public MutableLiveData<Boolean> IsValidated() { return _isValidated; }
+    public MutableLiveData<Boolean> IsValidated() {
+        return _isValidated;
+    }
 
     public void Load(SessionTaskData task) {
         _taskResult = task;

@@ -12,7 +12,7 @@ import java.util.Objects;
 
 import lv.id.arseniuss.linguae.data.TaskType;
 
-@Entity(tableName = "training_category", indices = { @Index(value = "training_id") },
+@Entity(tableName = "training_category", indices = {@Index(value = "training_id")},
         foreignKeys = @ForeignKey(entity = Training.class, parentColumns = "id", childColumns = "training_id",
                 onDelete = ForeignKey.CASCADE))
 public class TrainingCategory {
@@ -44,7 +44,7 @@ public class TrainingCategory {
         TrainingCategory tc = (TrainingCategory) o;
 
         return Objects.equals(this.Task, tc.Task) && Objects.equals(this.Category, tc.Category) &&
-               Objects.equals(this.Description, tc.Description);
+                Objects.equals(this.Description, tc.Description);
     }
 
     @Override

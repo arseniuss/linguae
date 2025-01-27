@@ -47,11 +47,17 @@ public class TrainingsViewModel extends AndroidViewModel {
         loadData();
     }
 
-    public MutableLiveData<Boolean> HasError() { return _hasError; }
+    public MutableLiveData<Boolean> HasError() {
+        return _hasError;
+    }
 
-    public MutableLiveData<String> GetError() { return _error; }
+    public MutableLiveData<String> GetError() {
+        return _error;
+    }
 
-    public LiveData<List<EntryViewModel>> Data() { return _trainings; }
+    public LiveData<List<EntryViewModel>> Data() {
+        return _trainings;
+    }
 
     public String GetTraining(int selection) {
         String res = "";
@@ -89,7 +95,9 @@ public class TrainingsViewModel extends AndroidViewModel {
             _training = training;
         }
 
-        public String getId() { return _training.Training.Id; }
+        public String getId() {
+            return _training.Training.Id;
+        }
 
         @Bindable("Name")
         public String getName() {
@@ -97,13 +105,19 @@ public class TrainingsViewModel extends AndroidViewModel {
         }
 
         @Bindable("Description")
-        public String getDescription() { return _training.Training.Description; }
+        public String getDescription() {
+            return _training.Training.Description;
+        }
 
         @Bindable("TaskCount")
-        public String getTaskCount() { return String.valueOf(_training.TaskCount); }
+        public String getTaskCount() {
+            return String.valueOf(_training.TaskCount);
+        }
 
         @Bindable("CategoryCount")
-        public int getCategoryCount() { return _training.CategoryCount; }
+        public int getCategoryCount() {
+            return _training.CategoryCount;
+        }
 
     }
 }

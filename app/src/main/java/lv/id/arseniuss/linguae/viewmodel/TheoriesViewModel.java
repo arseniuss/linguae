@@ -42,11 +42,17 @@ public class TheoriesViewModel extends AndroidViewModel {
         loadData();
     }
 
-    public LiveData<List<EntryViewModel>> Data() { return _theories; }
+    public LiveData<List<EntryViewModel>> Data() {
+        return _theories;
+    }
 
-    public MutableLiveData<Boolean> HasError() { return _hasError; }
+    public MutableLiveData<Boolean> HasError() {
+        return _hasError;
+    }
 
-    public MutableLiveData<String> GetError() { return _error; }
+    public MutableLiveData<String> GetError() {
+        return _error;
+    }
 
     void loadData() {
         Disposable d = _theoryDataAccess.GetTheories()
@@ -82,17 +88,25 @@ public class TheoriesViewModel extends AndroidViewModel {
         }
 
         @Bindable("Title")
-        public String getTitle() { return _theory.Theory.Title; }
+        public String getTitle() {
+            return _theory.Theory.Title;
+        }
 
-        public String getChapterCountStr() { return String.valueOf(_theory.ChapterCount); }
+        public String getChapterCountStr() {
+            return String.valueOf(_theory.ChapterCount);
+        }
 
         @Bindable("Description")
-        public String getDescription() { return _theory.Theory.Description; }
+        public String getDescription() {
+            return _theory.Theory.Description;
+        }
 
         public String getId() {
             return _theory.Theory.Id;
         }
 
-        public int getChapterCount() { return _theory.ChapterCount; }
+        public int getChapterCount() {
+            return _theory.ChapterCount;
+        }
     }
 }

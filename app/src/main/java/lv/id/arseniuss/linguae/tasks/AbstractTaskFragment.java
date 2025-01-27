@@ -13,7 +13,9 @@ public abstract class AbstractTaskFragment<TViewModel extends AbstractTaskViewMo
         _task = current;
     }
 
-    public Boolean IsValidated() { return _validated; }
+    public Boolean IsValidated() {
+        return _validated;
+    }
 
     public final Boolean Validate() {
         Boolean isValid = _model.Validate();

@@ -26,8 +26,7 @@ public abstract class MyAdapter<TItem> extends BaseAdapter {
     private final OnItemSelectedListener _selectedListener;
 
     public MyAdapter(Context context, LifecycleOwner lifecycleOwner, int layout,
-            OnItemSelectedListener selectedListener)
-    {
+                     OnItemSelectedListener selectedListener) {
         _lifecycleOwner = lifecycleOwner;
         _layout = layout;
         _layoutInflater = LayoutInflater.from(context);
@@ -68,8 +67,7 @@ public abstract class MyAdapter<TItem> extends BaseAdapter {
             convertView = viewDataBinding.getRoot();
 
             convertView.setTag(holder);
-        }
-        else {
+        } else {
             holder = (ViewHolder) convertView.getTag();
         }
 
@@ -110,7 +108,9 @@ public abstract class MyAdapter<TItem> extends BaseAdapter {
             _binding.setVariable(BR.presenter, this);
         }
 
-        public MutableLiveData<Boolean> IsSelected() { return _isSelected; }
+        public MutableLiveData<Boolean> IsSelected() {
+            return _isSelected;
+        }
 
         public void OnSelected() {
             _selectedPosition.setValue(_position);

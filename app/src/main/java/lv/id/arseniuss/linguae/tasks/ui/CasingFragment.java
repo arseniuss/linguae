@@ -30,14 +30,12 @@ public class CasingFragment extends AbstractTaskFragment<CasingViewModel> {
     private FragmentTaskCasingBinding _binding;
     private CasingFragment.WordAdapter _wordAdapter;
 
-    public CasingFragment(SessionTaskData current)
-    {
+    public CasingFragment(SessionTaskData current) {
         super(current);
     }
 
     @BindingAdapter("items")
-    public static void BindWordList(AdapterFlexboxLayout flexboxLayout, List<CasingViewModel.WordViewModel> entries)
-    {
+    public static void BindWordList(AdapterFlexboxLayout flexboxLayout, List<CasingViewModel.WordViewModel> entries) {
         CasingFragment.WordAdapter adapter = (CasingFragment.WordAdapter) flexboxLayout.getAdapter();
 
         assert adapter != null;
@@ -50,8 +48,7 @@ public class CasingFragment extends AbstractTaskFragment<CasingViewModel> {
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
-            @Nullable Bundle savedInstanceState)
-    {
+                             @Nullable Bundle savedInstanceState) {
         _model = new ViewModelProvider(this).get(CasingViewModel.class);
         _model.Load(_task);
         _binding = FragmentTaskCasingBinding.inflate(inflater, container, false);
@@ -61,7 +58,8 @@ public class CasingFragment extends AbstractTaskFragment<CasingViewModel> {
 
         _wordAdapter =
                 new CasingFragment.WordAdapter(getContext(), getViewLifecycleOwner(), R.layout.item_task_casing_word,
-                        position -> { });
+                        position -> {
+                        });
 
         _binding.words.setAdapter(_wordAdapter);
 
@@ -71,14 +69,12 @@ public class CasingFragment extends AbstractTaskFragment<CasingViewModel> {
     public static class WordAdapter extends MyAdapter<CasingViewModel.WordViewModel> {
 
         public WordAdapter(Context context, LifecycleOwner lifecycleOwner, int layout,
-                OnItemSelectedListener selectedListener)
-        {
+                           OnItemSelectedListener selectedListener) {
             super(context, lifecycleOwner, layout, selectedListener);
         }
 
         @BindingAdapter("items")
-        public static void BindOptionsList(Spinner spinner, List<String> entries)
-        {
+        public static void BindOptionsList(Spinner spinner, List<String> entries) {
             ArrayAdapter<String> adapter = (ArrayAdapter<String>) spinner.getAdapter();
 
             assert adapter != null;
@@ -90,8 +86,7 @@ public class CasingFragment extends AbstractTaskFragment<CasingViewModel> {
         }
 
         @Override
-        public MyAdapter<CasingViewModel.WordViewModel>.ViewHolder createViewHolder(ViewDataBinding viewDataBinding)
-        {
+        public MyAdapter<CasingViewModel.WordViewModel>.ViewHolder createViewHolder(ViewDataBinding viewDataBinding) {
             return new CasingFragment.WordAdapter.WordViewHolder(viewDataBinding);
         }
 

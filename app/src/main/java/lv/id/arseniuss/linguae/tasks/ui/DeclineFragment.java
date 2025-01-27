@@ -41,8 +41,7 @@ public class DeclineFragment extends AbstractTaskFragment<DeclineViewModel> {
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
-            @Nullable Bundle savedInstanceState)
-    {
+                             @Nullable Bundle savedInstanceState) {
         _model = new ViewModelProvider(this).get(DeclineViewModel.class);
         _model.Load(_task);
         _binding = FragmentTaskDeclineBinding.inflate(inflater, container, false);

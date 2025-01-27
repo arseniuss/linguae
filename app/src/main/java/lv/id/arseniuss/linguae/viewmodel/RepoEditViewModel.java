@@ -22,7 +22,8 @@ import lv.id.arseniuss.linguae.data.ItemLanguageRepo;
 public class RepoEditViewModel extends AndroidViewModel {
 
     private final Gson _gson = new Gson();
-    private final Type _listType = new TypeToken<List<ItemLanguageRepo>>() { }.getType();
+    private final Type _listType = new TypeToken<List<ItemLanguageRepo>>() {
+    }.getType();
 
     private final MutableLiveData<List<EditRepoViewModel>> _repos = new MutableLiveData<>(new ArrayList<>());
     private final MutableLiveData<Integer> _selected = new MutableLiveData<>(-1);
@@ -35,7 +36,9 @@ public class RepoEditViewModel extends AndroidViewModel {
         return _repos;
     }
 
-    public LiveData<Integer> Selected() { return _selected; }
+    public LiveData<Integer> Selected() {
+        return _selected;
+    }
 
     public void Add(EditRepoViewModel model) {
         List<EditRepoViewModel> repos = _repos.getValue();
@@ -68,7 +71,12 @@ public class RepoEditViewModel extends AndroidViewModel {
 
         private final MutableLiveData<String> _name = new MutableLiveData<>("");
         private final MutableLiveData<String> _location = new MutableLiveData<>("");
-        private final MutableLiveData<Boolean> _canSelect = new MutableLiveData<>(true);
+        private final MutableLiveData<Boolean> _canSelect = new MutableLiveData<>(false);
+
+        public EditRepoViewModel(String name, String location) {
+            _name.setValue(name);
+            _location.setValue(location);
+        }
 
         public EditRepoViewModel(Boolean canSelect) {
             _canSelect.setValue(canSelect);
@@ -80,10 +88,16 @@ public class RepoEditViewModel extends AndroidViewModel {
             _canSelect.setValue(canSelect);
         }
 
-        public MutableLiveData<String> Name() { return _name; }
+        public MutableLiveData<String> Name() {
+            return _name;
+        }
 
-        public MutableLiveData<String> Location() { return _location; }
+        public MutableLiveData<String> Location() {
+            return _location;
+        }
 
-        public MutableLiveData<Boolean> CanSelect() { return _canSelect; }
+        public MutableLiveData<Boolean> CanSelect() {
+            return _canSelect;
+        }
     }
 }

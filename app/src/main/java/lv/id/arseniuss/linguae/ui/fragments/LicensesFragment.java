@@ -31,8 +31,7 @@ public class LicensesFragment extends Fragment {
     private FragmentLicensesBinding _binding;
 
     @BindingAdapter("items")
-    public static void BindLanguagesList(RecyclerView recyclerView, List<LicenseViewModel.EntryViewModel> entries)
-    {
+    public static void BindLanguagesList(RecyclerView recyclerView, List<LicenseViewModel.EntryViewModel> entries) {
         MyRecyclerViewAdapter<LicenseViewModel.EntryViewModel, ItemLicenseBinding> adapter =
                 (MyRecyclerViewAdapter<LicenseViewModel.EntryViewModel, ItemLicenseBinding>) recyclerView.getAdapter();
 
@@ -51,8 +50,7 @@ public class LicensesFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
-            @Nullable Bundle savedInstanceState)
-    {
+                             @Nullable Bundle savedInstanceState) {
         _binding = FragmentLicensesBinding.inflate(inflater, container, false);
 
         _binding.setViewmodel(_model);

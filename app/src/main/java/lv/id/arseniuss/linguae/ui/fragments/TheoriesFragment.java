@@ -48,8 +48,7 @@ public class TheoriesFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
-            @Nullable Bundle savedInstanceState)
-    {
+                             @Nullable Bundle savedInstanceState) {
         _model = new ViewModelProvider(this).get(TheoriesViewModel.class);
         _binding = FragmentTheoriesBinding.inflate(inflater, container, false);
 

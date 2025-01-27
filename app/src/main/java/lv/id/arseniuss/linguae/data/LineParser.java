@@ -25,8 +25,7 @@ public class LineParser {
                 case '\"':
                     if (quotes < 0) {
                         quotes = i + 1;
-                    }
-                    else {
+                    } else {
                         words.add(line.substring(quotes, i));
                         quotes = -1;
                         while (i < line.length()) {

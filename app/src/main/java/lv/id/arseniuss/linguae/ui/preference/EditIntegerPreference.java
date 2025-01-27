@@ -71,8 +71,7 @@ public class EditIntegerPreference extends EditTextPreference implements EditTex
 
             int defaultIntValue = Integer.parseInt(strDefaultValue);
             value = getPersistedInt(defaultIntValue);
-        }
-        else {
+        } else {
             value = getPersistedInt(0);
         }
 

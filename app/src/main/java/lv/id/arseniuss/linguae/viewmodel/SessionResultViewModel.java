@@ -33,11 +33,17 @@ public class SessionResultViewModel extends AndroidViewModel {
         super(application);
     }
 
-    public int GetPoints() { return _result.SessionResult.Points; }
+    public int GetPoints() {
+        return _result.SessionResult.Points;
+    }
 
-    public int GetAmount() { return _result.SessionResult.Amount; }
+    public int GetAmount() {
+        return _result.SessionResult.Amount;
+    }
 
-    public String GetPassedTime() { return String.valueOf(_result.SessionResult.PassedTime); }
+    public String GetPassedTime() {
+        return String.valueOf(_result.SessionResult.PassedTime);
+    }
 
     public void SetResult(SessionResultWithTaskResults result, Action onLoaded) {
         _result = result;
@@ -52,5 +58,7 @@ public class SessionResultViewModel extends AndroidViewModel {
                 .subscribe(onLoaded::run);
     }
 
-    public List<TaskResult> GetTaskResults() { return _result.TaskResults; }
+    public List<TaskResult> GetTaskResults() {
+        return _result.TaskResults;
+    }
 }

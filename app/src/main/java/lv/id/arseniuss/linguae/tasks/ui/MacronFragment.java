@@ -15,15 +15,13 @@ import lv.id.arseniuss.linguae.tasks.viewmodel.MacronViewModel;
 
 public class MacronFragment extends AbstractTaskFragment<MacronViewModel> {
 
-    public MacronFragment(SessionTaskData current)
-    {
+    public MacronFragment(SessionTaskData current) {
         super(current);
     }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
-            @Nullable Bundle savedInstanceState)
-    {
+                             @Nullable Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_task_macron, container, false);
     }
 

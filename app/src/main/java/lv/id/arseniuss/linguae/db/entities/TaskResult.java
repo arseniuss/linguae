@@ -30,7 +30,8 @@ public class TaskResult {
     @ColumnInfo(name = "amount")
     public int Amount = 1;
 
-    public TaskResult() { }
+    public TaskResult() {
+    }
 
     public TaskResult(@NonNull TaskType taskType, int points, int amount) {
         this.TaskType = taskType;

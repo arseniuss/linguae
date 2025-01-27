@@ -31,7 +31,9 @@ public class AdapterFlexboxLayout extends FlexboxLayout {
         super(context, attrs, defStyleAttr);
     }
 
-    public Adapter getAdapter() { return _adapter; }
+    public Adapter getAdapter() {
+        return _adapter;
+    }
 
     public void setAdapter(Adapter adapter) {
         if (_adapter == adapter) return;

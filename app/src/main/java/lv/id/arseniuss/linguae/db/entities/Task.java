@@ -46,10 +46,11 @@ public class Task {
     public long Amount;
 
     @ColumnInfo(name = "data")
-    @TypeConverters({ Task.class })
+    @TypeConverters({Task.class})
     public ITaskData Data;
 
-    public Task() { }
+    public Task() {
+    }
 
     public Task(@NonNull String id) {
         Id = id;
@@ -60,9 +61,8 @@ public class Task {
         Gson gson = new Gson();
 
         if (Objects.requireNonNull(task.Type) == TaskType.CasingTask || task.Type == TaskType.TranslateTask ||
-            task.Type == TaskType.MacronTask || task.Type == TaskType.NumberTask || task.Type == TaskType.DeclineTask ||
-            task.Type == TaskType.ConjugateTask || task.Type == TaskType.ChooseTask)
-        {
+                task.Type == TaskType.MacronTask || task.Type == TaskType.NumberTask || task.Type == TaskType.DeclineTask ||
+                task.Type == TaskType.ConjugateTask || task.Type == TaskType.ChooseTask) {
             return gson.toJson(task);
         }
         return null;

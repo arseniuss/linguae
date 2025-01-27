@@ -15,8 +15,7 @@ import lv.id.arseniuss.linguae.db.entities.Task;
 public class LanguageGenerator {
 
     public static String[] Generate(Description description, Task task, String base, String[] options)
-            throws GeneratorException
-    {
+            throws GeneratorException {
         List<String> result = new ArrayList<>();
 
         Matcher match = description.Pattern.matcher(base);
@@ -29,8 +28,8 @@ public class LanguageGenerator {
         if (match.groupCount() != description.Groups) {
             throw new GeneratorException(
                     "The pattern " + description.Pattern.pattern() + " did not generate " + description.Groups +
-                    " groups: " +
-                    IntStream.range(0, match.groupCount()).mapToObj(match::group).collect(Collectors.joining(", ")));
+                            " groups: " +
+                            IntStream.range(0, match.groupCount()).mapToObj(match::group).collect(Collectors.joining(", ")));
         }
 
         for (String option : options) {
@@ -41,7 +40,7 @@ public class LanguageGenerator {
             if (!optionalInt.isPresent()) {
                 throw new GeneratorException(
                         task.Type.GetName() + " " + description.Category + " " + description.Description +
-                        " generator cannot generate for " + option);
+                                " generator cannot generate for " + option);
             }
 
             String rule = description.Rules[optionalInt.getAsInt()];
@@ -71,11 +70,9 @@ public class LanguageGenerator {
                     }
 
                     str.append(part);
-                }
-                else if (c == '+') {
+                } else if (c == '+') {
                     continue;
-                }
-                else {
+                } else {
                     str.append(c);
                 }
             }
@@ -97,6 +94,8 @@ public class LanguageGenerator {
     }
 
     public static class GeneratorException extends Exception {
-        public GeneratorException(String msg) { super(msg); }
+        public GeneratorException(String msg) {
+            super(msg);
+        }
     }
 }

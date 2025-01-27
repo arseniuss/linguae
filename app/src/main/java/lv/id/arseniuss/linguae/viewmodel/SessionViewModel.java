@@ -52,9 +52,13 @@ public class SessionViewModel extends AndroidViewModel {
         }, 0, 1, TimeUnit.SECONDS);
     }
 
-    public MutableLiveData<String> Counter() { return _counterString; }
+    public MutableLiveData<String> Counter() {
+        return _counterString;
+    }
 
-    public MutableLiveData<String> TaskProgress() { return _taskProgress; }
+    public MutableLiveData<String> TaskProgress() {
+        return _taskProgress;
+    }
 
     public void LoadLesson(String lessonId, ILoaded loaded) {
 
@@ -99,7 +103,9 @@ public class SessionViewModel extends AndroidViewModel {
         return _tasks.get(currentIndex);
     }
 
-    public int GetTaskCount() { return _tasks.size(); }
+    public int GetTaskCount() {
+        return _tasks.size();
+    }
 
     public void Done() {
         _scheduledExecutorService.shutdown();

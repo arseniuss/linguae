@@ -74,8 +74,7 @@ public class PreferencesActivity extends AppCompatActivity {
                     });
 
             return true;
-        }
-        else if (R.id.item_clear_settings == item.getItemId()) {
+        } else if (R.id.item_clear_settings == item.getItemId()) {
             SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
 
             preferences.edit().clear().apply();

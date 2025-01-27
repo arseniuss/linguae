@@ -25,7 +25,8 @@ public class Setting {
     @ColumnInfo(name = "value")
     public String Value;
 
-    public Setting() { }
+    public Setting() {
+    }
 
     public Setting(@NonNull String key, String value) {
         Key = key;

@@ -20,8 +20,7 @@ import lv.id.arseniuss.linguae.BR;
 import lv.id.arseniuss.linguae.R;
 
 public class MyRecyclerViewAdapter<TViewModel extends BaseObservable, TDataBinding extends ViewDataBinding>
-        extends RecyclerView.Adapter<MyRecyclerViewAdapter<TViewModel, TDataBinding>.MyViewHolder>
-{
+        extends RecyclerView.Adapter<MyRecyclerViewAdapter<TViewModel, TDataBinding>.MyViewHolder> {
     protected final int _layoutId;
     private final LifecycleOwner _lifecycleOwner;
     protected int _selected = -1;
@@ -36,8 +35,7 @@ public class MyRecyclerViewAdapter<TViewModel extends BaseObservable, TDataBindi
     }
 
     public MyRecyclerViewAdapter(LifecycleOwner lifecycleOwner, int layoutId, Integer selected,
-            @NonNull OnSelectionChanged callback)
-    {
+                                 @NonNull OnSelectionChanged callback) {
         _lifecycleOwner = lifecycleOwner;
         _selected = selected;
         _changed = callback;
@@ -48,7 +46,9 @@ public class MyRecyclerViewAdapter<TViewModel extends BaseObservable, TDataBindi
         _binded = callback;
     }
 
-    public void SetOnLongClickListener(OnLongClickListener listener) { _longClick = listener; }
+    public void SetOnLongClickListener(OnLongClickListener listener) {
+        _longClick = listener;
+    }
 
     @NonNull
     @Override

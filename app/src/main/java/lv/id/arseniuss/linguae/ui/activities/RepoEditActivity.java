@@ -19,6 +19,8 @@ import androidx.databinding.Observable;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,8 +39,7 @@ public class RepoEditActivity extends AppCompatActivity {
     protected RepoEditViewModel _model;
 
     @BindingAdapter("items")
-    public static void BindLanguageRepoList(RecyclerView recyclerView, List<RepoEditViewModel.EditRepoViewModel> repos)
-    {
+    public static void BindLanguageRepoList(RecyclerView recyclerView, List<RepoEditViewModel.EditRepoViewModel> repos) {
         RepoEditAdapter adapter = (RepoEditAdapter) recyclerView.getAdapter();
 
         assert adapter != null;
@@ -65,9 +66,7 @@ public class RepoEditActivity extends AppCompatActivity {
         binding.setViewmodel(_model);
         binding.setLifecycleOwner(this);
 
-        binding.repos.setAdapter(new RepoEditAdapter(_model.Selected().getValue(), selection -> {
-
-        }));
+        binding.repos.setAdapter(new RepoEditAdapter(_model.Selected().getValue()));
 
         Integer selectedIndex = null;
 
@@ -87,18 +86,24 @@ public class RepoEditActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (android.R.id.home == item.getItemId()) {
-            setData();
-            finish();
+            new MaterialAlertDialogBuilder(this)
+                    .setMessage(R.string.SaveRepositoriesTitle)
+                    .setPositiveButton(android.R.string.yes, (dialog, which) -> {
+                        setData();
+                        finish();
+                    })
+                    .setNegativeButton(android.R.string.no, (dialog, which) -> {
+                        finish();
+                    })
+                    .show();
 
             return true;
-        }
-        else if (item.getItemId() == R.id.add) {
+        } else if (item.getItemId() == R.id.add) {
             Intent i = getIntent();
-            RepoEditViewModel.EditRepoViewModel model = new RepoEditViewModel.EditRepoViewModel(i.hasExtra(SELECT));
-            EditRepoDialogFragment editRepoDialogFragment = new EditRepoDialogFragment(model);
+            EditRepoDialogFragment editRepoDialogFragment = new EditRepoDialogFragment();
 
-            editRepoDialogFragment.SetOnSaveListener(() -> {
-                _model.Add(model);
+            editRepoDialogFragment.SetOnSaveListener((name, location) -> {
+                _model.Add(new RepoEditViewModel.EditRepoViewModel(name, location));
             });
 
             editRepoDialogFragment.show(getSupportFragmentManager(), "test");
@@ -119,13 +124,11 @@ public class RepoEditActivity extends AppCompatActivity {
     }
 
     public static class RepoEditAdapter extends RecyclerView.Adapter<RepoEditAdapter.ItemLanguageRepoViewHolder> {
-        private final OnSelectionChanged _changed;
         protected int _selected = -1;
         private List<RepoEditViewModel.EditRepoViewModel> _items = new ArrayList<>();
 
-        public RepoEditAdapter(Integer selected, @NonNull OnSelectionChanged callback) {
+        public RepoEditAdapter(Integer selected) {
             _selected = selected;
-            _changed = callback;
         }
 
         @NonNull
@@ -156,7 +159,7 @@ public class RepoEditActivity extends AppCompatActivity {
             void Changed(int selection);
         }
 
-        public class ItemLanguageRepoViewHolder extends RecyclerView.ViewHolder {
+        public class ItemLanguageRepoViewHolder extends RecyclerView.ViewHolder implements EditRepoDialogFragment.OnSaveListener {
             private final ItemLanguageRepoBinding _binding;
             private int _position;
 
@@ -169,7 +172,6 @@ public class RepoEditActivity extends AppCompatActivity {
                     @Override
                     public void onClick(View v) {
                         _selected = getAdapterPosition();
-                        _changed.Changed(_selected);
                         notifyDataSetChanged();
                     }
                 };
@@ -185,8 +187,13 @@ public class RepoEditActivity extends AppCompatActivity {
             }
 
             public void OnEditClick() {
-                EditRepoDialogFragment fragment = new EditRepoDialogFragment(_items.get(_position));
+                RepoEditViewModel.EditRepoViewModel editRepoViewModel = _items.get(_position);
+                EditRepoDialogFragment fragment =
+                        new EditRepoDialogFragment(editRepoViewModel.Name().getValue(),
+                                editRepoViewModel.Location().getValue());
                 AppCompatActivity context = (AppCompatActivity) _binding.editButton.getContext();
+
+                fragment.SetOnSaveListener(this);
 
                 fragment.show(context.getSupportFragmentManager(), "fragment-" + _position);
             }
@@ -202,6 +209,16 @@ public class RepoEditActivity extends AppCompatActivity {
                         notifyItemChanged(_position);
                     }
                 });
+            }
+
+            @Override
+            public void Confirmed(String name, String location) {
+                RepoEditViewModel.EditRepoViewModel editRepoViewModel = _items.get(_position);
+
+                editRepoViewModel.Name().setValue(name);
+                editRepoViewModel.Location().setValue(location);
+
+                notifyItemChanged(_position);
             }
         }
 

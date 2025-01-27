@@ -24,12 +24,16 @@ public enum SettingType {
 
     private final String _name;
 
-    SettingType(String name) { _name = name; }
+    SettingType(String name) {
+        _name = name;
+    }
 
     public static SettingType ValueOf(String setting) {
         return _map.get(setting);
     }
 
-    public String GetName() { return _name; }
+    public String GetName() {
+        return _name;
+    }
 }
 

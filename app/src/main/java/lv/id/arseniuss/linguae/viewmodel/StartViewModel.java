@@ -46,7 +46,9 @@ public class StartViewModel extends AndroidViewModel implements LanguageDataPars
     public enum State {
         STATE_LOADING,
         STATE_DATA,
-        STATE_ERROR
+        STATE_ERROR,
+
+        STATE_NODATA
     }
 
     private final SharedPreferences _sharedPreferences =

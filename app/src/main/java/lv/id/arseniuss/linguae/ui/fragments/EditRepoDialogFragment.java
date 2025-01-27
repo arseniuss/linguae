@@ -1,5 +1,6 @@
 package lv.id.arseniuss.linguae.ui.fragments;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -14,22 +15,27 @@ import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
 import androidx.documentfile.provider.DocumentFile;
 import androidx.fragment.app.DialogFragment;
+import androidx.lifecycle.MutableLiveData;
 
 import java.util.Objects;
 
 import lv.id.arseniuss.linguae.R;
 import lv.id.arseniuss.linguae.databinding.FragmentEditLanguageRepoBinding;
-import lv.id.arseniuss.linguae.viewmodel.RepoEditViewModel;
 
 public class EditRepoDialogFragment extends DialogFragment {
     private static final int REQUEST_CODE_OPEN_DIRECTORY = 101;
-    private final RepoEditViewModel.EditRepoViewModel _model;
+    private final ViewModel _model;
     private FragmentEditLanguageRepoBinding _binding;
     private OnSaveListener _onSaved = null;
 
-    public EditRepoDialogFragment(RepoEditViewModel.EditRepoViewModel viewModel) {
+    public EditRepoDialogFragment() {
         super();
-        _model = viewModel;
+        _model = new ViewModel();
+    }
+
+    public EditRepoDialogFragment(String name, String location) {
+        super();
+        _model = new ViewModel(name, location);
     }
 
     public void SetOnSaveListener(OnSaveListener listener) {
@@ -42,17 +48,21 @@ public class EditRepoDialogFragment extends DialogFragment {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         LayoutInflater inflater = requireActivity().getLayoutInflater();
 
-        _binding = DataBindingUtil.inflate(inflater, R.layout.fragment_edit_language_repo, null, false);
+        _binding = DataBindingUtil.inflate(inflater, R.layout.fragment_edit_language_repo,
+                null, false);
 
-        builder.setView(_binding.getRoot()).setPositiveButton(R.string.SaveButtonText, (dialog, which) -> {
-            //_model.notifyChange();
-            if (_onSaved != null) _onSaved.Confirmed();
-        }).setNegativeButton(R.string.CancelButtonText, (dialog, which) -> {
-            Objects.requireNonNull(this.getDialog()).cancel();
-        });
         _binding.setViewmodel(_model);
         _binding.setPresenter(this);
         _binding.setLifecycleOwner(this);
+
+        builder.setView(_binding.getRoot()).setPositiveButton(R.string.SaveButtonText, (dialog, which) -> {
+            _binding.notifyChange();
+            if (_onSaved != null)
+                _onSaved.Confirmed(_model.Name().getValue(), _model.Location().getValue());
+        }).setNegativeButton(R.string.CancelButtonText, (dialog, which) -> {
+            Objects.requireNonNull(this.getDialog()).cancel();
+        });
+
 
         return builder.create();
     }
@@ -79,14 +89,17 @@ public class EditRepoDialogFragment extends DialogFragment {
 
             Uri uri = data.getData();
 
-            getActivity().getContentResolver()
-                    .takePersistableUriPermission(uri,
-                            Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+            assert uri != null;
 
-            DocumentFile documentFile = DocumentFile.fromTreeUri(getContext(), uri);
+            requireActivity().getContentResolver()
+                    .takePersistableUriPermission(uri,
+                            Intent.FLAG_GRANT_READ_URI_PERMISSION |
+                                    Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+
+            @SuppressLint("UseRequireInsteadOfGet") DocumentFile documentFile =
+                    DocumentFile.fromTreeUri(requireContext(), uri);
 
             if (documentFile != null && documentFile.isDirectory()) {
-
                 DocumentFile[] files = documentFile.listFiles();
 
                 _model.Location().setValue(uri.toString());
@@ -95,6 +108,28 @@ public class EditRepoDialogFragment extends DialogFragment {
     }
 
     public interface OnSaveListener {
-        void Confirmed();
+        void Confirmed(String name, String location);
+    }
+
+    public static class ViewModel {
+        private final MutableLiveData<String> _name = new MutableLiveData<>("");
+        private final MutableLiveData<String> _location = new MutableLiveData<>("");
+
+        public ViewModel(String name, String location) {
+            _name.setValue(name);
+            _location.setValue(location);
+        }
+
+        public ViewModel() {
+
+        }
+
+        public MutableLiveData<String> Name() {
+            return _name;
+        }
+
+        public MutableLiveData<String> Location() {
+            return _location;
+        }
     }
 }

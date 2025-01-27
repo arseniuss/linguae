@@ -55,15 +55,25 @@ public class ConjugateViewModel extends AbstractTaskViewModel {
         return allValid;
     }
 
-    private ConjugateTask conjugateTask() { return (ConjugateTask) _taskResult.Task.Data; }
+    private ConjugateTask conjugateTask() {
+        return (ConjugateTask) _taskResult.Task.Data;
+    }
 
-    public MutableLiveData<List<PersonViewModel>> Persons() { return _persons; }
+    public MutableLiveData<List<PersonViewModel>> Persons() {
+        return _persons;
+    }
 
-    public String Description() { return StripAccents(_taskResult.Task.Description); }
+    public String Description() {
+        return StripAccents(_taskResult.Task.Description);
+    }
 
-    public MutableLiveData<String> Word() { return _word; }
+    public MutableLiveData<String> Word() {
+        return _word;
+    }
 
-    public String Meaning() { return conjugateTask().Meaning; }
+    public String Meaning() {
+        return conjugateTask().Meaning;
+    }
 
     @Override
     public void Load(SessionTaskData task) {
@@ -94,13 +104,21 @@ public class ConjugateViewModel extends AbstractTaskViewModel {
             _checked.setValue(_correct.isEmpty());
         }
 
-        public MutableLiveData<String> PersonName() { return _personName; }
+        public MutableLiveData<String> PersonName() {
+            return _personName;
+        }
 
-        public MutableLiveData<String> Answer() { return _answer; }
+        public MutableLiveData<String> Answer() {
+            return _answer;
+        }
 
-        public boolean IsRequired() { return !_correct.isEmpty(); }
+        public boolean IsRequired() {
+            return !_correct.isEmpty();
+        }
 
-        public MutableLiveData<Spanned> GetResult() { return _result; }
+        public MutableLiveData<Spanned> GetResult() {
+            return _result;
+        }
 
         @Override
         public boolean Validate() {
@@ -117,29 +135,29 @@ public class ConjugateViewModel extends AbstractTaskViewModel {
                     result = answer.equals(value);
                     if (result) break;
                 }
-            }
-            else {
+            } else {
                 result = answer.equals(correct);
             }
 
             if (!result) {
                 _result.setValue(
                         Html.fromHtml("<strike>" + answer + "</strike>\t" + correct, Html.FROM_HTML_MODE_LEGACY));
-            }
-            else {
+            } else {
                 if (hasMultipleAnswers) {
                     List<String> results = new ArrayList<>();
                     String[] values = correct.split("/");
 
                     for (String value : values) {
-                        if (value.equals(answer)) { results.add("<u>" + value + "</u>"); }
-                        else { results.add(value); }
+                        if (value.equals(answer)) {
+                            results.add("<u>" + value + "</u>");
+                        } else {
+                            results.add(value);
+                        }
                     }
 
                     _result.setValue(Html.fromHtml(results.stream().collect(Collectors.joining("/")),
                             Html.FROM_HTML_MODE_LEGACY));
-                }
-                else {
+                } else {
                     _result.setValue(Html.fromHtml(correct, Html.FROM_HTML_MODE_LEGACY));
                 }
             }

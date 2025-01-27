@@ -25,8 +25,7 @@ public class ConjugateFragment extends AbstractTaskFragment<ConjugateViewModel> 
 
     private FragmentTaskConjugateBinding _binding;
 
-    public ConjugateFragment(SessionTaskData current)
-    {
+    public ConjugateFragment(SessionTaskData current) {
         super(current);
     }
 
@@ -43,8 +42,7 @@ public class ConjugateFragment extends AbstractTaskFragment<ConjugateViewModel> 
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
-            @Nullable Bundle savedInstanceState)
-    {
+                             @Nullable Bundle savedInstanceState) {
         _model = new ViewModelProvider(this).get(ConjugateViewModel.class);
         _model.Load(_task);
         _binding = FragmentTaskConjugateBinding.inflate(inflater, container, false);

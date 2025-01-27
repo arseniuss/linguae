@@ -26,13 +26,21 @@ public class CasingViewModel extends AbstractTaskViewModel {
         super(application);
     }
 
-    public MutableLiveData<String> Sentence() { return _sentence; }
+    public MutableLiveData<String> Sentence() {
+        return _sentence;
+    }
 
-    public MutableLiveData<String> Meaning() { return _meaning; }
+    public MutableLiveData<String> Meaning() {
+        return _meaning;
+    }
 
-    public MutableLiveData<List<WordViewModel>> Words() { return _words; }
+    public MutableLiveData<List<WordViewModel>> Words() {
+        return _words;
+    }
 
-    private CasingTask casingTask() { return (CasingTask) _taskResult.Task.Data; }
+    private CasingTask casingTask() {
+        return (CasingTask) _taskResult.Task.Data;
+    }
 
     @Override
     public void Load(SessionTaskData task) {
@@ -101,9 +109,13 @@ public class CasingViewModel extends AbstractTaskViewModel {
             Options = options;
         }
 
-        public Boolean CanSelect() { return !Answer.isEmpty(); }
+        public Boolean CanSelect() {
+            return !Answer.isEmpty();
+        }
 
-        public MutableLiveData<Integer> SelectedPosition() { return _selectedPosition; }
+        public MutableLiveData<Integer> SelectedPosition() {
+            return _selectedPosition;
+        }
 
         @Override
         public boolean Validate() {

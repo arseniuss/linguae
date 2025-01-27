@@ -16,14 +16,17 @@ public class Config {
     @ColumnInfo(name = "value")
     public String Value;
 
-    public Config() { }
+    public Config() {
+    }
 
     public Config(@NonNull String key, String value) {
         Key = key;
         Value = value;
     }
 
-    public String GetKey() { return Key; }
+    public String GetKey() {
+        return Key;
+    }
 
     public String GetValue() {
         return Value;

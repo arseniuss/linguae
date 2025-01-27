@@ -58,9 +58,11 @@ public class SessionActivity extends AppCompatActivity {
         _binding.setPresenter(this);
         _binding.setLifecycleOwner(this);
 
-        if (i.hasExtra(LessonExtraTag)) { _model.LoadLesson(i.getStringExtra(LessonExtraTag), this::loaded); }
-        else if (i.hasExtra(TrainingExtraTag)) {
-            Type listType = new TypeToken<List<TaskDataAccess.TrainingCategory>>() { }.getType();
+        if (i.hasExtra(LessonExtraTag)) {
+            _model.LoadLesson(i.getStringExtra(LessonExtraTag), this::loaded);
+        } else if (i.hasExtra(TrainingExtraTag)) {
+            Type listType = new TypeToken<List<TaskDataAccess.TrainingCategory>>() {
+            }.getType();
             List<TaskDataAccess.TrainingCategory> categories = new ArrayList<>();
 
             if (i.hasExtra(TrainingCategoriesExtraTag)) {
@@ -77,7 +79,8 @@ public class SessionActivity extends AppCompatActivity {
                         .setPositiveButton(android.R.string.yes, (dialog, which) -> {
                             finish();
                         })
-                        .setNegativeButton(android.R.string.cancel, (dialog, which) -> { })
+                        .setNegativeButton(android.R.string.cancel, (dialog, which) -> {
+                        })
                         .show();
             }
         });
@@ -104,20 +107,16 @@ public class SessionActivity extends AppCompatActivity {
             if (_currentFragment.Validate()) {
                 if (_model.CurrentTaskIndex == _model.GetTaskCount() - 1) {
                     Done();
-                }
-                else {
+                } else {
                     _model.NextTask(this::loaded);
                 }
-            }
-            else {
+            } else {
                 _binding.btnContinue.setText(R.string.ButtonContinueText);
             }
-        }
-        else {
+        } else {
             if (_model.CurrentTaskIndex == _model.GetTaskCount() - 1) {
                 Done();
-            }
-            else {
+            } else {
                 _binding.btnContinue.setText(R.string.ButtonCheckTitle);
                 _model.NextTask(this::loaded);
             }
@@ -129,8 +128,7 @@ public class SessionActivity extends AppCompatActivity {
             new MaterialAlertDialogBuilder(this).setMessage(error)
                     .setNeutralButton(android.R.string.ok, (dialog, which) -> finish())
                     .show();
-        }
-        else {
+        } else {
             createFragment();
         }
     }

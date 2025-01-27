@@ -38,7 +38,9 @@ public class TrainingSetupViewModel extends AndroidViewModel {
         super(application);
     }
 
-    public MutableLiveData<List<TrainingTaskViewModel>> Tasks() { return _tasks; }
+    public MutableLiveData<List<TrainingTaskViewModel>> Tasks() {
+        return _tasks;
+    }
 
     public void Load(String trainingId) {
         _trainingId = trainingId;
@@ -46,7 +48,8 @@ public class TrainingSetupViewModel extends AndroidViewModel {
         Disposable d = _trainingDataAccess.GetCategories(trainingId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(this::parseData, error -> { });
+                .subscribe(this::parseData, error -> {
+                });
     }
 
     public List<TaskDataAccess.TrainingCategory> GetTrainingCategories() {
@@ -95,9 +98,13 @@ public class TrainingSetupViewModel extends AndroidViewModel {
             this.TaskType = tt;
         }
 
-        public String GetTaskName() { return this.TaskType.GetName(); }
+        public String GetTaskName() {
+            return this.TaskType.GetName();
+        }
 
-        public MutableLiveData<List<TrainingCategoryViewModel>> GetCategories() { return _categories; }
+        public MutableLiveData<List<TrainingCategoryViewModel>> GetCategories() {
+            return _categories;
+        }
 
         public void SetCategories(List<TrainingCategoryViewModel> trainingCategoryViewModels) {
             _categories.setValue(trainingCategoryViewModels);
@@ -117,9 +124,13 @@ public class TrainingSetupViewModel extends AndroidViewModel {
             _checked.observeForever(this);
         }
 
-        private String GetKey() { return "training-category" + TrainingCategory.Id + "-" + _trainingId; }
+        private String GetKey() {
+            return "training-category" + TrainingCategory.Id + "-" + _trainingId;
+        }
 
-        public MutableLiveData<Boolean> GetChecked() { return _checked; }
+        public MutableLiveData<Boolean> GetChecked() {
+            return _checked;
+        }
 
         public String GetCategory() {
             return TrainingCategory.Category + ", " + TrainingCategory.Description;

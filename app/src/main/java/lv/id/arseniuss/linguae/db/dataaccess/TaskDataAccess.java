@@ -27,10 +27,10 @@ public abstract class TaskDataAccess {
     protected abstract List<String> GetTrainingTasks(String trainingId);
 
     @Query("SELECT tt.task_id FROM training_task tt INNER JOIN task t ON t.id = tt.task_id WHERE (tt.training_id = " +
-           ":trainingId OR :trainingId IS NULL OR :trainingId = '') AND t.type = :taskType AND t.category = :category" +
-           " AND t.description = :description")
+            ":trainingId OR :trainingId IS NULL OR :trainingId = '') AND t.type = :taskType AND t.category = :category" +
+            " AND t.description = :description")
     protected abstract List<String> GetTrainingTasks(String trainingId, TaskType taskType, String category,
-            String description);
+                                                     String description);
 
     @Query("SELECT COUNT(*) FROM lesson_task WHERE lesson_id = :lessonId")
     protected abstract int GetLessonTaskCount(String lessonId);
@@ -68,8 +68,7 @@ public abstract class TaskDataAccess {
 
             if (categories.isEmpty()) {
                 taskIds = GetTrainingTasks(trainingId);
-            }
-            else {
+            } else {
                 taskIds = new ArrayList<>();
 
                 for (TrainingCategory tc : categories) {

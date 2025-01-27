@@ -40,11 +40,17 @@ public class LicenseViewModel extends AndroidViewModel {
         load();
     }
 
-    public MutableLiveData<Boolean> HasError() { return _hasError; }
+    public MutableLiveData<Boolean> HasError() {
+        return _hasError;
+    }
 
-    public MutableLiveData<String> GetError() { return _error; }
+    public MutableLiveData<String> GetError() {
+        return _error;
+    }
 
-    public MutableLiveData<List<EntryViewModel>> GetLicenses() { return _licenses; }
+    public MutableLiveData<List<EntryViewModel>> GetLicenses() {
+        return _licenses;
+    }
 
     private void load() {
         Disposable d = _licenseDataAccess.GetLicenses()
@@ -70,6 +76,8 @@ public class LicenseViewModel extends AndroidViewModel {
             _license = license;
         }
 
-        public String GetText() { return _license.Text; }
+        public String GetText() {
+            return _license.Text;
+        }
     }
 }

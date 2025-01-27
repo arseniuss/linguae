@@ -4,7 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 
-@Entity(tableName = "training_task", primaryKeys = { "training_id", "task_id" })
+@Entity(tableName = "training_task", primaryKeys = {"training_id", "task_id"})
 public class TrainingTaskCrossref {
     @ColumnInfo(name = "training_id")
     @NonNull

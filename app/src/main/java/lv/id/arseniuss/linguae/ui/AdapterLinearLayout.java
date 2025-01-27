@@ -36,7 +36,9 @@ public class AdapterLinearLayout extends LinearLayout {
         super(context, attrs, defStyleAttr, defStyleRes);
     }
 
-    public Adapter getAdapter() { return _adapter; }
+    public Adapter getAdapter() {
+        return _adapter;
+    }
 
     public void setAdapter(Adapter adapter) {
         if (_adapter == adapter) return;

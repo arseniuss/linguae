@@ -4,7 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 
-@Entity(tableName = "theory_chapter", primaryKeys = { "theory_id", "chapter_id" })
+@Entity(tableName = "theory_chapter", primaryKeys = {"theory_id", "chapter_id"})
 public class TheoryChapterCrossref {
     @ColumnInfo(name = "theory_id")
     @NonNull
@@ -14,7 +14,8 @@ public class TheoryChapterCrossref {
     @NonNull
     public String ChapterId = "";
 
-    public TheoryChapterCrossref() { }
+    public TheoryChapterCrossref() {
+    }
 
     public TheoryChapterCrossref(String theoryId, String chapterId) {
         TheoryId = theoryId;

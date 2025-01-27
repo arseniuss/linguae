@@ -27,15 +27,25 @@ public class DeclineViewModel extends AbstractTaskViewModel {
         super(application);
     }
 
-    private DeclineTask declineTask() { return (DeclineTask) _taskResult.Task.Data; }
+    private DeclineTask declineTask() {
+        return (DeclineTask) _taskResult.Task.Data;
+    }
 
-    public MutableLiveData<List<CaseViewModel>> Cases() { return _cases; }
+    public MutableLiveData<List<CaseViewModel>> Cases() {
+        return _cases;
+    }
 
-    public String Description() { return StripAccents(_taskResult.Task.Description); }
+    public String Description() {
+        return StripAccents(_taskResult.Task.Description);
+    }
 
-    public String Word() { return StripAccents(declineTask().Word); }
+    public String Word() {
+        return StripAccents(declineTask().Word);
+    }
 
-    public String Meaning() { return declineTask().Meaning; }
+    public String Meaning() {
+        return declineTask().Meaning;
+    }
 
     @Override
     public boolean Validate() {
@@ -84,11 +94,17 @@ public class DeclineViewModel extends AbstractTaskViewModel {
             _correct = correct;
         }
 
-        public MutableLiveData<String> CaseName() { return _caseName; }
+        public MutableLiveData<String> CaseName() {
+            return _caseName;
+        }
 
-        public MutableLiveData<String> Answer() { return _answer; }
+        public MutableLiveData<String> Answer() {
+            return _answer;
+        }
 
-        public MutableLiveData<Spanned> GetResult() { return _result; }
+        public MutableLiveData<Spanned> GetResult() {
+            return _result;
+        }
 
         @Override
         public boolean Validate() {
@@ -100,8 +116,7 @@ public class DeclineViewModel extends AbstractTaskViewModel {
             if (!result) {
                 _result.setValue(
                         Html.fromHtml("<strike>" + answer + "</strike>\t" + correct, Html.FROM_HTML_MODE_LEGACY));
-            }
-            else {
+            } else {
                 _result.setValue(Html.fromHtml(correct, Html.FROM_HTML_MODE_LEGACY));
             }
 

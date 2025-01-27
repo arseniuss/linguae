@@ -31,7 +31,7 @@ public class SummaryViewModel extends AndroidViewModel {
     }
 
     private void onConfigChanged() {
-        
+
     }
 
     public void Load(LoadListener listener) {

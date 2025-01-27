@@ -29,14 +29,12 @@ public class TranslateFragment extends AbstractTaskFragment<TranslateViewModel> 
     private WordAdapter _answerAdapter;
     private WordAdapter _optionsAdapter;
 
-    public TranslateFragment(SessionTaskData current)
-    {
+    public TranslateFragment(SessionTaskData current) {
         super(current);
     }
 
     @BindingAdapter("items")
-    public static void BindWordList(AdapterFlexboxLayout flexboxLayout, List<TranslateViewModel.WordViewModel> entries)
-    {
+    public static void BindWordList(AdapterFlexboxLayout flexboxLayout, List<TranslateViewModel.WordViewModel> entries) {
         WordAdapter adapter = (WordAdapter) flexboxLayout.getAdapter();
 
         assert adapter != null;
@@ -49,8 +47,7 @@ public class TranslateFragment extends AbstractTaskFragment<TranslateViewModel> 
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
-            @Nullable Bundle savedInstanceState)
-    {
+                             @Nullable Bundle savedInstanceState) {
         _model = new ViewModelProvider(this).get(TranslateViewModel.class);
         _model.Load(_task);
         _binding = FragmentTaskTranslateBinding.inflate(inflater, container, false);
@@ -70,8 +67,7 @@ public class TranslateFragment extends AbstractTaskFragment<TranslateViewModel> 
     }
 
     private void OnItemSelected(int position, MutableLiveData<List<TranslateViewModel.WordViewModel>> origin,
-            MutableLiveData<List<TranslateViewModel.WordViewModel>> target)
-    {
+                                MutableLiveData<List<TranslateViewModel.WordViewModel>> target) {
         if (!_model.IsValidated().getValue() && position >= 0 && position < origin.getValue().size()) {
             List<TranslateViewModel.WordViewModel> originValue = origin.getValue();
             List<TranslateViewModel.WordViewModel> targetValue = target.getValue();
@@ -89,14 +85,12 @@ public class TranslateFragment extends AbstractTaskFragment<TranslateViewModel> 
     public static class WordAdapter extends MyAdapter<TranslateViewModel.WordViewModel> {
 
         public WordAdapter(Context context, LifecycleOwner lifecycleOwner, int layout,
-                OnItemSelectedListener selectedListener)
-        {
+                           OnItemSelectedListener selectedListener) {
             super(context, lifecycleOwner, layout, selectedListener);
         }
 
         @Override
-        public MyAdapter<TranslateViewModel.WordViewModel>.ViewHolder createViewHolder(ViewDataBinding viewDataBinding)
-        {
+        public MyAdapter<TranslateViewModel.WordViewModel>.ViewHolder createViewHolder(ViewDataBinding viewDataBinding) {
             return new WordViewHolder(viewDataBinding);
         }
 
