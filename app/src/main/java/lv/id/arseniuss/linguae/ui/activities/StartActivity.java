@@ -23,9 +23,8 @@ import java.util.stream.Collectors;
 import lv.id.arseniuss.linguae.BR;
 import lv.id.arseniuss.linguae.Constants;
 import lv.id.arseniuss.linguae.R;
-import lv.id.arseniuss.linguae.data.LanguageDataParser;
 import lv.id.arseniuss.linguae.databinding.ActivityLoadBinding;
-import lv.id.arseniuss.linguae.databinding.ActivityPortalBinding;
+import lv.id.arseniuss.linguae.databinding.ActivityRepositoriesBinding;
 import lv.id.arseniuss.linguae.databinding.ItemStartLanguageBinding;
 import lv.id.arseniuss.linguae.ui.MyRecyclerViewAdapter;
 import lv.id.arseniuss.linguae.viewmodel.StartViewModel;
@@ -37,8 +36,7 @@ public class StartActivity extends AppCompatActivity {
     private ViewDataBinding _binding;
 
     @BindingAdapter("items")
-    public static void BindPortalsList(Spinner spinner, List<LanguageDataParser.LanguagePortal> entries)
-    {
+    public static void BindRepositoriesList(Spinner spinner, List<StartViewModel.RepositoryViewModel> entries) {
         ArrayAdapter<String> adapter = (ArrayAdapter<String>) spinner.getAdapter();
 
         assert adapter != null;
@@ -50,8 +48,7 @@ public class StartActivity extends AppCompatActivity {
     }
 
     @BindingAdapter("items")
-    public static void BindLanguagesList(RecyclerView recyclerView, List<StartViewModel.LanguageViewModel> entries)
-    {
+    public static void BindLanguagesList(RecyclerView recyclerView, List<StartViewModel.LanguageViewModel> entries) {
         MyRecyclerViewAdapter<StartViewModel.LanguageViewModel, ItemStartLanguageBinding> adapter =
                 (MyRecyclerViewAdapter<StartViewModel.LanguageViewModel, ItemStartLanguageBinding>) recyclerView.getAdapter();
 
@@ -71,10 +68,10 @@ public class StartActivity extends AppCompatActivity {
     public void EditRepoList() {
         Intent i = new Intent(this, RepoEditActivity.class);
 
-        String portalsJson = _model.GetPortalsJson();
+        String repositoriesJson = _model.GetRepositoriesJson();
 
-        i.putExtra(RepoEditActivity.DATA_ARRAY_JSON, portalsJson);
-        i.putExtra(RepoEditActivity.TITLE, R.string.TitleEditPortals);
+        i.putExtra(RepoEditActivity.DATA_ARRAY_JSON, repositoriesJson);
+        i.putExtra(RepoEditActivity.TITLE, R.string.TitleEditRepositories);
 
         startActivityForResult(i, REQUEST_EDIT_REPO);
     }
@@ -88,7 +85,7 @@ public class StartActivity extends AppCompatActivity {
             if (data.hasExtra(RepoEditActivity.DATA_ARRAY_JSON)) {
                 String json = data.getStringExtra(RepoEditActivity.DATA_ARRAY_JSON);
 
-                _model.SetPortalsJson(json);
+                _model.SetRepositoriesJson(json);
             }
         }
     }
@@ -103,34 +100,36 @@ public class StartActivity extends AppCompatActivity {
 
         if (shouldParseLanguage()) {
             _binding = DataBindingUtil.<ActivityLoadBinding>setContentView(this, R.layout.activity_load);
-        }
-        else {
-            ActivityPortalBinding portalBinding = DataBindingUtil.setContentView(this, R.layout.activity_portal);
+        } else {
+            ActivityRepositoriesBinding repositoriesBinding = DataBindingUtil
+                    .setContentView(this, R.layout.activity_repositories);
 
-            portalBinding.portals.setAdapter(
-                    new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item));
+            repositoriesBinding.repositories.setAdapter(
+                    new ArrayAdapter<String>(this,
+                            android.R.layout.simple_spinner_dropdown_item));
 
-            portalBinding.languages.setAdapter(getAdapter());
+            repositoriesBinding.languages.setAdapter(getAdapter());
 
-            _binding = portalBinding;
+            _binding = repositoriesBinding;
         }
 
         _binding.setLifecycleOwner(this);
         _binding.setVariable(BR.viewmodel, _model);
         _binding.setVariable(BR.presenter, this);
 
+        _model.State().setValue(StartViewModel.State.STATE_LOADING.ordinal());
+
         if (i.hasExtra(Constants.PreferenceLanguageKey) && i.hasExtra(Constants.PreferenceLanguageUrlKey)) {
-            _model.StartLanguageParsing(i.hasExtra(RESTART), i.getStringExtra(Constants.PreferenceLanguageKey),
-                    i.getStringExtra(Constants.PreferenceLanguageUrlKey), this::Continue, this::requestDatabaseUpdate);
-        }
-        else if (i.hasExtra(RESTART)) {
-            _model.StartPortalLoading(this::Inform);
-        }
-        else if (_model.HasSelectedLanguage()) {
+            _model.StartLanguageParsing(i.hasExtra(RESTART),
+                    i.getStringExtra(Constants.PreferenceLanguageKey),
+                    i.getStringExtra(Constants.PreferenceLanguageUrlKey), this::Continue,
+                    this::requestDatabaseUpdate);
+        } else if (i.hasExtra(RESTART)) {
+            _model.StartRepositoryLoad(this::Inform);
+        } else if (_model.HasSelectedLanguage()) {
             _model.StartLanguageParsing(i.hasExtra(RESTART), this::Continue, this::requestDatabaseUpdate);
-        }
-        else {
-            _model.StartPortalLoading(this::Inform);
+        } else {
+            _model.StartRepositoryLoad(this::Inform);
         }
     }
 
@@ -159,7 +158,8 @@ public class StartActivity extends AppCompatActivity {
     protected boolean shouldParseLanguage() {
         Intent i = getIntent();
 
-        if (i.hasExtra(Constants.PreferenceLanguageKey) && i.hasExtra(Constants.PreferenceLanguageUrlKey)) return true;
+        if (i.hasExtra(Constants.PreferenceLanguageKey) && i.hasExtra(Constants.PreferenceLanguageUrlKey))
+            return true;
 
         if (i.hasExtra(RESTART)) return false;
 

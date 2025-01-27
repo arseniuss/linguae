@@ -3,7 +3,6 @@ package lv.id.arseniuss.linguae.data;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.Log;
-import android.util.Pair;
 
 import androidx.annotation.NonNull;
 
@@ -981,19 +980,18 @@ public class LanguageDataParser {
         return _data;
     }
 
-    public List<LanguagePortal> ParsePortals(List<Pair<String, String>> portals) {
-        List<LanguagePortal> result = new ArrayList<>();
+    public List<LanguageRepository> ParseRepositories(List<String> repositories) {
+        List<LanguageRepository> result = new ArrayList<>();
 
-        for (Pair<String, String> portal : portals) {
+        for (String repository : repositories) {
 
-            LanguagePortal languagePortal = new LanguagePortal();
+            LanguageRepository languageRepository = new LanguageRepository();
 
-            languagePortal.Name = portal.first;
-            languagePortal.Location = portal.second;
+            languageRepository.Location = repository;
 
             try {
 
-                InputStream languageFileStream = getFile(portal.second + "/Languages.txt");
+                InputStream languageFileStream = getFile(repository + "/Languages.txt");
                 LineNumberReader r =
                         new LineNumberReader(new BufferedReader(new InputStreamReader(languageFileStream)));
 
@@ -1013,7 +1011,7 @@ public class LanguageDataParser {
                                 continue;
                             }
 
-                            languagePortal.Name = words[1];
+                            languageRepository.Name = words[1];
                             break;
                         case "language":
                             if (words.length != 4) {
@@ -1027,27 +1025,24 @@ public class LanguageDataParser {
                             language.Location = words[2];
                             language.Image = words[3];
 
-                            if (!language.Location.startsWith(portal.second)) {
-                                language.Location = portal.second + "/" + language.Location;
+                            if (!language.Location.startsWith(repository)) {
+                                language.Location = repository + "/" + language.Location;
                             }
-                            if (!language.Image.startsWith(portal.second)) {
-                                language.Image = portal.second + "/" + language.Image;
+                            if (!language.Image.startsWith(repository)) {
+                                language.Image = repository + "/" + language.Image;
                             }
 
-                            languagePortal.Languages.add(language);
+                            languageRepository.Languages.add(language);
                             break;
                         default:
-                            logError("Unrecognised keyword in portal file: " + keyword);
+                            logError("Unrecognised keyword in repository file: " + keyword);
                     }
                 }
-
-                if (languagePortal.Name.isEmpty()) languagePortal.Name = portal.first;
-
             } catch (Exception e) {
-                languagePortal.Error = e.toString();
+                languageRepository.Error = e.getLocalizedMessage();
             }
 
-            result.add(languagePortal);
+            result.add(languageRepository);
         }
 
         return result;
@@ -1076,17 +1071,17 @@ public class LanguageDataParser {
         public List<TrainingCategory> TrainingCategories = new ArrayList<>();
     }
 
-    public static class LanguagePortal {
+    public static class LanguageRepository {
         public String Name = "";
         public String Location = "";
         public List<Language> Languages = new ArrayList<>();
         public String Error = "";
 
-        public LanguagePortal() {
+        public LanguageRepository() {
 
         }
 
-        public LanguagePortal(String name, String location) {
+        public LanguageRepository(String name, String location) {
             Name = name;
             Location = location;
         }

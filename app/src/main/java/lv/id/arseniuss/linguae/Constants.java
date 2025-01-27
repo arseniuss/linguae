@@ -4,7 +4,7 @@ import android.content.Context;
 
 public class Constants {
     public static String PreferenceLanguageKey;
-    public static String PreferencePortalsKey;
+    public static String PreferenceRepositoriesKey;
     public static String PreferenceLanguageUrlKey;
     public static String PreferenceNoKeyboardKey;
     public static String PreferenceTaskCountKey;
@@ -14,7 +14,7 @@ public class Constants {
 
     public static void Init(Context context) {
         PreferenceLanguageKey = context.getString(R.string.PreferenceLanguageKey);
-        PreferencePortalsKey = context.getString(R.string.PreferencePortalsKey);
+        PreferenceRepositoriesKey = context.getString(R.string.PreferenceRepositoriesKey);
         PreferenceLanguageUrlKey = context.getString(R.string.PreferenceLanguageUrlKey);
         PreferenceNoKeyboardKey = context.getString(R.string.PreferenceNoKeyboardKey);
         PreferenceTaskCountKey = context.getString(R.string.PreferenceTaskCountKey);

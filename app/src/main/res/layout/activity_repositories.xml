@@ -27,7 +27,7 @@
             android:layout_gravity="center"
             android:layout_marginTop="10dp"
             android:layout_marginBottom="10dp"
-            android:text="@string/TitleSelectPortalLanguage"
+            android:text="@string/TitleSelectRepositoryLanguage"
             android:textSize="18sp"
             android:textStyle="bold" />
 
@@ -40,14 +40,14 @@
             android:paddingRight="5dp">
 
             <Spinner
-                android:id="@+id/portals"
-                items="@{viewmodel.Portals()}"
+                android:id="@+id/repositories"
+                items="@{viewmodel.Repositories()}"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_weight="1"
                 android:background="@drawable/button"
-                android:selectedItemPosition="@={viewmodel.SelectedPortal()}" />
+                android:selectedItemPosition="@={viewmodel.SelectedRepository()}" />
 
             <ImageButton
                 android:layout_width="wrap_content"
@@ -61,11 +61,25 @@
 
         </LinearLayout>
 
-        <ViewSwitcher
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:gravity="center"
+            android:padding="10dp"
+            android:text="@{viewmodel.GetRepositoryName()}"
+            tools:text="Name of the repository" />
+
+        <ViewAnimator
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
-            android:switchIndex="@{viewmodel.HasError() ? 1 : 0}">
+            android:switchIndex="@{viewmodel.State()}">
+
+            <ProgressBar
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/languages"
@@ -84,7 +98,7 @@
                 android:text="@{viewmodel.ErrorMessage()}"
                 android:textAlignment="center"
                 android:textSize="20sp" />
-        </ViewSwitcher>
+        </ViewAnimator>
 
     </LinearLayout>
 </layout>

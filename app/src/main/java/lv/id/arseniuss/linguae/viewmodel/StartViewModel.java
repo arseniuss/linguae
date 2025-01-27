@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.core.Completable;
@@ -41,24 +42,33 @@ import lv.id.arseniuss.linguae.db.LanguageDatabase;
 import lv.id.arseniuss.linguae.db.dataaccess.UpdateDataAccess;
 
 public class StartViewModel extends AndroidViewModel implements LanguageDataParser.ParserInterface {
+
+    public enum State {
+        STATE_LOADING,
+        STATE_DATA,
+        STATE_ERROR
+    }
+
     private final SharedPreferences _sharedPreferences =
             PreferenceManager.getDefaultSharedPreferences(getApplication().getBaseContext());
     private final LanguageDataParser _dataParser =
-            new LanguageDataParser(this, _sharedPreferences.getBoolean(Constants.PreferenceSaveImagesKey, false));
+            new LanguageDataParser(this, _sharedPreferences
+                    .getBoolean(Constants.PreferenceSaveImagesKey, false));
 
-    private final String _defaultPortals = getApplication().getString(R.string.DefaultLanguagePortal);
+    private final String _defaultLanguageRepositories = getApplication().getString(R.string.DefaultLanguageRepositories);
 
-    private final MutableLiveData<List<LanguageDataParser.LanguagePortal>> _portals =
-            new MutableLiveData<>(new ArrayList<>());
+    private final MutableLiveData<List<RepositoryViewModel>> _repositories = new MutableLiveData<>(new ArrayList<>());
     private final MutableLiveData<List<LanguageViewModel>> _languages = new MutableLiveData<>(new ArrayList<>());
-    private final MutableLiveData<Integer> _selectedPortal = new MutableLiveData<>(0);
+    private final MutableLiveData<Integer> _selectedRepository = new MutableLiveData<>(0);
     private final MutableLiveData<Spanned> _messages = new MutableLiveData<>(new SpannableString(""));
     private final MutableLiveData<Boolean> _canContinue = new MutableLiveData<>(false);
-    private final MutableLiveData<Boolean> _hasError = new MutableLiveData<>(false);
     private final MutableLiveData<String> _errorMessage = new MutableLiveData<>("");
+    private final MutableLiveData<Integer> _state = new MutableLiveData<>(State.STATE_LOADING.ordinal());
+    private final MutableLiveData<String> _repositoryName = new MutableLiveData<>("");
 
     private final Gson gson = new Gson();
-    Type listType = new TypeToken<List<ItemLanguageRepo>>() { }.getType();
+    Type listType = new TypeToken<List<ItemLanguageRepo>>() {
+    }.getType();
     private WarningInterface _warn;
     private Spanned _text = new SpannableString("");
     private String _databaseVersion = "";
@@ -67,56 +77,76 @@ public class StartViewModel extends AndroidViewModel implements LanguageDataPars
 
     public StartViewModel(@NonNull Application application) {
         super(application);
-        _selectedPortal.observeForever(o -> {
-            loadLanguages();
+        _selectedRepository.observeForever(o -> {
+            loadRepository();
         });
     }
 
-    public MutableLiveData<List<LanguageDataParser.LanguagePortal>> Portals() { return _portals; }
+    public MutableLiveData<List<RepositoryViewModel>> Repositories() {
+        return _repositories;
+    }
 
-    public MutableLiveData<List<LanguageViewModel>> Languages() { return _languages; }
+    public MutableLiveData<Integer> State() {
+        return _state;
+    }
 
-    public MutableLiveData<Integer> SelectedPortal() { return _selectedPortal; }
+    public MutableLiveData<String> GetRepositoryName() {
+        return _repositoryName;
+    }
 
-    public MutableLiveData<Spanned> Messages() { return _messages; }
+    public MutableLiveData<List<LanguageViewModel>> Languages() {
+        return _languages;
+    }
+
+    public MutableLiveData<Integer> SelectedRepository() {
+        return _selectedRepository;
+    }
+
+    public MutableLiveData<Spanned> Messages() {
+        return _messages;
+    }
 
     public LiveData<Boolean> CanContinue() {
         return _canContinue;
     }
 
-    public MutableLiveData<Boolean> HasError() { return _hasError; }
-
-    public MutableLiveData<String> ErrorMessage() { return _errorMessage; }
+    public MutableLiveData<String> ErrorMessage() {
+        return _errorMessage;
+    }
 
     public boolean HasSelectedLanguage() {
         return !_sharedPreferences.getString(Constants.PreferenceLanguageKey, "").trim().isEmpty();
     }
 
-    public void StartPortalLoading(WarningInterface warn) {
+    public void StartRepositoryLoad(WarningInterface warn) {
         _warn = warn;
 
-        List<ItemLanguageRepo> portals;
-        String jsonPortals = _sharedPreferences.getString(Constants.PreferencePortalsKey, "");
+        List<ItemLanguageRepo> repos;
+        String jsonRepoList = _sharedPreferences.getString(Constants.PreferenceRepositoriesKey, "");
 
-        if (jsonPortals.isEmpty()) {
-            portals = new ArrayList<>();
-        }
-        else {
-            portals = gson.fromJson(jsonPortals, listType);
-        }
-
-        if (portals.isEmpty()) {
-            portals.add(new ItemLanguageRepo(getApplication().getString(R.string.UnnamedRepository), _defaultPortals));
+        if (jsonRepoList.isEmpty()) {
+            repos = new ArrayList<>();
+        } else {
+            repos = gson.fromJson(jsonRepoList, listType);
         }
 
-        savePortals(portals);
+        if (repos.isEmpty()) {
+            final String name = getApplication().getString(R.string.DefaultRepositoryTitle);
 
-        reloadPortals(portals);
+            int i = 0;
+
+            for (String repo : _defaultLanguageRepositories.split(",")) {
+                repos.add(new ItemLanguageRepo(name + " " + ++i, repo));
+            }
+
+            saveRepositories(repos);
+        }
+
+        loadRepositories(repos);
     }
 
     public void StartLanguageParsing(boolean restart, Callback continueCallback,
-            RequestConfirmCallback requestUpdateConfirm)
-    {
+                                     RequestConfirmCallback requestUpdateConfirm) {
         String language = _sharedPreferences.getString(Constants.PreferenceLanguageKey, "");
         String languageUrl = _sharedPreferences.getString(Constants.PreferenceLanguageUrlKey, "");
 
@@ -124,16 +154,12 @@ public class StartViewModel extends AndroidViewModel implements LanguageDataPars
     }
 
     public void StartLanguageParsing(boolean restart, @Nullable String language, @Nullable String languageUrl,
-            Callback continueCallback, RequestConfirmCallback requestUpdateConfirm)
-    {
+                                     Callback continueCallback, RequestConfirmCallback requestUpdateConfirm) {
         _continue = continueCallback;
         _requestUpdateConfirm = requestUpdateConfirm;
 
         UpdateDataAccess updateDataAccess =
                 LanguageDatabase.GetInstance(getApplication().getBaseContext(), language).GetUpdateDataAccess();
-
-        String finalLanguageUrl = languageUrl;
-        String finalLanguage = language;
 
         Disposable d = updateDataAccess.GetVersion()
                 .subscribeOn(Schedulers.io())
@@ -141,38 +167,50 @@ public class StartViewModel extends AndroidViewModel implements LanguageDataPars
                 .subscribe(s -> {
                     Inform(Log.INFO, getApplication().getString(R.string.DatabaseVersion) + s);
                     _databaseVersion = s;
-                    parseLanguageFile(restart, finalLanguage, finalLanguageUrl);
-                }, this::onError, () -> parseLanguageFile(restart, finalLanguage, finalLanguageUrl));
+                    parseLanguageFile(restart, language, languageUrl);
+                }, this::onError, () -> parseLanguageFile(restart, language, languageUrl));
     }
 
-    private void reloadPortals(List<ItemLanguageRepo> repos) {
-        Disposable d = Single.fromCallable(() -> _dataParser.ParsePortals(
-                        repos.stream().map(r -> new Pair<>(r.Name, r.Location)).collect(Collectors.toList())))
+    private void loadRepositories(List<ItemLanguageRepo> repos) {
+        Disposable d = Single.fromCallable(() -> _dataParser.ParseRepositories(
+                        repos.stream()
+                                .map(r -> r.Location)
+                                .collect(Collectors.toList())))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe((value, error) -> {
                     if (value == null) {
                         value = repos.stream()
-                                .map(r -> new LanguageDataParser.LanguagePortal(r.Name, r.Location))
+                                .map(r -> new LanguageDataParser.LanguageRepository(r.Name, r.Location))
                                 .collect(Collectors.toList());
                     }
-                    savePortals(value.stream()
-                            .map(v -> new ItemLanguageRepo(v.Name, v.Location))
-                            .collect(Collectors.toList()));
-                    _portals.setValue(value);
-                    if (error != null) { warn(error.getMessage()); }
-                    else { loadLanguages(); }
+
+                    List<RepositoryViewModel> repositoryViewModels = IntStream.range(0, repos.size())
+                            .boxed()
+                            .collect(Collectors.toMap(repos::get, value::get))
+                            .entrySet()
+                            .stream().map(e -> new RepositoryViewModel(e.getKey().Name, e.getValue()))
+                            .collect(Collectors.toList());
+
+                    _repositories.setValue(repositoryViewModels);
+
+                    if (error != null) {
+                        warn(error.getMessage());
+                    } else {
+                        loadRepository();
+                    }
                 });
     }
 
     private void warn(String message) {
-        _hasError.postValue(true);
+        _state.setValue(State.STATE_ERROR.ordinal());
         _errorMessage.postValue(message);
     }
 
-    private void savePortals(List<ItemLanguageRepo> portals) {
-        String jsonPortals = gson.toJson(portals, listType);
-        _sharedPreferences.edit().putString(Constants.PreferencePortalsKey, jsonPortals).apply();
+    private void saveRepositories(List<ItemLanguageRepo> repos) {
+        String jsonRepositories = gson.toJson(repos, listType);
+
+        _sharedPreferences.edit().putString(Constants.PreferenceRepositoriesKey, jsonRepositories).apply();
     }
 
     private void parseLanguageFile(boolean restart, String language, String languageUrl) {
@@ -180,8 +218,11 @@ public class StartViewModel extends AndroidViewModel implements LanguageDataPars
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(success -> {
-                    if (success) { validateVersions(restart, language, languageUrl); }
-                    else { _canContinue.postValue(true); }
+                    if (success) {
+                        validateVersions(restart, language, languageUrl);
+                    } else {
+                        _canContinue.postValue(true);
+                    }
                 }, this::onError);
     }
 
@@ -192,11 +233,9 @@ public class StartViewModel extends AndroidViewModel implements LanguageDataPars
 
         if (_databaseVersion == null || _databaseVersion.isEmpty() || restart) {
             parseRepository(language, languageUrl);
-        }
-        else if (_databaseVersion.compareTo(repositoryVersion) < 0) {
+        } else if (_databaseVersion.compareTo(repositoryVersion) < 0) {
             _requestUpdateConfirm.Request(r -> onUpdateRequest(r, language, languageUrl));
-        }
-        else {
+        } else {
             Inform(Log.INFO, getApplication().getString(R.string.DatabaseUpdateNotRequired));
             updateLanguagePreferences(language, languageUrl);
             _continue.Call();
@@ -206,8 +245,7 @@ public class StartViewModel extends AndroidViewModel implements LanguageDataPars
     private void onUpdateRequest(boolean doUpdate, String language, String languageUrl) {
         if (doUpdate) {
             parseRepository(language, languageUrl);
-        }
-        else {
+        } else {
             _canContinue.postValue(true);
         }
     }
@@ -231,9 +269,14 @@ public class StartViewModel extends AndroidViewModel implements LanguageDataPars
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(() -> {
                     updateLanguagePreferences(language, languageUrl);
+
                     Inform(Log.INFO, getApplication().getString(R.string.DataSaved));
-                    if (parseSuccessful) { _continue.Call(); }
-                    else { _canContinue.postValue(true); }
+
+                    if (parseSuccessful) {
+                        _continue.Call();
+                    } else {
+                        _canContinue.postValue(true);
+                    }
                 }, this::onError);
     }
 
@@ -244,27 +287,31 @@ public class StartViewModel extends AndroidViewModel implements LanguageDataPars
                 .apply();
     }
 
-    private void loadLanguages() {
+    private void loadRepository() {
+        _state.setValue(State.STATE_LOADING.ordinal());
         _languages.setValue(new ArrayList<>());
 
-        List<LanguageDataParser.LanguagePortal> portals = _portals.getValue();
-        Integer selectedPortalValue = _selectedPortal.getValue();
+        List<RepositoryViewModel> repositoriesValue = _repositories.getValue();
+        Integer selectedRepositoryValue = _selectedRepository.getValue();
 
-        assert portals != null;
-        assert selectedPortalValue != null;
+        assert repositoriesValue != null;
+        assert selectedRepositoryValue != null;
 
-        if (selectedPortalValue >= 0 && selectedPortalValue < portals.size()) {
-            LanguageDataParser.LanguagePortal languagePortal = portals.get(selectedPortalValue);
+        if (selectedRepositoryValue >= 0 && selectedRepositoryValue < repositoriesValue.size()) {
+            RepositoryViewModel repositoryViewModel = repositoriesValue.get(selectedRepositoryValue);
 
-            if (languagePortal.Error != null && !languagePortal.Error.isEmpty()) {
-                _hasError.setValue(true);
-                _errorMessage.setValue(languagePortal.Error);
-            }
-            else {
-                _hasError.setValue(false);
+            if (repositoryViewModel.Repository.Error != null && !repositoryViewModel.Repository.Error.isEmpty()) {
+                _errorMessage.setValue(repositoryViewModel.Repository.Error);
+                _repositoryName.setValue("");
+                _state.setValue(State.STATE_ERROR.ordinal());
+            } else {
                 _errorMessage.setValue("");
                 _languages.setValue(
-                        languagePortal.Languages.stream().map(LanguageViewModel::new).collect(Collectors.toList()));
+                        repositoryViewModel.Repository.Languages.stream()
+                                .map(LanguageViewModel::new)
+                                .collect(Collectors.toList()));
+                _repositoryName.setValue(repositoryViewModel.Repository.Name);
+                _state.setValue(State.STATE_DATA.ordinal());
             }
         }
     }
@@ -282,8 +329,7 @@ public class StartViewModel extends AndroidViewModel implements LanguageDataPars
                 _warn.Warn(message);
                 return true;
             }).subscribeOn(AndroidSchedulers.mainThread()).subscribe();
-        }
-        else {
+        } else {
             Spanned spanned;
             String msg = Html.escapeHtml(message);
 
@@ -323,15 +369,18 @@ public class StartViewModel extends AndroidViewModel implements LanguageDataPars
         return res;
     }
 
-    public String GetPortalsJson() {
-        return _sharedPreferences.getString(Constants.PreferencePortalsKey, "");
+    public String GetRepositoriesJson() {
+        return _sharedPreferences.getString(Constants.PreferenceRepositoriesKey, "");
     }
 
-    public void SetPortalsJson(String json) {
-        List<ItemLanguageRepo> portals = gson.fromJson(json, listType);
+    public void SetRepositoriesJson(String json) {
+        List<ItemLanguageRepo> repos = gson.fromJson(json, listType);
 
-        _sharedPreferences.edit().putString(Constants.PreferencePortalsKey, json).apply();
-        reloadPortals(portals);
+        _state.setValue(State.STATE_LOADING.ordinal());
+
+        _sharedPreferences.edit().putString(Constants.PreferenceRepositoriesKey, json).apply();
+
+        loadRepositories(repos);
     }
 
     private void onError(Throwable error) {
@@ -353,6 +402,17 @@ public class StartViewModel extends AndroidViewModel implements LanguageDataPars
 
     public interface WarningInterface {
         void Warn(String message);
+    }
+
+    public static class RepositoryViewModel extends BaseObservable {
+        public LanguageDataParser.LanguageRepository Repository;
+
+        public String Name;
+
+        public RepositoryViewModel(String name, LanguageDataParser.LanguageRepository value) {
+            Name = name;
+            Repository = value;
+        }
     }
 
     public static class LanguageViewModel extends BaseObservable {

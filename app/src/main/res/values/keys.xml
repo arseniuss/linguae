@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="PreferenceLanguageKey" translatable="false">PREF_LANG</string>
-    <string name="PreferencePortalsKey" translatable="false">PREF_PORTALS</string>
+    <string name="PreferenceRepositoriesKey" translatable="false">PREF_REPOS</string>
     <string name="PreferenceLanguageUrlKey" translatable="false">PREF_LANGLOC</string>
     <string name="PreferenceNoKeyboardKey" translatable="false">PREF_KEYBOARD</string>
     <string name="PreferenceTaskCountKey" translatable="false">PREF_TASK_COUNT</string>

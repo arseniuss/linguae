@@ -50,8 +50,11 @@ public class Utilities {
         return s.chars().map(c -> {
                     int idx = vowels.indexOf(c);
 
-                    if (idx != -1) { return replacement.codePointAt(idx); }
-                    else { return c; }
+                    if (idx != -1) {
+                        return replacement.codePointAt(idx);
+                    } else {
+                        return c;
+                    }
                 }).mapToObj(codePoint -> new String(Character.toChars(codePoint))) // Convert code points to characters
                 .collect(Collectors.joining());
     }
@@ -78,7 +81,7 @@ public class Utilities {
 
     public static float GetDimension(Context context, int attrId) {
         TypedValue value = new TypedValue();
-        int[] attrs = { attrId };
+        int[] attrs = {attrId};
 
         TypedArray a = context.obtainStyledAttributes(value.data, attrs);
 
@@ -104,6 +107,10 @@ public class Utilities {
     }
 
     public static InputStream GetInputStream(Context context, String filename) throws Exception {
+        return GetInputStream(context, filename, 5000);
+    }
+
+    public static InputStream GetInputStream(Context context, String filename, int timeout) throws Exception {
         Uri filenameUri = Uri.parse(filename);
         String scheme = filenameUri.getScheme();
 
@@ -115,11 +122,9 @@ public class Utilities {
             if (documentUri == null) throw new Exception("Could not find " + filename);
 
             return resolver.openInputStream(documentUri);
-        }
-        else if (ContentResolver.SCHEME_FILE.equals(scheme)) {
+        } else if (ContentResolver.SCHEME_FILE.equals(scheme)) {
             return new FileInputStream(new File(filename));
-        }
-        else if ("http".equals(scheme) || "https".equals(scheme)) {
+        } else if ("http".equals(scheme) || "https".equals(scheme)) {
             // TODO: Handle HTTP/HTTPS URL
             // I REALLY hate this
             URI uri = new URI(filename);
@@ -128,9 +133,10 @@ public class Utilities {
 
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 
+            connection.setConnectTimeout(timeout);
+
             return connection.getInputStream();
-        }
-        else {
+        } else {
             throw new IllegalArgumentException("Unsupported URI scheme: " + scheme);
         }
     }
@@ -170,8 +176,9 @@ public class Utilities {
                     if (displayName.equals(pathSegment)) {
                         if (DocumentsContract.Document.MIME_TYPE_DIR.equals(mimeType)) {
                             result = DocumentsContract.buildChildDocumentsUriUsingTree(result, documentId);
+                        } else {
+                            result = DocumentsContract.buildDocumentUriUsingTree(result, documentId);
                         }
-                        else { result = DocumentsContract.buildDocumentUriUsingTree(result, documentId); }
                         break;
                     }
                 }

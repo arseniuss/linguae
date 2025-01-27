@@ -6,6 +6,7 @@ import android.graphics.BitmapFactory;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.ViewAnimator;
 import android.widget.ViewSwitcher;
 
 import androidx.databinding.BindingAdapter;
@@ -26,6 +27,13 @@ public class BindingAdapters {
     public static void SetSwitchIndex(ViewSwitcher viewSwitcher, int index) {
         if (index < viewSwitcher.getChildCount()) {
             viewSwitcher.setDisplayedChild(index);
+        }
+    }
+
+    @BindingAdapter("android:switchIndex")
+    public static void SetSwitchIndex(ViewAnimator viewAnimator, int index) {
+        if (index < viewAnimator.getChildCount()) {
+            viewAnimator.setDisplayedChild(index);
         }
     }
 
