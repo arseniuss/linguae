@@ -36,7 +36,7 @@ import lv.id.arseniuss.linguae.db.entities.TheoryWithChapters;
 import lv.id.arseniuss.linguae.db.entities.Training;
 import lv.id.arseniuss.linguae.db.entities.TrainingCategory;
 import lv.id.arseniuss.linguae.db.entities.TrainingWithTasks;
-import lv.id.arseniuss.linguae.db.tasks.CasingTask;
+import lv.id.arseniuss.linguae.db.tasks.SelectTask;
 import lv.id.arseniuss.linguae.db.tasks.ChooseTask;
 import lv.id.arseniuss.linguae.db.tasks.ConjugateTask;
 import lv.id.arseniuss.linguae.db.tasks.DeclineTask;
@@ -110,54 +110,52 @@ public class LanguageDataParser {
         String taskType = words[2].trim().toLowerCase();
 
         switch (taskType) {
-            case "casing":
+            case "select":
                 if (words.length != 3 + 4) {
                     logError("Expected format: <meaning> <sentence> <answers> <options>");
                     logError("Got: " + line);
                     return false;
                 }
 
-                CasingTask casingTask = new CasingTask();
+                SelectTask selectTask = new SelectTask();
 
-                task.Type = TaskType.CasingTask;
+                task.Type = TaskType.SelectTask;
 
                 task.Category = null;
                 task.Description = null;
 
-                casingTask.Meaning = resolveReferences(words[3], references);
-                casingTask.Sentence = resolveReferences(words[4], references);
-                casingTask.Answers = resolveReferences(words[5], references);
-                casingTask.Options = resolveReferences(words[6], references);
+                selectTask.Meaning = resolveReferences(words[3], references);
 
-                List<String> options = Arrays.stream(casingTask.Options.split(","))
+                String sentence = resolveReferences(words[4], references);
+
+                selectTask.Sentence = Arrays.stream(sentence.split(" "))
                         .map(String::trim)
                         .filter(s -> !s.isEmpty())
-                        .collect(Collectors.toList());
-                List<String> sentence = Arrays.stream(casingTask.Sentence.split(" "))
-                        .map(String::trim)
-                        .filter(s -> !s.isEmpty())
-                        .collect(Collectors.toList());
-                List<String> answers = Arrays.stream(casingTask.Answers.split(",", -1)).collect(Collectors.toList());
+                        .toArray(String[]::new);
 
-                boolean failed = false;
-                for (String answer : answers) {
-                    if (answer.isEmpty()) continue;
-                    if (!options.contains(answer)) {
-                        logError("Casing answer \"" + answer + "\" is not in options list: " + casingTask.Options);
-                        failed = true;
-                    }
-                }
+                long count = Arrays.stream(selectTask.Sentence)
+                        .filter(w -> w.startsWith("<") && w.endsWith(">"))
+                        .count();
 
-                if (failed) return false;
+                String answers = resolveReferences(words[5], references);
 
-                if (sentence.size() != answers.size()) {
-                    logError("Casing sentence and answer not the same: " + casingTask.Sentence + "/" +
-                            casingTask.Answers);
+                selectTask.Answers = answers.split(",");
+
+                if (count != Arrays.stream(selectTask.Answers).count()) {
+                    logError("Answer count doesn't match number of words to be selected");
                     return false;
                 }
 
-                task.Amount = casingTask.Answers.length();
-                task.Data = casingTask;
+                String options = resolveReferences(words[6], references);
+
+                selectTask.Options = Arrays.stream(options.split(","))
+                        .map(String::trim)
+                        .filter(o -> !o.isEmpty())
+                        .toArray(String[]::new);
+
+
+                task.Amount = selectTask.Answers.length;
+                task.Data = selectTask;
                 break;
             case "decline":
                 if (words.length != 3 + 6) {

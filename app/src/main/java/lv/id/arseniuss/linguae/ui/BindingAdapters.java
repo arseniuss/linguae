@@ -4,14 +4,20 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.ViewAnimator;
 import android.widget.ViewSwitcher;
 
 import androidx.databinding.BindingAdapter;
+import androidx.databinding.InverseBindingAdapter;
+import androidx.databinding.InverseBindingListener;
 
 import java.io.InputStream;
+import java.util.List;
 
 import io.noties.markwon.Markwon;
 import io.noties.markwon.ext.tables.TablePlugin;
@@ -22,6 +28,59 @@ import io.reactivex.rxjava3.schedulers.Schedulers;
 import lv.id.arseniuss.linguae.Utilities;
 
 public class BindingAdapters {
+
+    @BindingAdapter("android:items")
+    public static void SetSpinnerItems(Spinner spinner, List<String> entries) {
+        ArrayAdapter<String> adapter = (ArrayAdapter<String>) spinner.getAdapter();
+
+        if (adapter == null) {
+
+            adapter = new ArrayAdapter<>(spinner.getContext(),
+                    android.R.layout.simple_spinner_dropdown_item);
+            spinner.setAdapter(adapter);
+        }
+
+        assert entries != null;
+
+        adapter.clear();
+        adapter.addAll(entries);
+        adapter.notifyDataSetChanged();
+    }
+
+    @InverseBindingAdapter(attribute = "android:selectedItem")
+    public static String GetSpinnerItem(Spinner spinner) {
+        return (String) spinner.getSelectedItem();
+    }
+
+    @BindingAdapter("android:selectedItemAttrChanged")
+    public static void SetSpinnerListener(Spinner spinner, final InverseBindingListener selectedItemChangedListener) {
+        if (selectedItemChangedListener != null) {
+            spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                    selectedItemChangedListener.onChange();
+                }
+
+                @Override
+                public void onNothingSelected(AdapterView<?> parent) {
+
+                }
+            });
+        }
+    }
+
+    @BindingAdapter("android:selectedItem")
+    public static void SetSpinnerItem(Spinner spinner, String value) {
+        if (spinner.getAdapter() != null)
+            for (int i = 0; i < spinner.getAdapter().getCount(); i++) {
+                Object item = spinner.getAdapter().getItem(i);
+
+                if (item == value) {
+                    spinner.setSelection(i);
+                    break;
+                }
+            }
+    }
 
     @BindingAdapter("android:switchIndex")
     public static void SetSwitchIndex(ViewSwitcher viewSwitcher, int index) {

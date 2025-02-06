@@ -11,6 +11,7 @@ import androidx.lifecycle.MutableLiveData;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Random;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -81,10 +82,22 @@ public class ConjugateViewModel extends AbstractTaskViewModel {
 
         assert conjugateTask().Persons.length == conjugateTask().Answers.length;
 
-        List<PersonViewModel> viewModels = IntStream.range(0, conjugateTask().Persons.length)
-                .mapToObj(idx -> new PersonViewModel(StripAccents(conjugateTask().Persons[idx]),
-                        StripAccents(conjugateTask().Answers[idx])))
+        List<String> randomAnswers = new Random()
+                .ints(0, conjugateTask().Answers.length)
+                .distinct()
+                .limit(conjugateTask().Answers.length)
+                .mapToObj(i -> conjugateTask().Answers[i])
                 .collect(Collectors.toList());
+
+        List<PersonViewModel> viewModels =
+                IntStream.range(0, conjugateTask().Persons.length)
+                        .mapToObj(idx ->
+                                new PersonViewModel(
+                                        StripAccents(conjugateTask().Persons[idx]),
+                                        randomAnswers,
+                                        StripAccents(conjugateTask().Answers[idx]),
+                                        _noKeyboard))
+                        .collect(Collectors.toList());
 
         _persons.setValue(viewModels);
 
@@ -95,12 +108,19 @@ public class ConjugateViewModel extends AbstractTaskViewModel {
         private final MutableLiveData<String> _answer = new MutableLiveData<>("");
         private final MutableLiveData<String> _personName = new MutableLiveData<>("");
         private final String _correct;
+        private final MutableLiveData<List<String>> _options =
+                new MutableLiveData<>(new ArrayList<>());
 
-        private final MutableLiveData<Spanned> _result = new MutableLiveData<>(new SpannableString(""));
+        private final MutableLiveData<Spanned> _result =
+                new MutableLiveData<>(new SpannableString(""));
 
-        public PersonViewModel(String person, String correct) {
+        public PersonViewModel(String person, List<String> options, String correct,
+                               Boolean noKeyboard) {
             _personName.setValue(person);
+            _options.setValue(options);
             _correct = correct;
+            if (noKeyboard) _state.setValue(TaskState.STATE_CHOOSE.ordinal());
+            else _state.setValue(TaskState.STATE_EDIT.ordinal());
             _checked.setValue(_correct.isEmpty());
         }
 
@@ -118,6 +138,10 @@ public class ConjugateViewModel extends AbstractTaskViewModel {
 
         public MutableLiveData<Spanned> GetResult() {
             return _result;
+        }
+
+        public MutableLiveData<List<String>> Options() {
+            return _options;
         }
 
         @Override
@@ -141,7 +165,8 @@ public class ConjugateViewModel extends AbstractTaskViewModel {
 
             if (!result) {
                 _result.setValue(
-                        Html.fromHtml("<strike>" + answer + "</strike>\t" + correct, Html.FROM_HTML_MODE_LEGACY));
+                        Html.fromHtml("<strike>" + answer + "</strike>\t" + correct,
+                                Html.FROM_HTML_MODE_LEGACY));
             } else {
                 if (hasMultipleAnswers) {
                     List<String> results = new ArrayList<>();
@@ -155,7 +180,8 @@ public class ConjugateViewModel extends AbstractTaskViewModel {
                         }
                     }
 
-                    _result.setValue(Html.fromHtml(results.stream().collect(Collectors.joining("/")),
+                    _result.setValue(Html.fromHtml(results.stream()
+                                    .collect(Collectors.joining("/")),
                             Html.FROM_HTML_MODE_LEGACY));
                 } else {
                     _result.setValue(Html.fromHtml(correct, Html.FROM_HTML_MODE_LEGACY));
@@ -163,6 +189,8 @@ public class ConjugateViewModel extends AbstractTaskViewModel {
             }
 
             _checked.setValue(true);
+            _valid.setValue(result);
+            _state.setValue(TaskState.STATE_VALIDATED.ordinal());
 
             return result;
         }

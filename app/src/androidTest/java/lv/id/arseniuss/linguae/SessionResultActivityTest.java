@@ -59,13 +59,13 @@ public class SessionResultActivityTest {
         results.SessionResult.StartTime = new Date();
         results.SessionResult.PassedTime = 5;
 
-        results.TaskResults.add(new TaskResult(TaskType.CasingTask, 1, 1));
-        results.TaskResults.add(new TaskResult(TaskType.CasingTask, 1, 1));
-        results.TaskResults.add(new TaskResult(TaskType.CasingTask, 1, 2));
+        results.TaskResults.add(new TaskResult(TaskType.SelectTask, 1, 1));
+        results.TaskResults.add(new TaskResult(TaskType.SelectTask, 1, 1));
+        results.TaskResults.add(new TaskResult(TaskType.SelectTask, 1, 2));
         results.TaskResults.add(new TaskResult(TaskType.DeclineTask, 1, 4));
         results.TaskResults.add(new TaskResult(TaskType.DeclineTask, 3, 4));
         results.TaskResults.add(new TaskResult(TaskType.DeclineTask, 4, 4));
-        results.TaskResults.add(new TaskResult(TaskType.CasingTask, 1, 1));
+        results.TaskResults.add(new TaskResult(TaskType.SelectTask, 1, 1));
         results.TaskResults.add(new TaskResult(TaskType.ConjugateTask, 1, 1));
 
         results.SessionResult.Points = results.TaskResults.stream().map(r -> r.Points).reduce(0, Integer::sum);

@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <import type="android.view.View" />
+
+        <variable
+            name="presenter"
+            type="lv.id.arseniuss.linguae.tasks.ui.SelectFragment.WordAdapter.WordViewHolder" />
+
+        <variable
+            name="viewmodel"
+            type="lv.id.arseniuss.linguae.tasks.viewmodel.SelectViewModel.WordViewModel" />
+    </data>
+
+
+    <ViewAnimator
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:paddingLeft="5dp"
+        android:paddingRight="5dp"
+        android:switchIndex="@{viewmodel.WordType()}">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:paddingTop="14dp"
+            android:text="@{viewmodel.Word}"
+            android:textSize="16sp"
+            tools:text="Word" />
+
+        <Spinner
+            android:id="@+id/options"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/button2"
+            android:items="@{viewmodel.Options}"
+            android:selectedItem="@={viewmodel.SelectedWord()}"
+            android:textSize="16sp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:background="@{viewmodel.IsValid() ? @drawable/button_ok : @drawable/button_error}"
+            android:gravity="center"
+            android:paddingTop="7dp"
+            android:paddingBottom="7dp"
+            android:text="@{viewmodel.Result()}"
+            android:textSize="16sp" />
+
+
+    </ViewAnimator>
+
+</layout>

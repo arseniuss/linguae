@@ -1,9 +1,11 @@
 package lv.id.arseniuss.linguae.tasks.viewmodel;
 
 import android.app.Application;
+import android.content.SharedPreferences;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
+import androidx.preference.PreferenceManager;
 
 import java.util.Arrays;
 import java.util.List;
@@ -12,14 +14,20 @@ import java.util.Optional;
 import java.util.Random;
 import java.util.stream.Collectors;
 
-import lv.id.arseniuss.linguae.Settings;
+import lv.id.arseniuss.linguae.R;
 import lv.id.arseniuss.linguae.db.tasks.ChooseTask;
 import lv.id.arseniuss.linguae.tasks.AbstractTaskAnswerViewModel;
 import lv.id.arseniuss.linguae.tasks.AbstractTaskViewModel;
 import lv.id.arseniuss.linguae.tasks.entities.SessionTaskData;
 
 public class ChooseViewModel extends AbstractTaskViewModel {
-    private final MutableLiveData<List<OptionViewModel>> _options = new MutableLiveData<List<OptionViewModel>>();
+    private final SharedPreferences _sharedPreferences =
+            PreferenceManager.getDefaultSharedPreferences(getApplication().getBaseContext());
+
+    private final int _chooseOptionCount = _sharedPreferences.getInt(
+            getApplication().getString(R.string.ChooseOptionCountKey), 6);
+
+    private final MutableLiveData<List<OptionViewModel>> _options = new MutableLiveData<>();
     private int _selected = -1;
 
     public ChooseViewModel(@NonNull Application application) {
@@ -75,7 +83,10 @@ public class ChooseViewModel extends AbstractTaskViewModel {
         // Make everything stay
         for (OptionViewModel optionViewModel : Objects.requireNonNull(Options().getValue())) {
             optionViewModel.IsEditable().setValue(false);
+            optionViewModel.State()
+                    .setValue(AbstractTaskAnswerViewModel.TaskState.STATE_VALIDATED.ordinal());
             optionViewModel.IsChecked().setValue(true);
+            optionViewModel.notifyChange();
         }
 
         _taskResult.Result.Points = isValid ? 1 : 0;
@@ -99,7 +110,7 @@ public class ChooseViewModel extends AbstractTaskViewModel {
         strings.removeIf(s -> Objects.equals(s, chooseTask().Answer));
 
         int[] indexes = new Random().ints(0, strings.size())
-                .distinct().limit(Settings.ChooseOptionCount - 1).toArray();
+                .distinct().limit(_chooseOptionCount - 1).toArray();
 
         List<String> collected1 = Arrays.stream(indexes).mapToObj(strings::get)
                 .collect(Collectors.toList());

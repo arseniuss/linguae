@@ -7,11 +7,11 @@
 
         <variable
             name="presenter"
-            type="lv.id.arseniuss.linguae.tasks.ui.CasingFragment" />
+            type="lv.id.arseniuss.linguae.tasks.ui.SelectFragment" />
 
         <variable
             name="viewmodel"
-            type="lv.id.arseniuss.linguae.tasks.viewmodel.CasingViewModel" />
+            type="lv.id.arseniuss.linguae.tasks.viewmodel.SelectViewModel" />
     </data>
 
     <LinearLayout
@@ -64,9 +64,12 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@drawable/corners2"
+            android:padding="10dp"
             app:alignContent="flex_start"
+            app:alignItems="flex_start"
             app:flexWrap="wrap"
-            app:justifyContent="space_between" />
+            app:justifyContent="flex_start"
+            tools:listitem="@layout/item_task_select_word" />
 
     </LinearLayout>
 </layout>

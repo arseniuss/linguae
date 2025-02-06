@@ -25,8 +25,10 @@ public class ConjugateFragment extends AbstractTaskFragment<ConjugateViewModel> 
 
     private FragmentTaskConjugateBinding _binding;
 
-    public ConjugateFragment(SessionTaskData current) {
-        super(current);
+    public ConjugateFragment(SessionTaskData current, TaskChangeListener listener) {
+        super(current, listener);
+
+        if (listener != null) listener.OnCanCheckChanged(true);
     }
 
     @BindingAdapter("items")
@@ -48,6 +50,7 @@ public class ConjugateFragment extends AbstractTaskFragment<ConjugateViewModel> 
         _binding = FragmentTaskConjugateBinding.inflate(inflater, container, false);
 
         _binding.setViewmodel(_model);
+        _binding.setPresenter(this);
         _binding.setLifecycleOwner(this);
 
         MyRecyclerViewAdapter<ConjugateViewModel.PersonViewModel, ItemTaskConjugatePersonBinding> adapter =

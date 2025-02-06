@@ -15,8 +15,8 @@ import lv.id.arseniuss.linguae.tasks.viewmodel.NumberViewModel;
 
 public class NumberFragment extends AbstractTaskFragment<NumberViewModel> {
 
-    public NumberFragment(SessionTaskData current) {
-        super(current);
+    public NumberFragment(SessionTaskData current, TaskChangeListener listener) {
+        super(current, listener);
     }
 
     @Override

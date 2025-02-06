@@ -3,6 +3,7 @@ package lv.id.arseniuss.linguae.tasks.viewmodel;
 import android.app.Application;
 
 import androidx.annotation.NonNull;
+import androidx.databinding.BaseObservable;
 import androidx.lifecycle.MutableLiveData;
 
 import java.util.ArrayList;
@@ -118,7 +119,7 @@ public class TranslateViewModel extends AbstractTaskViewModel {
         Options().setValue(options);
     }
 
-    public static class WordViewModel {
+    public static class WordViewModel extends BaseObservable {
 
         public final String Option;
         private final MutableLiveData<Boolean> _hasError = new MutableLiveData<Boolean>(false);

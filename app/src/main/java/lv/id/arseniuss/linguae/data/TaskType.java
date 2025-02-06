@@ -7,7 +7,7 @@ import java.util.TreeMap;
 public enum TaskType {
     UnknownTask("Unknown task"),
 
-    CasingTask("Casing task"),
+    SelectTask("Select task"),
 
     ChooseTask("Choose task"),
 

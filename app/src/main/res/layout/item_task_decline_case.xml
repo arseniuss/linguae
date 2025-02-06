@@ -12,7 +12,8 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:padding="5dp">
 
         <TextView
             android:layout_width="wrap_content"
@@ -24,11 +25,11 @@
             android:text="@{viewmodel.CaseName()}"
             tools:text="datīvus" />
 
-        <ViewSwitcher
+        <ViewAnimator
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="3"
-            android:switchIndex="@{viewmodel.IsChecked() ? 1 : 0}">
+            android:switchIndex="@{viewmodel.State()}">
 
             <EditText
                 android:id="@+id/answerEditText"
@@ -37,16 +38,24 @@
                 android:inputType="text"
                 android:text="@={viewmodel.Answer()}" />
 
+            <Spinner
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/button2"
+                android:items="@{viewmodel.Options()}"
+                android:selectedItem="@={viewmodel.Answer()}" />
+
             <TextView
-                android:id="@+id/textView4"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
+                android:background="@{viewmodel.IsValid() ? @drawable/button_ok : @drawable/button_error}"
                 android:gravity="center"
+                android:minHeight="50dp"
                 android:text="@{viewmodel.GetResult()}" />
 
 
-        </ViewSwitcher>
+        </ViewAnimator>
 
     </LinearLayout>
 </layout>

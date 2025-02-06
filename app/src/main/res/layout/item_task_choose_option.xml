@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+        <import type="lv.id.arseniuss.linguae.tasks.AbstractTaskAnswerViewModel.TaskState"/>
 
         <variable
             name="presenter"
@@ -18,7 +19,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_margin="10dp"
-        android:background="@{viewmodel.IsChecked() ? ( viewmodel.IsValid() ? @drawable/button_ok : @drawable/radio_button_error) : @drawable/radio_button}"
+        android:background="@{presenter.Background()}"
         android:clickable="@{viewmodel.IsEditable()}"
         android:focusable="@{!viewmodel.IsEditable()}"
         android:gravity="center"

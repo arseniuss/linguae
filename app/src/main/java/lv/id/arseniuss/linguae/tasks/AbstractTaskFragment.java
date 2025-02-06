@@ -8,9 +8,11 @@ public abstract class AbstractTaskFragment<TViewModel extends AbstractTaskViewMo
     protected final SessionTaskData _task;
     protected Boolean _validated = false;
     protected TViewModel _model;
+    protected TaskChangeListener _listener;
 
-    public AbstractTaskFragment(SessionTaskData current) {
+    public AbstractTaskFragment(SessionTaskData current, TaskChangeListener listener) {
         _task = current;
+        _listener = listener;
     }
 
     public Boolean IsValidated() {
@@ -23,6 +25,10 @@ public abstract class AbstractTaskFragment<TViewModel extends AbstractTaskViewMo
         _validated = true;
 
         return isValid;
+    }
+
+    public interface TaskChangeListener {
+        void OnCanCheckChanged(boolean canCheck);
     }
 
 }

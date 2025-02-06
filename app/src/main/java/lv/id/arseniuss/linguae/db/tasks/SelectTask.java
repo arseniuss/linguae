@@ -3,21 +3,21 @@ package lv.id.arseniuss.linguae.db.tasks;
 import lv.id.arseniuss.linguae.data.TaskType;
 import lv.id.arseniuss.linguae.db.entities.Task;
 
-public class CasingTask extends Task.ITaskData {
-    public String Sentence;
-
+public class SelectTask extends Task.ITaskData {
     public String Meaning;
 
-    public String Answers;
+    public String[] Sentence;
 
-    public String Options;
+    public String[] Answers;
 
-    public CasingTask() {
-        super(TaskType.CasingTask);
+    public String[] Options;
+
+    public SelectTask() {
+        super(TaskType.SelectTask);
     }
 
     @Override
     public String GetTitle() {
-        return Sentence;
+        return Meaning;
     }
 }

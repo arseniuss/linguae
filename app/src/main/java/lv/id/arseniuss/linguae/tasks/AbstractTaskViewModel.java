@@ -17,7 +17,10 @@ public abstract class AbstractTaskViewModel extends AndroidViewModel {
 
     protected final SharedPreferences _sharedPreferences =
             PreferenceManager.getDefaultSharedPreferences(getApplication().getBaseContext());
-    protected final String _language = _sharedPreferences.getString(Constants.PreferenceLanguageKey, "");
+    protected final String _language =
+            _sharedPreferences.getString(Constants.PreferenceLanguageKey, "");
+    protected final Boolean _noKeyboard =
+            _sharedPreferences.getBoolean(Constants.PreferenceNoKeyboardKey, false);
     protected SessionTaskData _taskResult;
 
     protected MutableLiveData<Boolean> _isValidated = new MutableLiveData<>(false);
@@ -38,5 +41,17 @@ public abstract class AbstractTaskViewModel extends AndroidViewModel {
 
     public String StripAccents(String text) {
         return Settings.IgnoreMacrons ? Utilities.StripAccents(text) : text;
+    }
+
+    public String StripBrackets(String text) {
+        switch (text.charAt(0)) {
+            case '<':
+                text = text.substring(1);
+                if (text.charAt(text.length() - 1) == '>')
+                    text = text.substring(0, text.length() - 1);
+                break;
+        }
+
+        return text;
     }
 }

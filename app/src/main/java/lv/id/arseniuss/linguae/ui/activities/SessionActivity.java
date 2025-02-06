@@ -21,7 +21,7 @@ import lv.id.arseniuss.linguae.databinding.ActivitySessionBinding;
 import lv.id.arseniuss.linguae.db.dataaccess.TaskDataAccess;
 import lv.id.arseniuss.linguae.tasks.AbstractTaskFragment;
 import lv.id.arseniuss.linguae.tasks.entities.SessionTaskData;
-import lv.id.arseniuss.linguae.tasks.ui.CasingFragment;
+import lv.id.arseniuss.linguae.tasks.ui.SelectFragment;
 import lv.id.arseniuss.linguae.tasks.ui.ChooseFragment;
 import lv.id.arseniuss.linguae.tasks.ui.ConjugateFragment;
 import lv.id.arseniuss.linguae.tasks.ui.DeclineFragment;
@@ -30,7 +30,8 @@ import lv.id.arseniuss.linguae.tasks.ui.NumberFragment;
 import lv.id.arseniuss.linguae.tasks.ui.TranslateFragment;
 import lv.id.arseniuss.linguae.viewmodel.SessionViewModel;
 
-public class SessionActivity extends AppCompatActivity {
+public class SessionActivity extends AppCompatActivity
+        implements AbstractTaskFragment.TaskChangeListener {
     public static final String LessonExtraTag = "LESSON";
     public static final String TrainingExtraTag = "TRAINING";
     public static final String TrainingCategoriesExtraTag = "TRAINING_CATEGORIES";
@@ -137,29 +138,34 @@ public class SessionActivity extends AppCompatActivity {
         SessionTaskData data = _model.GetTask(_model.CurrentTaskIndex);
 
         switch (data.Task.Type) {
-            case CasingTask:
-                _currentFragment = new CasingFragment(data);
+            case SelectTask:
+                _currentFragment = new SelectFragment(data, this);
                 break;
             case ChooseTask:
-                _currentFragment = new ChooseFragment(data);
+                _currentFragment = new ChooseFragment(data, this);
                 break;
             case ConjugateTask:
-                _currentFragment = new ConjugateFragment(data);
+                _currentFragment = new ConjugateFragment(data, this);
                 break;
             case DeclineTask:
-                _currentFragment = new DeclineFragment(data);
+                _currentFragment = new DeclineFragment(data, this);
                 break;
             case MacronTask:
-                _currentFragment = new MacronFragment(data);
+                _currentFragment = new MacronFragment(data, this);
                 break;
             case NumberTask:
-                _currentFragment = new NumberFragment(data);
+                _currentFragment = new NumberFragment(data, this);
                 break;
             case TranslateTask:
-                _currentFragment = new TranslateFragment(data);
+                _currentFragment = new TranslateFragment(data, this);
                 break;
         }
 
         getSupportFragmentManager().beginTransaction().replace(R.id.fragmentContainerView, _currentFragment).commit();
+    }
+
+    @Override
+    public void OnCanCheckChanged(boolean canCheck) {
+        _model.CanCheck().setValue(canCheck);
     }
 }

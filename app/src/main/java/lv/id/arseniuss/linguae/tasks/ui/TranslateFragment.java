@@ -29,8 +29,8 @@ public class TranslateFragment extends AbstractTaskFragment<TranslateViewModel> 
     private WordAdapter _answerAdapter;
     private WordAdapter _optionsAdapter;
 
-    public TranslateFragment(SessionTaskData current) {
-        super(current);
+    public TranslateFragment(SessionTaskData current, TaskChangeListener listener) {
+        super(current, listener);
     }
 
     @BindingAdapter("items")

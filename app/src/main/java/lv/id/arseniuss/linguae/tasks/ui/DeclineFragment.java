@@ -24,8 +24,10 @@ import lv.id.arseniuss.linguae.ui.MyRecyclerViewAdapter;
 public class DeclineFragment extends AbstractTaskFragment<DeclineViewModel> {
     private FragmentTaskDeclineBinding _binding;
 
-    public DeclineFragment(SessionTaskData current) {
-        super(current);
+    public DeclineFragment(SessionTaskData current, TaskChangeListener listener) {
+        super(current, listener);
+
+        if (listener != null) listener.OnCanCheckChanged(true);
     }
 
     @BindingAdapter("items")
@@ -47,6 +49,7 @@ public class DeclineFragment extends AbstractTaskFragment<DeclineViewModel> {
         _binding = FragmentTaskDeclineBinding.inflate(inflater, container, false);
 
         _binding.setViewmodel(_model);
+        _binding.setPresenter(this);
         _binding.setLifecycleOwner(this);
 
         MyRecyclerViewAdapter<DeclineViewModel.CaseViewModel, ItemTaskDeclineCaseBinding> adapter = getAdapter();

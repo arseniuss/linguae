@@ -36,6 +36,7 @@ public class SessionViewModel extends AndroidViewModel {
             LanguageDatabase.GetInstance(getApplication(), _language).GetTaskDataAccess();
     private final MutableLiveData<String> _counterString = new MutableLiveData<>("0");
     private final MutableLiveData<String> _taskProgress = new MutableLiveData<>("");
+    private final MutableLiveData<Boolean> _canCheck = new MutableLiveData<>(false);
     private final SessionResultWithTaskResults _result = new SessionResultWithTaskResults();
 
     public int CurrentTaskIndex = -1;
@@ -58,6 +59,10 @@ public class SessionViewModel extends AndroidViewModel {
 
     public MutableLiveData<String> TaskProgress() {
         return _taskProgress;
+    }
+
+    public MutableLiveData<Boolean> CanCheck() {
+        return _canCheck;
     }
 
     public void LoadLesson(String lessonId, ILoaded loaded) {

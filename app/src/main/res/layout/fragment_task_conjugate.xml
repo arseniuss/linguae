@@ -6,6 +6,10 @@
     <data>
 
         <variable
+            name="presenter"
+            type="lv.id.arseniuss.linguae.tasks.ui.ConjugateFragment" />
+
+        <variable
             name="viewmodel"
             type="lv.id.arseniuss.linguae.tasks.viewmodel.ConjugateViewModel" />
     </data>
@@ -46,6 +50,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
             android:gravity="center"
             android:text="@{viewmodel.Meaning}"
             android:textAlignment="center"

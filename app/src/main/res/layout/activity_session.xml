@@ -82,6 +82,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
                 android:layout_weight="1"
+                android:enabled="@{viewmodel.CanCheck()}"
                 android:onClick="@{() -> presenter.OnCheckClicked()}"
                 android:text="@string/ButtonCheckTitle" />
         </LinearLayout>
