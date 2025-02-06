@@ -25,8 +25,6 @@ import lv.id.arseniuss.linguae.tasks.ui.SelectFragment;
 import lv.id.arseniuss.linguae.tasks.ui.ChooseFragment;
 import lv.id.arseniuss.linguae.tasks.ui.ConjugateFragment;
 import lv.id.arseniuss.linguae.tasks.ui.DeclineFragment;
-import lv.id.arseniuss.linguae.tasks.ui.MacronFragment;
-import lv.id.arseniuss.linguae.tasks.ui.NumberFragment;
 import lv.id.arseniuss.linguae.tasks.ui.TranslateFragment;
 import lv.id.arseniuss.linguae.viewmodel.SessionViewModel;
 
@@ -149,12 +147,6 @@ public class SessionActivity extends AppCompatActivity
                 break;
             case DeclineTask:
                 _currentFragment = new DeclineFragment(data, this);
-                break;
-            case MacronTask:
-                _currentFragment = new MacronFragment(data, this);
-                break;
-            case NumberTask:
-                _currentFragment = new NumberFragment(data, this);
                 break;
             case TranslateTask:
                 _currentFragment = new TranslateFragment(data, this);

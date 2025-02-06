@@ -15,10 +15,6 @@ public enum TaskType {
 
     DeclineTask("Decline task"),
 
-    MacronTask("Macron task"),
-
-    NumberTask("Number task"),
-
     TranslateTask("Translate task");
 
     private static final Map<String, TaskType> map = new TreeMap<>(new Comparator<String>() {

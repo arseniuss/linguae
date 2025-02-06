@@ -16,12 +16,10 @@ import com.google.gson.annotations.SerializedName;
 import java.util.Objects;
 
 import lv.id.arseniuss.linguae.data.TaskType;
-import lv.id.arseniuss.linguae.db.tasks.SelectTask;
 import lv.id.arseniuss.linguae.db.tasks.ChooseTask;
 import lv.id.arseniuss.linguae.db.tasks.ConjugateTask;
 import lv.id.arseniuss.linguae.db.tasks.DeclineTask;
-import lv.id.arseniuss.linguae.db.tasks.MacronTask;
-import lv.id.arseniuss.linguae.db.tasks.NumberTask;
+import lv.id.arseniuss.linguae.db.tasks.SelectTask;
 import lv.id.arseniuss.linguae.db.tasks.TranslateTask;
 
 @Entity(tableName = "task")
@@ -61,8 +59,7 @@ public class Task {
         Gson gson = new Gson();
 
         if (Objects.requireNonNull(task.Type) == TaskType.SelectTask || task.Type == TaskType.TranslateTask ||
-                task.Type == TaskType.MacronTask || task.Type == TaskType.NumberTask || task.Type == TaskType.DeclineTask ||
-                task.Type == TaskType.ConjugateTask || task.Type == TaskType.ChooseTask) {
+                task.Type == TaskType.DeclineTask || task.Type == TaskType.ConjugateTask || task.Type == TaskType.ChooseTask) {
             return gson.toJson(task);
         }
         return null;
@@ -80,10 +77,6 @@ public class Task {
                 return new Gson().fromJson(str, ChooseTask.class);
             case ConjugateTask:
                 return new Gson().fromJson(str, ConjugateTask.class);
-            case MacronTask:
-                return new Gson().fromJson(str, MacronTask.class);
-            case NumberTask:
-                return new Gson().fromJson(str, NumberTask.class);
             case TranslateTask:
                 return new Gson().fromJson(str, TranslateTask.class);
             case DeclineTask:
