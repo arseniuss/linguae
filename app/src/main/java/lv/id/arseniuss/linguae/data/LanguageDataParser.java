@@ -159,7 +159,7 @@ public class LanguageDataParser {
                 break;
             case "decline":
                 if (words.length != 3 + 6) {
-                    logError("Expecting format: type #N decline <type> <description> <word> <meaning> <options> " +
+                    logError("Expecting format: <type> <description> <word> <meaning> <options> " +
                             "<answers>");
                     logError("Got: " + line);
                     return false;
@@ -215,7 +215,7 @@ public class LanguageDataParser {
                 break;
             case "conjugate":
                 if (words.length != 3 + 6) {
-                    logError("Expecting format: task #n conjugate <conjugation> \"<mood> <tense> <voice>\" <word> " +
+                    logError("Expecting format: <conjugation> \"<mood> <tense> <voice>\" <word> " +
                             "<meaning> <persons> <answers>");
                     logError("Got: " + line);
                     return false;
@@ -373,7 +373,10 @@ public class LanguageDataParser {
                 List<String> lines = new ArrayList<>();
 
                 while (!l.startsWith(_eol_prefix)) {
-                    lines.add(l.trim());
+                    if (l.startsWith("\t")) l = l.substring(1);
+                    else if (l.startsWith("    ")) l = l.substring(4);
+
+                    lines.add(l);
                     l = r.readLine();
                 }
 
@@ -421,7 +424,7 @@ public class LanguageDataParser {
                         continue;
                     }
 
-                    t.Name = resolveReferences(words[1], _references);
+                    t.Name = resolveReferences(words[1], references);
                     break;
                 case "description":
                     if (words.length != 2) {
@@ -434,7 +437,7 @@ public class LanguageDataParser {
                         continue;
                     }
 
-                    t.Description = resolveReferences(words[1], _references);
+                    t.Description = resolveReferences(words[1], references);
                     break;
                 case "ref":
                     if (words.length != 3) {
