@@ -69,7 +69,7 @@ public class PreferencesActivity extends AppCompatActivity {
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(this::finish, error -> {
-                        Utilities.printToastError(this, error);
+                        Utilities.PrintToastError(this, error);
                         finish();
                     });
 

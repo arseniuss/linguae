@@ -90,17 +90,22 @@ public class SessionResultActivity extends AppCompatActivity {
                         (float) taskResults.stream().map(t -> t.Points).reduce(0, Integer::sum),
                         taskResults.get(0).TaskType.GetName(), taskResults))
                 .collect(Collectors.toList());
-        pieEntryList.add(new PieEntry(_model.GetAmount() - _model.GetPoints(), "Errors"));
-        PieDataSet dataSet = new PieDataSet(pieEntryList, null);
 
-        _binding.pieChart.setCenterText(_model.GetPoints() + "/" + _model.GetAmount());
+        pieEntryList.add(new PieEntry(_model.GetAmount() - _model.GetPoints(), "Errors"));
+
+        PieDataSet dataSet = new PieDataSet(pieEntryList, null);
+        List<Integer> colors = pieEntryList.stream()
+                .map(e -> Utilities.RandomColor())
+                .collect(Collectors.toList());
+
+        colors.add(colors.size() - 1, Color.RED);
 
         dataSet.setDrawValues(true);
-        dataSet.setValueTextSize(20f); // TODO: get from theme
-        List<Integer> colors = pieEntryList.stream().map(e -> Utilities.RandomColor()).collect(Collectors.toList());
-        colors.add(colors.size() - 1, Color.RED);
+        dataSet.setValueTextSize(Utilities.GetThemeTextSize(this, android.R.attr.textSize));
         dataSet.setColors(colors);
         dataSet.setValueFormatter(new DefaultValueFormatter(0));
+
+        _binding.pieChart.setCenterText(_model.GetPoints() + "/" + _model.GetAmount());
 
         PieData pieData = new PieData(dataSet);
 

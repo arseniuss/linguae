@@ -19,12 +19,15 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URL;
+import java.net.URLConnection;
 import java.text.Normalizer;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Stack;
 import java.util.stream.Collectors;
+
+import javax.net.ssl.HttpsURLConnection;
 
 public class Utilities {
     private static final Stack<Integer> _colors = new Stack<>();
@@ -79,6 +82,16 @@ public class Utilities {
         return value.data;
     }
 
+    public static float GetThemeTextSize(Context context, int attrId) {
+        TypedValue value = new TypedValue();
+
+        if (context.getTheme().resolveAttribute(attrId, value, true)) {
+            return value.getDimension(context.getResources().getDisplayMetrics());
+        }
+
+        return -1;
+    }
+
     public static float GetDimension(Context context, int attrId) {
         TypedValue value = new TypedValue();
         int[] attrs = {attrId};
@@ -102,7 +115,7 @@ public class Utilities {
         return Base64.encodeToString(bytes, Base64.DEFAULT);
     }
 
-    public static void printToastError(Context context, Throwable error) {
+    public static void PrintToastError(Context context, Throwable error) {
         Toast.makeText(context, error.getMessage(), Toast.LENGTH_SHORT).show();
     }
 
@@ -114,30 +127,38 @@ public class Utilities {
         Uri filenameUri = Uri.parse(filename);
         String scheme = filenameUri.getScheme();
 
-        if (ContentResolver.SCHEME_CONTENT.equals(scheme)) {
-            // Handle content URI
-            ContentResolver resolver = context.getContentResolver();
-            Uri documentUri = getDocument(context, filenameUri);
+        assert scheme != null;
 
-            if (documentUri == null) throw new Exception("Could not find " + filename);
+        switch (scheme) {
+            case ContentResolver.SCHEME_CONTENT:
+                // Handle content URI
+                ContentResolver resolver = context.getContentResolver();
+                Uri documentUri = getDocument(context, filenameUri);
 
-            return resolver.openInputStream(documentUri);
-        } else if (ContentResolver.SCHEME_FILE.equals(scheme)) {
-            return new FileInputStream(new File(filename));
-        } else if ("http".equals(scheme) || "https".equals(scheme)) {
-            // TODO: Handle HTTP/HTTPS URL
-            // I REALLY hate this
-            URI uri = new URI(filename);
-            uri = uri.normalize(); // This is important
-            URL url = uri.toURL();
+                if (documentUri == null) throw new Exception("Could not find " + filename);
 
-            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                return resolver.openInputStream(documentUri);
+            case ContentResolver.SCHEME_FILE:
+                return new FileInputStream(new File(filename));
+            case "http":
+            case "https":
+                // I REALLY hate this
+                URI uri = new URI(filename);
+                uri = uri.normalize(); // This is important
+                URL url = uri.toURL();
 
-            connection.setConnectTimeout(timeout);
+                URLConnection connection;
 
-            return connection.getInputStream();
-        } else {
-            throw new IllegalArgumentException("Unsupported URI scheme: " + scheme);
+                if (scheme.equals("http"))
+                    connection = (HttpURLConnection) url.openConnection();
+                else
+                    connection = (HttpsURLConnection) url.openConnection();
+
+                connection.setConnectTimeout(timeout);
+
+                return connection.getInputStream();
+            default:
+                throw new IllegalArgumentException("Unsupported URI scheme: " + scheme);
         }
     }
 
