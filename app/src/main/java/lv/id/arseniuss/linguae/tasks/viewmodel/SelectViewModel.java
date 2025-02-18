@@ -11,6 +11,8 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+import lv.id.arseniuss.linguae.data.TaskType;
+import lv.id.arseniuss.linguae.db.entities.TaskError;
 import lv.id.arseniuss.linguae.db.tasks.SelectTask;
 import lv.id.arseniuss.linguae.tasks.AbstractTaskAnswerViewModel;
 import lv.id.arseniuss.linguae.tasks.AbstractTaskFragment;
@@ -92,7 +94,13 @@ public class SelectViewModel extends AbstractTaskViewModel {
             isValid &= model.Validate();
             if (model.Answer != null && !model.Answer.isEmpty()) {
                 amount += 1;
-                points += model.Validate() ? 1 : 0;
+
+                if (model.Validate()) {
+                    points += 1;
+                } else {
+                    _taskResult.Result.Errors.add(new TaskError(TaskType.SelectTask,
+                            model.SelectedWord().getValue(), model.Answer));
+                }
             }
         }
 

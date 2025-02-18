@@ -3,7 +3,11 @@ package lv.id.arseniuss.linguae.db.entities;
 import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
+import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import lv.id.arseniuss.linguae.data.TaskType;
 
@@ -29,6 +33,9 @@ public class TaskResult {
 
     @ColumnInfo(name = "amount")
     public int Amount = 1;
+
+    @Ignore
+    public List<TaskError> Errors = new ArrayList<>();
 
     public TaskResult() {
     }

@@ -43,7 +43,8 @@ public class SessionResultActivity extends AppCompatActivity {
         }
 
         String result = i.getStringExtra(ResultTag);
-        SessionResultWithTaskResults sessionResult = new Gson().fromJson(result, SessionResultWithTaskResults.class);
+        SessionResultWithTaskResults sessionResult = new Gson().fromJson(result,
+                SessionResultWithTaskResults.class);
 
         _binding = DataBindingUtil.setContentView(this, R.layout.activity_session_result);
         _model = new ViewModelProvider(this).get(SessionResultViewModel.class);
@@ -54,12 +55,15 @@ public class SessionResultActivity extends AppCompatActivity {
         _binding.setLifecycleOwner(this);
 
         _binding.pieChart.setDrawCenterText(true);
-        _binding.pieChart.setCenterTextColor(Utilities.GetThemeColor(getTheme(), attr.colorOnBackground));
-        _binding.pieChart.setCenterTextSize(Utilities.GetDimension(getBaseContext(), android.R.attr.textSize));
+        _binding.pieChart.setCenterTextColor(Utilities.GetThemeColor(getTheme(),
+                attr.colorOnBackground));
+        _binding.pieChart.setCenterTextSize(Utilities.GetDimension(getBaseContext(),
+                android.R.attr.textSize));
 
         _binding.pieChart.setDrawHoleEnabled(true);
         _binding.pieChart.setDrawRoundedSlices(true);
-        _binding.pieChart.setHoleColor(Utilities.GetThemeColor(getTheme(), android.R.attr.colorBackground));
+        _binding.pieChart.setHoleColor(Utilities.GetThemeColor(getTheme(),
+                android.R.attr.colorBackground));
         _binding.pieChart.setDrawEntryLabels(false);
 
         Legend pieChartLegend = _binding.pieChart.getLegend();
@@ -84,7 +88,7 @@ public class SessionResultActivity extends AppCompatActivity {
                 .stream()
                 .map(taskResults -> new PieEntry(
                         (float) taskResults.stream().map(t -> t.Points).reduce(0, Integer::sum),
-                        taskResults.get(0).TaskType.toString(), taskResults))
+                        taskResults.get(0).TaskType.GetName(), taskResults))
                 .collect(Collectors.toList());
         pieEntryList.add(new PieEntry(_model.GetAmount() - _model.GetPoints(), "Errors"));
         PieDataSet dataSet = new PieDataSet(pieEntryList, null);

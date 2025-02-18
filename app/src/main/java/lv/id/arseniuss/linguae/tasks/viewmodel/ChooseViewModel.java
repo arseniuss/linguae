@@ -15,6 +15,8 @@ import java.util.Random;
 import java.util.stream.Collectors;
 
 import lv.id.arseniuss.linguae.R;
+import lv.id.arseniuss.linguae.data.TaskType;
+import lv.id.arseniuss.linguae.db.entities.TaskError;
 import lv.id.arseniuss.linguae.db.tasks.ChooseTask;
 import lv.id.arseniuss.linguae.tasks.AbstractTaskAnswerViewModel;
 import lv.id.arseniuss.linguae.tasks.AbstractTaskViewModel;
@@ -65,6 +67,8 @@ public class ChooseViewModel extends AbstractTaskViewModel {
                 .filter(o -> Objects.equals(o.Option, Answer()))
                 .findFirst();
 
+        assert first.isPresent();
+
         OptionViewModel correctViewModel = first.get();
 
         for (OptionViewModel optionViewModel : Objects.requireNonNull(Options().getValue())) {
@@ -78,6 +82,9 @@ public class ChooseViewModel extends AbstractTaskViewModel {
             selectedViewModel.IsValid().setValue(false);
             isValid = false;
             correctViewModel.IsValid().setValue(true);
+
+            _taskResult.Result.Errors.add(new TaskError(TaskType.ChooseTask,
+                    selectedViewModel.Option, correctViewModel.Option));
         }
 
         // Make everything stay

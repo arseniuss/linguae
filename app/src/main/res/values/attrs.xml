@@ -1,0 +1,5 @@
+<resources>
+    <declare-styleable name="AdapterLinearLayout">
+        <attr name="itemLayout" format="reference" />
+    </declare-styleable>
+</resources>

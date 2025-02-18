@@ -15,6 +15,8 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import lv.id.arseniuss.linguae.Constants;
+import lv.id.arseniuss.linguae.data.TaskType;
+import lv.id.arseniuss.linguae.db.entities.TaskError;
 import lv.id.arseniuss.linguae.db.tasks.TranslateTask;
 import lv.id.arseniuss.linguae.tasks.AbstractTaskViewModel;
 import lv.id.arseniuss.linguae.tasks.entities.SessionTaskData;
@@ -69,6 +71,11 @@ public class TranslateViewModel extends AbstractTaskViewModel {
                 }
 
                 model.SetHasError(hasError);
+
+                if (hasError) {
+                    _taskResult.Result.Errors.add(new TaskError(TaskType.TranslateTask,
+                            model.Option, correct[i]));
+                }
             }
         }
 

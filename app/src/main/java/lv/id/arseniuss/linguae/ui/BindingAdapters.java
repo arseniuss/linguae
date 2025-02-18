@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.view.View;
+import android.widget.Adapter;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
@@ -12,9 +13,11 @@ import android.widget.TextView;
 import android.widget.ViewAnimator;
 import android.widget.ViewSwitcher;
 
+import androidx.databinding.BaseObservable;
 import androidx.databinding.BindingAdapter;
 import androidx.databinding.InverseBindingAdapter;
 import androidx.databinding.InverseBindingListener;
+import androidx.lifecycle.LifecycleOwner;
 
 import java.io.InputStream;
 import java.util.List;
@@ -28,6 +31,34 @@ import io.reactivex.rxjava3.schedulers.Schedulers;
 import lv.id.arseniuss.linguae.Utilities;
 
 public class BindingAdapters {
+
+    @BindingAdapter("items")
+    public static <T extends BaseObservable>
+    void SetAdapterLinearLayoutItems(AdapterLinearLayout container, List<T> entries) {
+        if (entries == null || container.getItemLayoutResId() == 0) return;
+
+        Adapter adapter = container.getAdapter();
+
+        if (!(adapter instanceof MyAdapter)) {
+            Context context = container.getContext();
+            LifecycleOwner lifecycleOwner = null;
+
+            if (context instanceof LifecycleOwner) {
+                lifecycleOwner = (LifecycleOwner) context;
+            }
+
+            adapter = new MyAdapter<T>(container.getContext(), lifecycleOwner,
+                    container.getItemLayoutResId());
+            container.setAdapter(adapter);
+        }
+
+
+        MyAdapter<T> myAdapter = (MyAdapter<T>) container.getAdapter();
+
+        myAdapter.clear();
+        myAdapter.addAll(entries);
+        myAdapter.notifyDataSetChanged();
+    }
 
     @BindingAdapter("android:items")
     public static void SetSpinnerItems(Spinner spinner, List<String> entries) {

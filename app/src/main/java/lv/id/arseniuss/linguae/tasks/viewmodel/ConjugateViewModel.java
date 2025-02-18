@@ -15,8 +15,10 @@ import java.util.Random;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import lv.id.arseniuss.linguae.data.TaskType;
 import lv.id.arseniuss.linguae.db.LanguageDatabase;
 import lv.id.arseniuss.linguae.db.dataaccess.TaskDataAccess;
+import lv.id.arseniuss.linguae.db.entities.TaskError;
 import lv.id.arseniuss.linguae.db.tasks.ConjugateTask;
 import lv.id.arseniuss.linguae.tasks.AbstractTaskAnswerViewModel;
 import lv.id.arseniuss.linguae.tasks.AbstractTaskViewModel;
@@ -44,6 +46,10 @@ public class ConjugateViewModel extends AbstractTaskViewModel {
                 boolean valid = viewModel.Validate();
 
                 if (valid) points += 1;
+                else {
+                    _taskResult.Result.Errors.add(new TaskError(TaskType.ConjugateTask,
+                            viewModel.Answer().getValue(), viewModel._correct));
+                }
 
                 allValid &= valid;
                 amount += 1;

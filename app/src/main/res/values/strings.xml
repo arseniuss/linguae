@@ -63,4 +63,5 @@
     <string name="TitleLicenses">Licenses</string>
     <string name="TitleTaskList">Task list</string>
     <string name="SaveRepositoriesTitle">Do you want to save repository list?</string>
+    <string name="TextSummaryPoints">Points</string>
 </resources>
