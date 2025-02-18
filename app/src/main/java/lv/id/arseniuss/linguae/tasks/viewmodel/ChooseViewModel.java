@@ -7,7 +7,9 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
 import androidx.preference.PreferenceManager;
 
+import java.security.SecureRandom;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -116,7 +118,7 @@ public class ChooseViewModel extends AbstractTaskViewModel {
 
         strings.removeIf(s -> Objects.equals(s, chooseTask().Answer));
 
-        int[] indexes = new Random().ints(0, strings.size())
+        int[] indexes = new SecureRandom().ints(0, strings.size())
                 .distinct().limit(_chooseOptionCount - 1).toArray();
 
         List<String> collected1 = Arrays.stream(indexes).mapToObj(strings::get)
@@ -127,6 +129,8 @@ public class ChooseViewModel extends AbstractTaskViewModel {
                 .collect(Collectors.toList());
 
         collected2.add(new OptionViewModel(StripAccents(chooseTask().Answer)));
+
+        Collections.shuffle(collected2);
 
         _options.setValue(collected2);
     }

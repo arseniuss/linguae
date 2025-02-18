@@ -8,6 +8,7 @@ import android.text.Spanned;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
 
+import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -83,7 +84,7 @@ public class DeclineViewModel extends AbstractTaskViewModel {
 
         assert declineTask().Cases.length == declineTask().Answers.length;
 
-        List<String> randomAnswers = new Random()
+        List<String> randomAnswers = new SecureRandom()
                 .ints(0, declineTask().Answers.length)
                 .distinct()
                 .limit(declineTask().Answers.length)

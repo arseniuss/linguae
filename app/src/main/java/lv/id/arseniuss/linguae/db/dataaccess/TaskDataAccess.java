@@ -3,6 +3,7 @@ package lv.id.arseniuss.linguae.db.dataaccess;
 import androidx.room.Dao;
 import androidx.room.Query;
 
+import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -55,7 +56,7 @@ public abstract class TaskDataAccess {
                                 ")");
             }
 
-            int[] indexes = new Random().ints(0, taskCount).distinct().limit(count).toArray();
+            int[] indexes = new SecureRandom().ints(0, taskCount).distinct().limit(count).toArray();
             List<String> taskIds = GetLessonTasks(lessonId);
 
             List<String> selectedIds =
@@ -87,7 +88,7 @@ public abstract class TaskDataAccess {
                                 count + ")");
             }
 
-            int[] indexes = new Random().ints(0, taskIds.size()).distinct().limit(count).toArray();
+            int[] indexes = new SecureRandom().ints(0, taskIds.size()).distinct().limit(count).toArray();
 
             List<String> selectedIds =
                     Arrays.stream(indexes).mapToObj(taskIds::get).collect(Collectors.toList());
