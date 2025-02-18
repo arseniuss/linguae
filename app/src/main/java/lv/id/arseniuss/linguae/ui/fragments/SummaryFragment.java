@@ -70,13 +70,8 @@ public class SummaryFragment extends Fragment {
             }
         }, getViewLifecycleOwner(), Lifecycle.State.RESUMED);
 
-        _model.Load(this::setupLogo);
+        _model.Load();
 
         return _binding.getRoot();
     }
-
-    private void setupLogo(Bitmap bitmap) {
-        _binding.logo.setImageBitmap(bitmap);
-    }
-
 }

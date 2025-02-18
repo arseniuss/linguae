@@ -36,10 +36,10 @@ import lv.id.arseniuss.linguae.db.entities.TheoryWithChapters;
 import lv.id.arseniuss.linguae.db.entities.Training;
 import lv.id.arseniuss.linguae.db.entities.TrainingCategory;
 import lv.id.arseniuss.linguae.db.entities.TrainingWithTasks;
-import lv.id.arseniuss.linguae.db.tasks.SelectTask;
 import lv.id.arseniuss.linguae.db.tasks.ChooseTask;
 import lv.id.arseniuss.linguae.db.tasks.ConjugateTask;
 import lv.id.arseniuss.linguae.db.tasks.DeclineTask;
+import lv.id.arseniuss.linguae.db.tasks.SelectTask;
 import lv.id.arseniuss.linguae.db.tasks.TranslateTask;
 
 public class LanguageDataParser {
@@ -785,6 +785,14 @@ public class LanguageDataParser {
 
                     _data.LanguageVersion = words[1];
                     _data.Config.put("version", _data.LanguageVersion);
+                    break;
+                case "author":
+                    if (words.length != 2) {
+                        logError("Expecting format: author <version>");
+                        continue;
+                    }
+
+                    _data.Config.put("author", words[1]);
                     break;
                 case "setting":
                     if (words.length != 5) {

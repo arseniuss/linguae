@@ -28,7 +28,7 @@
             android:layout_height="64dp"
             android:layout_gravity="center"
             android:contentDescription="@{viewmodel.Language}"
-            app:imageUrl="@{viewmodel.Image}"
+            app:imageUrl="@{viewmodel.ImageUrl}"
             app:srcCompat="@drawable/baseline_cloud_download_24" />
 
         <TextView

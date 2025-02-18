@@ -14,43 +14,48 @@
     </data>
 
     <LinearLayout
-        android:id="@+id/viewButton"
-        style="@style/MyAppTheme.Rounded"
+        style="@style/MyAppTheme.Layout.HorizontalSquash"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:clickable="true"
-        android:focusable="true"
-        android:orientation="horizontal">
+        android:divider="@drawable/divider_1"
+        android:orientation="horizontal"
+        android:showDividers="middle">
 
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:id="@+id/viewButton"
+            style="@style/MyAppTheme.Button"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:orientation="vertical">
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    style="@style/MyAppTheme.TextView.Header"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@{viewmodel.Title}"
+                    tools:text="Name\nl" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@{viewmodel.Description}"
+                    tools:text="Description" />
+            </LinearLayout>
 
             <TextView
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:paddingBottom="10dp"
-                android:text="@{viewmodel.Title}"
-                android:textSize="20sp"
-                android:textStyle="bold"
-                tools:text="Name" />
+                android:layout_gravity="center"
+                android:padding="@dimen/margin_2"
+                android:text="@{viewmodel.getChapterCountStr()}"
+                tools:text="120" />
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@{viewmodel.Description}"
-                tools:text="Description" />
         </LinearLayout>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:padding="15dp"
-            android:text="@{viewmodel.getChapterCountStr()}"
-            tools:text="120" />
-
     </LinearLayout>
 </layout>

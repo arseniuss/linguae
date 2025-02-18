@@ -64,4 +64,12 @@
     <string name="TitleTaskList">Task list</string>
     <string name="SaveRepositoriesTitle">Do you want to save repository list?</string>
     <string name="TextSummaryPoints">Points</string>
+    <string name="DescriptionLanguageLogo">Logo of language</string>
+    <string name="TextLanguageTitle">"Language: "</string>
+    <string name="TextLanguageVersionTitle">"Version: "</string>
+    <string name="TextLanguageAuthorTitle">"Author: "</string>
+    <string name="TitleNextLesson">Next lesson</string>
+    <string name="TitleNextTraining">Next training</string>
+    <string name="TitleNextTheory">Next theory</string>
+    <string name="TitleBestLessons">Best lessons</string>
 </resources>

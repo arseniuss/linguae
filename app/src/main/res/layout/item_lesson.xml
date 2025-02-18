@@ -14,20 +14,21 @@
     </data>
 
     <LinearLayout
+        style="@style/MyAppTheme.Layout.HorizontalSquash"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:baselineAligned="false"
-        android:orientation="horizontal">
+        android:divider="@drawable/divider_2"
+        android:orientation="horizontal"
+        android:showDividers="middle">
 
         <LinearLayout
             android:id="@+id/viewButton"
-            style="@style/MyAppTheme.Rounded"
+            style="@style/MyAppTheme.Button"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:baselineAligned="false"
-            android:clickable="true"
-            android:focusable="true"
             android:orientation="horizontal">
 
             <LinearLayout
@@ -35,7 +36,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:orientation="vertical"
-                android:paddingBottom="10dp">
+                tools:ignore="NestedWeights">
 
 
                 <TextView
@@ -44,7 +45,7 @@
                     android:layout_weight="1"
                     android:paddingBottom="5dp"
                     android:text="@{viewmodel.Name}"
-                    android:textSize="20sp"
+                    android:textSize="@dimen/text_size_header"
                     android:textStyle="bold"
                     tools:text="Lesson\nl" />
 
@@ -62,26 +63,23 @@
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingBottom="10dp"
+            android:showDividers="middle"
+            android:divider="@drawable/divider_1"
             android:orientation="vertical">
 
             <LinearLayout
+                style="@style/MyAppTheme.RawButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:layout_marginRight="10dp"
-                android:background="@drawable/button"
-                android:clickable="true"
-                android:focusable="true"
                 android:onClick="@{() -> presenter.OnTheoryClick(viewmodel)}"
                 android:orientation="vertical">
 
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
+                    android:paddingLeft="10dp"
                     android:paddingTop="10dp"
                     android:paddingRight="10dp"
-                    android:paddingLeft="10dp"
                     android:src="@drawable/baseline_menu_book_24" />
 
                 <TextView
@@ -89,29 +87,24 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:gravity="center"
-                    android:padding="5dp"
+                    android:padding="@dimen/margin_1"
                     android:text="@{viewmodel.TheoryCount}"
                     tools:text="5" />
             </LinearLayout>
 
             <LinearLayout
+                style="@style/MyAppTheme.RawButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:layout_marginRight="10dp"
-                android:background="@drawable/button"
-                android:clickable="true"
-                android:focusable="true"
                 android:onClick="@{() -> presenter.OnSummaryClick(viewmodel)}"
                 android:orientation="vertical">
 
                 <ImageView
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="0"
+                    android:layout_height="match_parent"
+                    android:paddingLeft="10dp"
                     android:paddingTop="10dp"
                     android:paddingRight="10dp"
-                    android:paddingLeft="10dp"
                     android:src="@drawable/baseline_article_24" />
 
                 <TextView

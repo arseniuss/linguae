@@ -6,6 +6,7 @@ import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.provider.DocumentsContract;
 import android.util.Base64;
@@ -28,6 +29,8 @@ import java.util.Stack;
 import java.util.stream.Collectors;
 
 import javax.net.ssl.HttpsURLConnection;
+
+import io.reactivex.rxjava3.core.Single;
 
 public class Utilities {
     private static final Stack<Integer> _colors = new Stack<>();
@@ -207,5 +210,13 @@ public class Utilities {
         }
 
         return result;
+    }
+
+    public static Single<Bitmap> LoadImage(Context context, String imageUrl) {
+        return Single.fromCallable(() -> {
+            InputStream input = Utilities.GetInputStream(context, imageUrl);
+
+            return BitmapFactory.decodeStream(input);
+        });
     }
 }

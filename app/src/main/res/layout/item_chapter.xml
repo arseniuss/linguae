@@ -15,12 +15,10 @@
     </data>
 
     <LinearLayout
-        style="@style/MyAppTheme.Rounded"
+        style="@style/MyAppTheme.Layout.RoundedPadded"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:paddingTop="10dp"
-        android:paddingBottom="10dp">
+        android:orientation="vertical">
 
         <TextView
             android:layout_width="match_parent"

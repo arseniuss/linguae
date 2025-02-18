@@ -2,7 +2,7 @@ package lv.id.arseniuss.linguae.ui;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
 import android.view.View;
 import android.widget.Adapter;
 import android.widget.AdapterView;
@@ -18,14 +18,14 @@ import androidx.databinding.BindingAdapter;
 import androidx.databinding.InverseBindingAdapter;
 import androidx.databinding.InverseBindingListener;
 import androidx.lifecycle.LifecycleOwner;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.RecyclerView;
 
-import java.io.InputStream;
 import java.util.List;
 
 import io.noties.markwon.Markwon;
 import io.noties.markwon.ext.tables.TablePlugin;
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
-import io.reactivex.rxjava3.core.Single;
 import io.reactivex.rxjava3.disposables.Disposable;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 import lv.id.arseniuss.linguae.Utilities;
@@ -84,11 +84,13 @@ public class BindingAdapters {
     }
 
     @BindingAdapter("android:selectedItemAttrChanged")
-    public static void SetSpinnerListener(Spinner spinner, final InverseBindingListener selectedItemChangedListener) {
+    public static void SetSpinnerListener(Spinner spinner,
+                                          final InverseBindingListener selectedItemChangedListener) {
         if (selectedItemChangedListener != null) {
             spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 @Override
-                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                public void onItemSelected(AdapterView<?> parent, View view, int position,
+                                           long id) {
                     selectedItemChangedListener.onChange();
                 }
 
@@ -135,9 +137,17 @@ public class BindingAdapters {
     @BindingAdapter("imageUrl")
     public static void SetImageByUrl(ImageView imageView, String urlString) {
         if (urlString != null && !urlString.isEmpty()) {
-            Disposable d = loadImage(imageView.getContext(), urlString).subscribeOn(Schedulers.io())
+            Disposable d = Utilities.LoadImage(imageView.getContext(), urlString)
+                    .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(imageView::setImageBitmap, Throwable::printStackTrace);
+        }
+    }
+
+    @BindingAdapter("image")
+    public static void SetImageViewImage(ImageView imageView, Bitmap bitmap) {
+        if (bitmap != null) {
+            imageView.setImageBitmap(bitmap);
         }
     }
 
@@ -155,11 +165,15 @@ public class BindingAdapters {
         }
     }
 
-    private static Single<Bitmap> loadImage(Context context, String imageUrl) {
-        return Single.fromCallable(() -> {
-            InputStream input = Utilities.GetInputStream(context, imageUrl);
+    @BindingAdapter("binding:divider")
+    public static void SetRecycleViewSpacing(RecyclerView recyclerView, Drawable divider) {
+        if (recyclerView == null) return;
 
-            return BitmapFactory.decodeStream(input);
-        });
+        DividerItemDecoration decoration = new DividerItemDecoration(recyclerView.getContext(),
+                DividerItemDecoration.VERTICAL);
+
+        decoration.setDrawable(divider);
+
+        recyclerView.addItemDecoration(decoration);
     }
 }

@@ -12,6 +12,11 @@ import java.util.stream.Collectors;
 import lv.id.arseniuss.linguae.db.entities.Config;
 
 public class Configuration {
+    public static final String VERSION_KEY = "version";
+    public static final String IMAGE_URL_KEY = "image-url";
+    public static final String IMAGE_KEY = "image";
+    public static final String AUTHOR_KEY = "author";
+
     private static final List<OnConfigChangedListener> _listeners = new ArrayList<>();
     private static Map<String, String> _configs;
 
@@ -20,14 +25,21 @@ public class Configuration {
         _listeners.forEach(OnConfigChangedListener::ConfigChanged);
     }
 
+    public static String GetLanguageVersion() {
+        if (_configs.containsKey(VERSION_KEY))
+            return _configs.get(VERSION_KEY);
+        return null;
+    }
+
     public static String GetLanguageImageUrl() {
-        if (_configs.containsKey("image-url")) return _configs.get("image-url");
+        if (_configs.containsKey(IMAGE_URL_KEY))
+            return _configs.get(IMAGE_URL_KEY);
         return null;
     }
 
     public static Bitmap GetLanguageImage() {
-        if (_configs.containsKey("image")) {
-            String base64 = _configs.get("image");
+        if (_configs.containsKey(IMAGE_KEY)) {
+            String base64 = _configs.get(IMAGE_KEY);
             byte[] bytes = Base64.decode(base64, Base64.DEFAULT);
 
             return BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
@@ -42,6 +54,12 @@ public class Configuration {
 
     public static void RemoveConfigChangeLister(OnConfigChangedListener listener) {
         _listeners.remove(listener);
+    }
+
+    public static String GetLanguageAuthor() {
+        if (_configs.containsKey(AUTHOR_KEY))
+            return _configs.get(AUTHOR_KEY);
+        return null;
     }
 
     public interface OnConfigChangedListener {

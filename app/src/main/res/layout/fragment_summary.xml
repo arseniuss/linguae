@@ -36,116 +36,168 @@
 
         </com.google.android.material.appbar.AppBarLayout>
 
-        <LinearLayout
+        <ScrollView
+            style="@style/MyAppTheme.Layout.VerticalSquash"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            tools:context=".ui.fragments.SummaryFragment">
+            android:layout_height="wrap_content">
 
             <LinearLayout
-                style="@style/MyAppTheme.Rounded"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <ImageView
-                    android:id="@+id/logo"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    tools:layout_height="80dp"
-                    tools:layout_width="80dp" />
-
-            </LinearLayout>
-
-            <LinearLayout
+                style="@style/MyAppTheme.Layout.HorizontalSquash"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:divider="@drawable/divider_2"
+                android:orientation="vertical"
+                android:showDividers="middle"
+                tools:context=".ui.fragments.SummaryFragment">
 
                 <LinearLayout
-                    android:id="@+id/nextLesson"
-                    style="@style/MyAppTheme.Button"
-                    android:layout_width="wrap_content"
+                    style="@style/MyAppTheme.RoundedPadded"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:minHeight="100dp"
-                    android:orientation="vertical">
+                    android:orientation="horizontal">
 
                     <ImageView
-                        android:layout_width="match_parent"
-                        android:layout_height="0dp"
-                        android:layout_weight="1"
-                        app:srcCompat="@drawable/baseline_article_24"
-                        tools:ignore="NestedWeights" />
+                        android:id="@+id/logo"
+                        android:layout_width="80dp"
+                        android:layout_height="80dp"
+                        android:layout_margin="@dimen/margin_1"
+                        android:contentDescription="@string/DescriptionLanguageLogo"
+                        app:image="@{viewmodel.Image()}"
+                        tools:src="@mipmap/ic_launcher" />
 
-                    <TextView
-                        android:layout_width="wrap_content"
+                    <LinearLayout
+                        style="@style/MyAppTheme.Layout.HorizontalSquash"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:singleLine="true"
-                        android:text="Next lesson" />
+                        android:divider="@drawable/divider_1"
+                        android:orientation="vertical"
+                        android:showDividers="middle">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@{@string/TextLanguageTitle + viewmodel.LanguageName()}"
+                            tools:text="@string/TextLanguageTitle" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@{@string/TextLanguageVersionTitle + viewmodel.Version()}"
+                            tools:text="@string/TextLanguageVersionTitle" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@{@string/TextLanguageAuthorTitle + viewmodel.Author()}"
+                            tools:text="@string/TextLanguageAuthorTitle" />
+                    </LinearLayout>
 
                 </LinearLayout>
 
                 <LinearLayout
-                    android:id="@+id/nextTraining"
-                    style="@style/MyAppTheme.Button"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:orientation="vertical">
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:baselineAligned="false"
+                    android:divider="@drawable/divider_2"
+                    android:orientation="horizontal"
+                    android:showDividers="middle">
 
-                    <ImageView
-                        android:layout_width="match_parent"
-                        android:layout_height="0dp"
-                        android:layout_weight="1"
-                        app:srcCompat="@drawable/round_airplane_ticket_24"
-                        tools:ignore="NestedWeights" />
-
-                    <TextView
+                    <LinearLayout
+                        android:id="@+id/nextLesson"
+                        style="@style/MyAppTheme.Button"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:singleLine="true"
-                        android:text="Next training" />
+                        android:layout_weight="1"
+                        android:minHeight="100dp"
+                        android:orientation="vertical">
+
+                        <ImageView
+                            android:layout_width="match_parent"
+                            android:layout_height="0dp"
+                            android:layout_weight="1"
+                            android:contentDescription="@string/TitleNextLesson"
+                            app:srcCompat="@drawable/baseline_article_24"
+                            tools:ignore="NestedWeights" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:singleLine="true"
+                            android:text="@string/TitleNextLesson" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/nextTraining"
+                        style="@style/MyAppTheme.Button"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <ImageView
+                            android:layout_width="match_parent"
+                            android:layout_height="0dp"
+                            android:layout_weight="1"
+                            android:contentDescription="@string/TitleNextTraining"
+                            app:srcCompat="@drawable/round_airplane_ticket_24"
+                            tools:ignore="NestedWeights" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:singleLine="true"
+                            android:text="@string/TitleNextTraining" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/nextTheory"
+                        style="@style/MyAppTheme.Button"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <ImageView
+                            android:layout_width="match_parent"
+                            android:layout_height="0dp"
+                            android:layout_weight="1"
+                            android:contentDescription="@string/TitleNextTheory"
+                            app:srcCompat="@drawable/baseline_menu_book_24"
+                            tools:ignore="NestedWeights" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:singleLine="true"
+                            android:text="@string/TitleNextTheory" />
+                    </LinearLayout>
+
                 </LinearLayout>
 
                 <LinearLayout
-                    android:id="@+id/nextTheory"
-                    style="@style/MyAppTheme.Button"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
+                    style="@style/MyAppTheme.RoundedPadded"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
                     android:orientation="vertical">
 
-                    <ImageView
-                        android:layout_width="match_parent"
-                        android:layout_height="0dp"
-                        android:layout_weight="1"
-                        app:srcCompat="@drawable/baseline_menu_book_24"
-                        tools:ignore="NestedWeights" />
-
                     <TextView
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:singleLine="true"
-                        android:text="Next theory" />
+                        android:text="@string/TitleBestLessons" />
+
+                    <lv.id.arseniuss.linguae.ui.AdapterLinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        app:itemLayout="@layout/item_best_lesson"
+                        app:items="@{viewmodel.Lessons()}" />
                 </LinearLayout>
 
             </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/linearLayout3"
-                style="@style/MyAppTheme.Button"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Best lesson" />
-            </LinearLayout>
-
-        </LinearLayout>
+        </ScrollView>
     </LinearLayout>
 </layout>

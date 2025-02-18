@@ -418,12 +418,12 @@ public class StartViewModel extends AndroidViewModel implements LanguageDataPars
 
     public static class LanguageViewModel extends BaseObservable {
         public final String Language;
-        public final String Image;
+        public final String ImageUrl;
         public final String LanguageUrl;
 
         public LanguageViewModel(LanguageDataParser.Language l) {
             Language = l.Name;
-            Image = l.Image;
+            ImageUrl = l.Image;
             LanguageUrl = l.Location;
         }
     }
