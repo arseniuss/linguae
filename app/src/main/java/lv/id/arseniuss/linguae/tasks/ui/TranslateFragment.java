@@ -66,6 +66,8 @@ public class TranslateFragment extends AbstractTaskFragment<TranslateViewModel> 
         _binding.options.setAdapter(_optionsAdapter);
         _binding.answer.setAdapter(_answerAdapter);
 
+        _listener.OnCanCheckChanged(_answerAdapter.getCount() != 0);
+
         return _binding.getRoot();
     }
 
@@ -85,6 +87,9 @@ public class TranslateFragment extends AbstractTaskFragment<TranslateViewModel> 
             origin.setValue(originValue);
             target.setValue(targetValue);
         }
+
+        if (_listener != null && _answerAdapter != null)
+            _listener.OnCanCheckChanged(_answerAdapter.getCount() != 0);
     }
 
     public static class WordAdapter extends MyAdapter<TranslateViewModel.WordViewModel> {
