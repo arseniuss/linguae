@@ -95,8 +95,8 @@ public class SessionResultViewModel extends AndroidViewModel {
         }
 
         public Spanned GetResult() {
-            return Html.fromHtml("<strike>" + _taskError.IncorrectAnswer + "</strike>  " +
-                    _taskError.CorrectAnswer, Html.FROM_HTML_MODE_LEGACY);
+            return Html.fromHtml(_taskError.Title + " <strike>" + _taskError.IncorrectAnswer
+                    + "</strike>  " + _taskError.CorrectAnswer, Html.FROM_HTML_MODE_LEGACY);
         }
     }
 }

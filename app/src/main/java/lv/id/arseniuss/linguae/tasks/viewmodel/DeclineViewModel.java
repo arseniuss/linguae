@@ -62,7 +62,8 @@ public class DeclineViewModel extends AbstractTaskViewModel {
             if (valid) points += 1;
             else {
                 _taskResult.Result.Errors.add(new TaskError(TaskType.DeclineTask,
-                        caseViewModel.Answer().getValue(), caseViewModel._correct));
+                        caseViewModel.CaseName().getValue(), caseViewModel.Answer().getValue(),
+                        caseViewModel._correct));
             }
             amount += 1;
 

@@ -48,7 +48,8 @@ public class ConjugateViewModel extends AbstractTaskViewModel {
                 if (valid) points += 1;
                 else {
                     _taskResult.Result.Errors.add(new TaskError(TaskType.ConjugateTask,
-                            viewModel.Answer().getValue(), viewModel._correct));
+                            viewModel.PersonName().getValue(), viewModel.Answer().getValue(),
+                            viewModel._correct));
                 }
 
                 allValid &= valid;

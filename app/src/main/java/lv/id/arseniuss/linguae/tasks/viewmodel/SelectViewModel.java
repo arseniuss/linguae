@@ -99,7 +99,7 @@ public class SelectViewModel extends AbstractTaskViewModel {
                     points += 1;
                 } else {
                     _taskResult.Result.Errors.add(new TaskError(TaskType.SelectTask,
-                            model.SelectedWord().getValue(), model.Answer));
+                            model.Word, model.SelectedWord().getValue(), model.Answer));
                 }
             }
         }
