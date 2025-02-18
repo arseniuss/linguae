@@ -24,11 +24,13 @@ import lv.id.arseniuss.linguae.db.entities.Task;
 public class TaskListViewModel extends AndroidViewModel {
     private final SharedPreferences _sharedPreferences =
             PreferenceManager.getDefaultSharedPreferences(getApplication().getBaseContext());
-    private final String _language = _sharedPreferences.getString(Constants.PreferenceLanguageKey, "");
+    private final String _language =
+            _sharedPreferences.getString(Constants.PreferenceLanguageKey, "");
     private final TaskDataAccess _taskDataAccess =
             LanguageDatabase.GetInstance(getApplication(), _language).GetTaskDataAccess();
 
-    private final MutableLiveData<List<EntryViewModel>> _tasks = new MutableLiveData<>(new ArrayList<>());
+    private final MutableLiveData<List<EntryViewModel>> _tasks =
+            new MutableLiveData<>(new ArrayList<>());
 
     public TaskListViewModel(@NonNull Application application) {
         super(application);

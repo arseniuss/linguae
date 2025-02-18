@@ -52,10 +52,12 @@ public abstract class UpdateDataAccess {
     protected abstract Completable DeleteTasks();
 
     @Insert
-    protected abstract Completable InsertTrainingTaskCrossref(List<TrainingTaskCrossref> trainingTaskCrossrefs);
+    protected abstract Completable InsertTrainingTaskCrossref(
+            List<TrainingTaskCrossref> trainingTaskCrossrefs);
 
     @Insert
-    protected abstract Completable InsertLessonTaskCrossref(List<LessonTaskCrossref> lessonTaskCrossrefs);
+    protected abstract Completable InsertLessonTaskCrossref(
+            List<LessonTaskCrossref> lessonTaskCrossrefs);
 
     @Query("DELETE FROM training_task")
     protected abstract Completable DeleteTrainingsTaskCrossref();
@@ -94,13 +96,15 @@ public abstract class UpdateDataAccess {
     protected abstract Completable InsertTheory(List<Theory> theories);
 
     @Insert
-    protected abstract Completable InsertTheoryChapterCrossref(List<TheoryChapterCrossref> crossrefs);
+    protected abstract Completable InsertTheoryChapterCrossref(
+            List<TheoryChapterCrossref> crossrefs);
 
     @Insert
     protected abstract Completable InsertLessonTheoryCrossref(List<LessonTheoryCrossref> crossrefs);
 
     @Insert
-    protected abstract Completable InsertLessonChapterCrossref(List<LessonChapterCrossref> crossrefs);
+    protected abstract Completable InsertLessonChapterCrossref(
+            List<LessonChapterCrossref> crossrefs);
 
     @Query("DELETE FROM lesson_theory")
     public abstract Completable DeleteLessonTheoryCrossref();
@@ -130,9 +134,18 @@ public abstract class UpdateDataAccess {
                 // -----
                 .andThen(InsertLicenses(data.Licences))
                 .andThen(InsertChapters(
-                        data.Theory.values().stream().flatMap(t -> t.Chapters.stream()).collect(Collectors.toList())))
-                .andThen(InsertChapters(data.Lessons.values().stream().flatMap(t -> t.Chapters.stream()).collect(Collectors.toList())))
-                .andThen(InsertTheory(data.Theory.values().stream().map(t -> t.Theory).collect(Collectors.toList())))
+                        data.Theory.values()
+                                .stream()
+                                .flatMap(t -> t.Chapters.stream())
+                                .collect(Collectors.toList())))
+                .andThen(InsertChapters(data.Lessons.values()
+                        .stream()
+                        .flatMap(t -> t.Chapters.stream())
+                        .collect(Collectors.toList())))
+                .andThen(InsertTheory(data.Theory.values()
+                        .stream()
+                        .map(t -> t.Theory)
+                        .collect(Collectors.toList())))
                 .andThen(InsertTheoryChapterCrossref(data.Theory.values()
                         .stream()
                         .flatMap(t -> t.Chapters.stream()
@@ -142,9 +155,15 @@ public abstract class UpdateDataAccess {
                         .collect(Collectors.toList())))
                 // -----
                 .andThen(InsertTasks(
-                        data.Trainings.values().stream().flatMap(t -> t.Tasks.stream()).collect(Collectors.toList())))
+                        data.Trainings.values()
+                                .stream()
+                                .flatMap(t -> t.Tasks.stream())
+                                .collect(Collectors.toList())))
                 .andThen(InsertTrainings(
-                        data.Trainings.values().stream().map(t -> t.Training).collect(Collectors.toList())))
+                        data.Trainings.values()
+                                .stream()
+                                .map(t -> t.Training)
+                                .collect(Collectors.toList())))
                 .andThen(InsertTrainingCategories(data.TrainingCategories))
                 .andThen(InsertTrainingTaskCrossref(data.Trainings.values()
                         .stream()
@@ -154,7 +173,10 @@ public abstract class UpdateDataAccess {
                                 .stream())
                         .collect(Collectors.toList())))
                 // -----
-                .andThen(InsertLessons(data.Lessons.values().stream().map(l -> l.Lesson).collect(Collectors.toList())))
+                .andThen(InsertLessons(data.Lessons.values()
+                        .stream()
+                        .map(l -> l.Lesson)
+                        .collect(Collectors.toList())))
                 .andThen(InsertTasks(data.Lessons.values()
                         .stream()
                         .flatMap(l -> l.Tasks.stream())

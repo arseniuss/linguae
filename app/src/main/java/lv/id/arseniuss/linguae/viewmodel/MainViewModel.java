@@ -23,7 +23,8 @@ import lv.id.arseniuss.linguae.db.entities.Setting;
 public class MainViewModel extends AndroidViewModel {
     private final SharedPreferences _sharedPreferences =
             PreferenceManager.getDefaultSharedPreferences(getApplication().getBaseContext());
-    private final String _language = _sharedPreferences.getString(Constants.PreferenceLanguageKey, "");
+    private final String _language =
+            _sharedPreferences.getString(Constants.PreferenceLanguageKey, "");
     private final MainDataAccess _mainDataAccess =
             LanguageDatabase.GetInstance(getApplication(), _language).GetMainDataAccess();
     private OnStartedListener _onStartedListener;

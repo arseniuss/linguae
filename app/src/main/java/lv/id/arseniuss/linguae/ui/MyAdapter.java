@@ -71,7 +71,8 @@ public class MyAdapter<TItem extends BaseObservable> extends BaseAdapter {
         ViewHolder holder;
 
         if (convertView == null) {
-            ViewDataBinding viewDataBinding = DataBindingUtil.inflate(_layoutInflater, _layout, parent, false);
+            ViewDataBinding viewDataBinding =
+                    DataBindingUtil.inflate(_layoutInflater, _layout, parent, false);
 
             viewDataBinding.setLifecycleOwner(_lifecycleOwner);
             holder = createViewHolder(viewDataBinding);
@@ -104,7 +105,8 @@ public class MyAdapter<TItem extends BaseObservable> extends BaseAdapter {
         void OnItemSelected(int position);
     }
 
-    public class ViewHolder extends Observable.OnPropertyChangedCallback implements Observer<Integer> {
+    public class ViewHolder extends Observable.OnPropertyChangedCallback
+            implements Observer<Integer> {
         protected final ViewDataBinding _binding;
         protected final Context _context;
         private final MutableLiveData<Boolean> _isSelected = new MutableLiveData<>(false);

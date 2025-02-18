@@ -28,7 +28,8 @@ public class ConjugateViewModel extends AbstractTaskViewModel {
 
     private final TaskDataAccess _taskDataAccess =
             LanguageDatabase.GetInstance(getApplication(), _language).GetTaskDataAccess();
-    private final MutableLiveData<List<PersonViewModel>> _persons = new MutableLiveData<>(new ArrayList<>());
+    private final MutableLiveData<List<PersonViewModel>> _persons =
+            new MutableLiveData<>(new ArrayList<>());
     private final MutableLiveData<String> _word = new MutableLiveData<>("");
 
     public ConjugateViewModel(@NonNull Application application) {
@@ -41,7 +42,8 @@ public class ConjugateViewModel extends AbstractTaskViewModel {
         int points = 0;
         int amount = 0;
 
-        for (ConjugateViewModel.PersonViewModel viewModel : Objects.requireNonNull(_persons.getValue())) {
+        for (ConjugateViewModel.PersonViewModel viewModel : Objects.requireNonNull(
+                _persons.getValue())) {
             if (viewModel.IsRequired()) {
                 boolean valid = viewModel.Validate();
 

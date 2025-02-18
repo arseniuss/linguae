@@ -22,8 +22,10 @@ import lv.id.arseniuss.linguae.tasks.AbstractTaskViewModel;
 import lv.id.arseniuss.linguae.tasks.entities.SessionTaskData;
 
 public class TranslateViewModel extends AbstractTaskViewModel {
-    private final MutableLiveData<List<WordViewModel>> _answers = new MutableLiveData<>(new ArrayList<>());
-    private final MutableLiveData<List<WordViewModel>> _options = new MutableLiveData<>(new ArrayList<>());
+    private final MutableLiveData<List<WordViewModel>> _answers =
+            new MutableLiveData<>(new ArrayList<>());
+    private final MutableLiveData<List<WordViewModel>> _options =
+            new MutableLiveData<>(new ArrayList<>());
     private final MutableLiveData<String> _answer = new MutableLiveData<>("");
 
     private final MutableLiveData<Boolean> _isEditMode = new MutableLiveData<>(false);
@@ -108,7 +110,8 @@ public class TranslateViewModel extends AbstractTaskViewModel {
     public void Load(SessionTaskData task) {
         super.Load(task);
 
-        _isEditMode.setValue(!_sharedPreferences.getBoolean(Constants.PreferenceNoKeyboardKey, false));
+        _isEditMode.setValue(
+                !_sharedPreferences.getBoolean(Constants.PreferenceNoKeyboardKey, false));
 
         List<String> answers = Arrays.asList(translateTask().Answer);
         List<String> additional = Arrays.stream(translateTask().Additional.split(","))

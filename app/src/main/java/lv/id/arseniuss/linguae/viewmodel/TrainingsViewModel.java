@@ -29,7 +29,8 @@ public class TrainingsViewModel extends AndroidViewModel {
 
     private final SharedPreferences _sharedPreferences =
             PreferenceManager.getDefaultSharedPreferences(getApplication().getBaseContext());
-    private final String _language = _sharedPreferences.getString(Constants.PreferenceLanguageKey, "");
+    private final String _language =
+            _sharedPreferences.getString(Constants.PreferenceLanguageKey, "");
     private final TrainingDataAccess _trainingDataAccess =
             LanguageDatabase.GetInstance(getApplication(), _language).GetTrainingsDataAccess();
     private final MainDataAccess _mainDataAccess =
@@ -78,7 +79,8 @@ public class TrainingsViewModel extends AndroidViewModel {
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(result -> {
-                    _trainings.setValue(result.stream().map(EntryViewModel::new).collect(Collectors.toList()));
+                    _trainings.setValue(
+                            result.stream().map(EntryViewModel::new).collect(Collectors.toList()));
                 }, this::handleError);
 
     }
@@ -101,7 +103,8 @@ public class TrainingsViewModel extends AndroidViewModel {
 
         @Bindable("Name")
         public String getName() {
-            return Settings.IgnoreMacrons ? Utilities.StripAccents(_training.Training.Name) : _training.Training.Name;
+            return Settings.IgnoreMacrons ? Utilities.StripAccents(_training.Training.Name) :
+                    _training.Training.Name;
         }
 
         @Bindable("Description")

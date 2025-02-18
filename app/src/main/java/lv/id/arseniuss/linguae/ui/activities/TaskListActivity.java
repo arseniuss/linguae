@@ -94,7 +94,8 @@ public class TaskListActivity extends AppCompatActivity {
         MyRecyclerViewAdapter<TaskListViewModel.EntryViewModel, ItemTaskBinding>.OnBinded binded =
                 adapter.new OnBinded() {
                     @Override
-                    public void Binded(ItemTaskBinding binding, TaskListViewModel.EntryViewModel item) {
+                    public void Binded(ItemTaskBinding binding,
+                                       TaskListViewModel.EntryViewModel item) {
                         binding.setPresenter(_this);
                     }
                 };

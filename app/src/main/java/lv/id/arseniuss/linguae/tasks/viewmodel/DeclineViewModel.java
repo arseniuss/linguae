@@ -24,7 +24,8 @@ import lv.id.arseniuss.linguae.tasks.entities.SessionTaskData;
 
 public class DeclineViewModel extends AbstractTaskViewModel {
 
-    private final MutableLiveData<List<CaseViewModel>> _cases = new MutableLiveData<>(new ArrayList<>());
+    private final MutableLiveData<List<CaseViewModel>> _cases =
+            new MutableLiveData<>(new ArrayList<>());
 
     public DeclineViewModel(@NonNull Application application) {
         super(application);

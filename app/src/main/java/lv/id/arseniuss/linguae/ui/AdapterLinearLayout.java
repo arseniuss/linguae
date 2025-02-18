@@ -40,7 +40,8 @@ public class AdapterLinearLayout extends LinearLayout {
         init(context, attrs);
     }
 
-    public AdapterLinearLayout(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+    public AdapterLinearLayout(Context context, AttributeSet attrs, int defStyleAttr,
+                               int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
 
         init(context, attrs);

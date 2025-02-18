@@ -9,10 +9,12 @@ import android.widget.EditText;
 import androidx.annotation.NonNull;
 import androidx.preference.EditTextPreference;
 
-public class EditIntegerPreference extends EditTextPreference implements EditTextPreference.OnBindEditTextListener {
+public class EditIntegerPreference extends EditTextPreference
+        implements EditTextPreference.OnBindEditTextListener {
     private String _text;
 
-    public EditIntegerPreference(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+    public EditIntegerPreference(Context context, AttributeSet attrs, int defStyleAttr,
+                                 int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
         setOnBindEditTextListener(this);
     }

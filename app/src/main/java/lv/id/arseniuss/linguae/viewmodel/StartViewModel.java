@@ -58,15 +58,20 @@ public class StartViewModel extends AndroidViewModel implements LanguageDataPars
             new LanguageDataParser(this, _sharedPreferences
                     .getBoolean(Constants.PreferenceSaveImagesKey, false));
 
-    private final String _defaultLanguageRepositories = getApplication().getString(R.string.DefaultLanguageRepositories);
+    private final String _defaultLanguageRepositories =
+            getApplication().getString(R.string.DefaultLanguageRepositories);
 
-    private final MutableLiveData<List<RepositoryViewModel>> _repositories = new MutableLiveData<>(new ArrayList<>());
-    private final MutableLiveData<List<LanguageViewModel>> _languages = new MutableLiveData<>(new ArrayList<>());
+    private final MutableLiveData<List<RepositoryViewModel>> _repositories =
+            new MutableLiveData<>(new ArrayList<>());
+    private final MutableLiveData<List<LanguageViewModel>> _languages =
+            new MutableLiveData<>(new ArrayList<>());
     private final MutableLiveData<Integer> _selectedRepository = new MutableLiveData<>(0);
-    private final MutableLiveData<Spanned> _messages = new MutableLiveData<>(new SpannableString(""));
+    private final MutableLiveData<Spanned> _messages =
+            new MutableLiveData<>(new SpannableString(""));
     private final MutableLiveData<Boolean> _canContinue = new MutableLiveData<>(false);
     private final MutableLiveData<String> _errorMessage = new MutableLiveData<>("");
-    private final MutableLiveData<Integer> _state = new MutableLiveData<>(State.STATE_LOADING.ordinal());
+    private final MutableLiveData<Integer> _state =
+            new MutableLiveData<>(State.STATE_LOADING.ordinal());
     private final MutableLiveData<String> _repositoryName = new MutableLiveData<>("");
 
     private final Gson gson = new Gson();
@@ -151,16 +156,20 @@ public class StartViewModel extends AndroidViewModel implements LanguageDataPars
         String language = _sharedPreferences.getString(Constants.PreferenceLanguageKey, "");
         String languageUrl = _sharedPreferences.getString(Constants.PreferenceLanguageUrlKey, "");
 
-        StartLanguageParsing(restart, language, languageUrl, continueCallback, requestUpdateConfirm);
+        StartLanguageParsing(restart, language, languageUrl, continueCallback,
+                requestUpdateConfirm);
     }
 
-    public void StartLanguageParsing(boolean restart, @Nullable String language, @Nullable String languageUrl,
-                                     Callback continueCallback, RequestConfirmCallback requestUpdateConfirm) {
+    public void StartLanguageParsing(boolean restart, @Nullable String language,
+                                     @Nullable String languageUrl,
+                                     Callback continueCallback,
+                                     RequestConfirmCallback requestUpdateConfirm) {
         _continue = continueCallback;
         _requestUpdateConfirm = requestUpdateConfirm;
 
         UpdateDataAccess updateDataAccess =
-                LanguageDatabase.GetInstance(getApplication().getBaseContext(), language).GetUpdateDataAccess();
+                LanguageDatabase.GetInstance(getApplication().getBaseContext(), language)
+                        .GetUpdateDataAccess();
 
         Disposable d = updateDataAccess.GetVersion()
                 .subscribeOn(Schedulers.io())
@@ -182,16 +191,20 @@ public class StartViewModel extends AndroidViewModel implements LanguageDataPars
                 .subscribe((value, error) -> {
                     if (value == null) {
                         value = repos.stream()
-                                .map(r -> new LanguageDataParser.LanguageRepository(r.Name, r.Location))
+                                .map(r -> new LanguageDataParser.LanguageRepository(r.Name,
+                                        r.Location))
                                 .collect(Collectors.toList());
                     }
 
-                    List<RepositoryViewModel> repositoryViewModels = IntStream.range(0, repos.size())
-                            .boxed()
-                            .collect(Collectors.toMap(repos::get, value::get))
-                            .entrySet()
-                            .stream().map(e -> new RepositoryViewModel(e.getKey().Name, e.getValue()))
-                            .collect(Collectors.toList());
+                    List<RepositoryViewModel> repositoryViewModels =
+                            IntStream.range(0, repos.size())
+                                    .boxed()
+                                    .collect(Collectors.toMap(repos::get, value::get))
+                                    .entrySet()
+                                    .stream()
+                                    .map(e -> new RepositoryViewModel(e.getKey().Name,
+                                            e.getValue()))
+                                    .collect(Collectors.toList());
 
                     _repositories.setValue(repositoryViewModels);
 
@@ -211,7 +224,9 @@ public class StartViewModel extends AndroidViewModel implements LanguageDataPars
     private void saveRepositories(List<ItemLanguageRepo> repos) {
         String jsonRepositories = gson.toJson(repos, listType);
 
-        _sharedPreferences.edit().putString(Constants.PreferenceRepositoriesKey, jsonRepositories).apply();
+        _sharedPreferences.edit()
+                .putString(Constants.PreferenceRepositoriesKey, jsonRepositories)
+                .apply();
     }
 
     private void parseLanguageFile(boolean restart, String language, String languageUrl) {
@@ -230,7 +245,8 @@ public class StartViewModel extends AndroidViewModel implements LanguageDataPars
     private void validateVersions(boolean restart, String language, String languageUrl) {
         String repositoryVersion = _dataParser.GetData().LanguageVersion;
 
-        Inform(Log.INFO, getApplication().getString(R.string.RepositoryVersion) + repositoryVersion);
+        Inform(Log.INFO,
+                getApplication().getString(R.string.RepositoryVersion) + repositoryVersion);
 
         if (_databaseVersion == null || _databaseVersion.isEmpty() || restart) {
             parseRepository(language, languageUrl);
@@ -263,7 +279,8 @@ public class StartViewModel extends AndroidViewModel implements LanguageDataPars
 
     private void updateDatabase(boolean parseSuccessful, String language, String languageUrl) {
         UpdateDataAccess updateDataAccess =
-                LanguageDatabase.GetInstance(getApplication().getBaseContext(), language).GetUpdateDataAccess();
+                LanguageDatabase.GetInstance(getApplication().getBaseContext(), language)
+                        .GetUpdateDataAccess();
 
         Disposable d = updateDataAccess.PerformUpdate(_dataParser.GetData())
                 .subscribeOn(Schedulers.io())
@@ -299,9 +316,11 @@ public class StartViewModel extends AndroidViewModel implements LanguageDataPars
         assert selectedRepositoryValue != null;
 
         if (selectedRepositoryValue >= 0 && selectedRepositoryValue < repositoriesValue.size()) {
-            RepositoryViewModel repositoryViewModel = repositoriesValue.get(selectedRepositoryValue);
+            RepositoryViewModel repositoryViewModel =
+                    repositoriesValue.get(selectedRepositoryValue);
 
-            if (repositoryViewModel.Repository.Error != null && !repositoryViewModel.Repository.Error.isEmpty()) {
+            if (repositoryViewModel.Repository.Error != null &&
+                    !repositoryViewModel.Repository.Error.isEmpty()) {
                 _errorMessage.setValue(repositoryViewModel.Repository.Error);
                 _repositoryName.setValue("");
                 _state.setValue(State.STATE_ERROR.ordinal());
@@ -337,7 +356,8 @@ public class StartViewModel extends AndroidViewModel implements LanguageDataPars
             switch (type) {
                 case Log.ERROR:
                     Log.e("INFORM", message);
-                    spanned = Html.fromHtml("<font color='#FF0000'>" + msg + "</font>", Html.FROM_HTML_MODE_LEGACY);
+                    spanned = Html.fromHtml("<font color='#FF0000'>" + msg + "</font>",
+                            Html.FROM_HTML_MODE_LEGACY);
                     break;
                 case Log.INFO:
                     Log.i("INFORM", message);
@@ -362,7 +382,8 @@ public class StartViewModel extends AndroidViewModel implements LanguageDataPars
         Pair<String, String> res = new Pair<>(null, null);
 
         if (position >= 0) {
-            LanguageViewModel languageViewModel = Objects.requireNonNull(_languages.getValue()).get(position);
+            LanguageViewModel languageViewModel =
+                    Objects.requireNonNull(_languages.getValue()).get(position);
 
             res = new Pair<>(languageViewModel.Language, languageViewModel.LanguageUrl);
         }

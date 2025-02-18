@@ -11,7 +11,8 @@ public class LessonWithAttrs {
     @Embedded
     public Lesson Lesson = new Lesson();
 
-    @Relation(parentColumn = "lesson_id", entityColumn = "task_id", associateBy = @Junction(LessonTaskCrossref.class))
+    @Relation(parentColumn = "lesson_id", entityColumn = "task_id",
+            associateBy = @Junction(LessonTaskCrossref.class))
     public List<Task> Tasks = new ArrayList<>();
 
     @Relation(parentColumn = "lesson_id", entityColumn = "theory_id",

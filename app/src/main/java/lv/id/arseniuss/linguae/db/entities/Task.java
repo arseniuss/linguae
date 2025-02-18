@@ -58,8 +58,10 @@ public class Task {
     public static String TaskToString(ITaskData task) {
         Gson gson = new Gson();
 
-        if (Objects.requireNonNull(task.Type) == TaskType.SelectTask || task.Type == TaskType.TranslateTask ||
-                task.Type == TaskType.DeclineTask || task.Type == TaskType.ConjugateTask || task.Type == TaskType.ChooseTask) {
+        if (Objects.requireNonNull(task.Type) == TaskType.SelectTask ||
+                task.Type == TaskType.TranslateTask ||
+                task.Type == TaskType.DeclineTask || task.Type == TaskType.ConjugateTask ||
+                task.Type == TaskType.ChooseTask) {
             return gson.toJson(task);
         }
         return null;

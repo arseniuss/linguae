@@ -21,10 +21,10 @@ import lv.id.arseniuss.linguae.databinding.ActivitySessionBinding;
 import lv.id.arseniuss.linguae.db.dataaccess.TaskDataAccess;
 import lv.id.arseniuss.linguae.tasks.AbstractTaskFragment;
 import lv.id.arseniuss.linguae.tasks.entities.SessionTaskData;
-import lv.id.arseniuss.linguae.tasks.ui.SelectFragment;
 import lv.id.arseniuss.linguae.tasks.ui.ChooseFragment;
 import lv.id.arseniuss.linguae.tasks.ui.ConjugateFragment;
 import lv.id.arseniuss.linguae.tasks.ui.DeclineFragment;
+import lv.id.arseniuss.linguae.tasks.ui.SelectFragment;
 import lv.id.arseniuss.linguae.tasks.ui.TranslateFragment;
 import lv.id.arseniuss.linguae.viewmodel.SessionViewModel;
 
@@ -65,7 +65,8 @@ public class SessionActivity extends AppCompatActivity
             List<TaskDataAccess.TrainingCategory> categories = new ArrayList<>();
 
             if (i.hasExtra(TrainingCategoriesExtraTag)) {
-                categories = new Gson().fromJson(i.getStringExtra(TrainingCategoriesExtraTag), listType);
+                categories =
+                        new Gson().fromJson(i.getStringExtra(TrainingCategoriesExtraTag), listType);
             }
 
             _model.LoadTraining(i.getStringExtra(TrainingExtraTag), categories, this::loaded);
@@ -153,7 +154,9 @@ public class SessionActivity extends AppCompatActivity
                 break;
         }
 
-        getSupportFragmentManager().beginTransaction().replace(R.id.fragmentContainerView, _currentFragment).commit();
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.fragmentContainerView, _currentFragment)
+                .commit();
     }
 
     @Override

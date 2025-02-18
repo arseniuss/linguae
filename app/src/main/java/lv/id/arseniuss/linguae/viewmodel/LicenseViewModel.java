@@ -25,14 +25,16 @@ public class LicenseViewModel extends AndroidViewModel {
     private final SharedPreferences _sharedPreferences =
             PreferenceManager.getDefaultSharedPreferences(getApplication().getBaseContext());
 
-    private final String _language = _sharedPreferences.getString(Constants.PreferenceLanguageKey, "");
+    private final String _language =
+            _sharedPreferences.getString(Constants.PreferenceLanguageKey, "");
 
     private final LicenseDataAccess _licenseDataAccess =
             LanguageDatabase.GetInstance(getApplication(), _language).GetLicenseDataAccess();
 
     private final MutableLiveData<Boolean> _hasError = new MutableLiveData<>(false);
     private final MutableLiveData<String> _error = new MutableLiveData<>("");
-    private final MutableLiveData<List<EntryViewModel>> _licenses = new MutableLiveData<>(new ArrayList<>());
+    private final MutableLiveData<List<EntryViewModel>> _licenses =
+            new MutableLiveData<>(new ArrayList<>());
 
     public LicenseViewModel(Application app) {
         super(app);

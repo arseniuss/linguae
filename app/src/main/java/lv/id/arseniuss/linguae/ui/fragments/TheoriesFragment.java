@@ -35,7 +35,8 @@ public class TheoriesFragment extends Fragment {
     private TheoriesViewModel _model;
 
     @BindingAdapter("items")
-    public static void BindTrainingList(RecyclerView recyclerView, List<TheoriesViewModel.EntryViewModel> theories) {
+    public static void BindTrainingList(RecyclerView recyclerView,
+                                        List<TheoriesViewModel.EntryViewModel> theories) {
         MyRecyclerViewAdapter<TheoriesViewModel.EntryViewModel, ItemTheoryBinding> adapter =
                 (MyRecyclerViewAdapter<EntryViewModel, ItemTheoryBinding>) recyclerView.getAdapter();
 
@@ -98,13 +99,15 @@ public class TheoriesFragment extends Fragment {
                     }
                 });
 
-        MyRecyclerViewAdapter<EntryViewModel, ItemTheoryBinding>.OnBinded binded = adapter.new OnBinded() {
+        MyRecyclerViewAdapter<EntryViewModel, ItemTheoryBinding>.OnBinded binded =
+                adapter.new OnBinded() {
 
-            @Override
-            public void Binded(ItemTheoryBinding binding, TheoriesViewModel.EntryViewModel item) {
-                binding.setPresenter(_this);
-            }
-        };
+                    @Override
+                    public void Binded(ItemTheoryBinding binding,
+                                       TheoriesViewModel.EntryViewModel item) {
+                        binding.setPresenter(_this);
+                    }
+                };
 
         adapter.SetOnBinded(binded);
 

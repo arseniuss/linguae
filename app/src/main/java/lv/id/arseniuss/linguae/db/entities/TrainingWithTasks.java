@@ -11,6 +11,7 @@ public class TrainingWithTasks {
     @Embedded
     public Training Training;
 
-    @Relation(parentColumn = "id", entityColumn = "task_id", associateBy = @Junction(TrainingTaskCrossref.class))
+    @Relation(parentColumn = "id", entityColumn = "task_id",
+            associateBy = @Junction(TrainingTaskCrossref.class))
     public List<Task> Tasks = new ArrayList<>();
 }

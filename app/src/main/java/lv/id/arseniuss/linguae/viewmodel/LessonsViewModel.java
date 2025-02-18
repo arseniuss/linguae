@@ -28,7 +28,8 @@ public class LessonsViewModel extends AndroidViewModel {
 
     private final SharedPreferences _sharedPreferences =
             PreferenceManager.getDefaultSharedPreferences(getApplication().getBaseContext());
-    private final String _language = _sharedPreferences.getString(Constants.PreferenceLanguageKey, "");
+    private final String _language =
+            _sharedPreferences.getString(Constants.PreferenceLanguageKey, "");
     private final LessonDataAccess _lessonDataAccess =
             LanguageDatabase.GetInstance(getApplication(), _language).GetLessonsDataAccess();
 
@@ -61,7 +62,8 @@ public class LessonsViewModel extends AndroidViewModel {
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(lessons -> {
-                    _lessons.setValue(lessons.stream().map(EntryViewModel::new).collect(Collectors.toList()));
+                    _lessons.setValue(
+                            lessons.stream().map(EntryViewModel::new).collect(Collectors.toList()));
                 }, this::handleError);
 
     }
@@ -98,7 +100,8 @@ public class LessonsViewModel extends AndroidViewModel {
 
         @Bindable("Name")
         public String getName() {
-            return Settings.IgnoreMacrons ? Utilities.StripAccents(_lesson.Lesson.Name) : _lesson.Lesson.Name;
+            return Settings.IgnoreMacrons ? Utilities.StripAccents(_lesson.Lesson.Name) :
+                    _lesson.Lesson.Name;
         }
 
         public boolean HasTheory() {

@@ -35,7 +35,8 @@ public class LessonsFragment extends Fragment {
     private LessonsViewModel _model;
 
     @BindingAdapter("items")
-    public static void BindLessonList(RecyclerView recyclerView, List<LessonsViewModel.EntryViewModel> lessons) {
+    public static void BindLessonList(RecyclerView recyclerView,
+                                      List<LessonsViewModel.EntryViewModel> lessons) {
         MyRecyclerViewAdapter<LessonsViewModel.EntryViewModel, ItemLessonBinding> adapter =
                 (MyRecyclerViewAdapter<LessonsViewModel.EntryViewModel, ItemLessonBinding>) recyclerView.getAdapter();
 
@@ -45,7 +46,8 @@ public class LessonsFragment extends Fragment {
         adapter.Update(lessons);
     }
 
-    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
         _model = new ViewModelProvider(this).get(LessonsViewModel.class);
         _binding = FragmentLessonsBinding.inflate(inflater, container, false);
 
@@ -99,7 +101,8 @@ public class LessonsFragment extends Fragment {
         MyRecyclerViewAdapter<LessonsViewModel.EntryViewModel, ItemLessonBinding>.OnBinded binded =
                 adapter.new OnBinded() {
                     @Override
-                    public void Binded(ItemLessonBinding binding, LessonsViewModel.EntryViewModel item) {
+                    public void Binded(ItemLessonBinding binding,
+                                       LessonsViewModel.EntryViewModel item) {
                         binding.setPresenter(_this);
                     }
                 };

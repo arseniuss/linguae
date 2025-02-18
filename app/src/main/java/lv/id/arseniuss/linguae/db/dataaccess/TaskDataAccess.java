@@ -29,7 +29,8 @@ public abstract class TaskDataAccess {
     @Query("SELECT tt.task_id FROM training_task tt INNER JOIN task t ON t.id = tt.task_id WHERE (tt.training_id = " +
             ":trainingId OR :trainingId IS NULL OR :trainingId = '') AND t.type = :taskType AND t.category = :category" +
             " AND t.description = :description")
-    protected abstract List<String> GetTrainingTasks(String trainingId, TaskType taskType, String category,
+    protected abstract List<String> GetTrainingTasks(String trainingId, TaskType taskType,
+                                                     String category,
                                                      String description);
 
     @Query("SELECT COUNT(*) FROM lesson_task WHERE lesson_id = :lessonId")
@@ -50,19 +51,22 @@ public abstract class TaskDataAccess {
 
             if (taskCount < count) {
                 throw new RuntimeException(
-                        "Not enough tasks in the lesson (got: " + taskCount + ", needs: " + count + ")");
+                        "Not enough tasks in the lesson (got: " + taskCount + ", needs: " + count +
+                                ")");
             }
 
             int[] indexes = new Random().ints(0, taskCount).distinct().limit(count).toArray();
             List<String> taskIds = GetLessonTasks(lessonId);
 
-            List<String> selectedIds = Arrays.stream(indexes).mapToObj(taskIds::get).collect(Collectors.toList());
+            List<String> selectedIds =
+                    Arrays.stream(indexes).mapToObj(taskIds::get).collect(Collectors.toList());
 
             return GetTasks(selectedIds);
         });
     }
 
-    public Single<List<Task>> SelectTrainingTasks(String trainingId, int count, List<TrainingCategory> categories) {
+    public Single<List<Task>> SelectTrainingTasks(String trainingId, int count,
+                                                  List<TrainingCategory> categories) {
         return Single.fromCallable(() -> {
             List<String> taskIds;
 
@@ -72,18 +76,21 @@ public abstract class TaskDataAccess {
                 taskIds = new ArrayList<>();
 
                 for (TrainingCategory tc : categories) {
-                    taskIds.addAll(GetTrainingTasks(trainingId, tc.TaskType, tc.Category, tc.Description));
+                    taskIds.addAll(
+                            GetTrainingTasks(trainingId, tc.TaskType, tc.Category, tc.Description));
                 }
             }
 
             if (taskIds.size() < count) {
                 throw new RuntimeException(
-                        "Not enough tasks in the training (got: " + taskIds.size() + ", needs: " + count + ")");
+                        "Not enough tasks in the training (got: " + taskIds.size() + ", needs: " +
+                                count + ")");
             }
 
             int[] indexes = new Random().ints(0, taskIds.size()).distinct().limit(count).toArray();
 
-            List<String> selectedIds = Arrays.stream(indexes).mapToObj(taskIds::get).collect(Collectors.toList());
+            List<String> selectedIds =
+                    Arrays.stream(indexes).mapToObj(taskIds::get).collect(Collectors.toList());
 
             return GetTasks(selectedIds);
         });

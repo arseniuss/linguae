@@ -29,7 +29,8 @@ public class SessionResultViewModel extends AndroidViewModel {
 
     private final SharedPreferences _sharedPreferences =
             PreferenceManager.getDefaultSharedPreferences(getApplication().getBaseContext());
-    private final String _language = _sharedPreferences.getString(Constants.PreferenceLanguageKey, "");
+    private final String _language =
+            _sharedPreferences.getString(Constants.PreferenceLanguageKey, "");
 
     private final SessionDataAccess _sessionDataAccess =
             LanguageDatabase.GetInstance(getApplication(), _language).GetSessionDataAccess();
@@ -66,7 +67,9 @@ public class SessionResultViewModel extends AndroidViewModel {
         _result = result;
         save(onLoaded);
 
-        List<TaskError> taskErrors = _result.TaskResults.stream().flatMap(r -> r.Errors.stream()).collect(Collectors.toList());
+        List<TaskError> taskErrors = _result.TaskResults.stream()
+                .flatMap(r -> r.Errors.stream())
+                .collect(Collectors.toList());
 
         _errors = taskErrors.stream().map(TaskErrorViewModel::new).collect(Collectors.toList());
     }

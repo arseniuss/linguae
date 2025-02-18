@@ -54,7 +54,8 @@ public class MyRecyclerViewAdapter<TViewModel extends BaseObservable, TDataBindi
     @Override
     public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         TDataBinding binding =
-                DataBindingUtil.inflate(LayoutInflater.from(parent.getContext()), _layoutId, parent, false);
+                DataBindingUtil.inflate(LayoutInflater.from(parent.getContext()), _layoutId, parent,
+                        false);
 
         return new MyViewHolder(binding);
     }
@@ -115,7 +116,8 @@ public class MyRecyclerViewAdapter<TViewModel extends BaseObservable, TDataBindi
             }
         }
 
-        public void Bind(LifecycleOwner lifecycleOwner, TViewModel item, Boolean checked, int position) {
+        public void Bind(LifecycleOwner lifecycleOwner, TViewModel item, Boolean checked,
+                         int position) {
             if (_binded != null) _binded.Binded(_binding, item);
             _binding.setVariable(BR.viewmodel, item);
             _binding.setLifecycleOwner(lifecycleOwner);

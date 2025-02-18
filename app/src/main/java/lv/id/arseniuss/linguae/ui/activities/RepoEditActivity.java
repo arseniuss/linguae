@@ -39,7 +39,8 @@ public class RepoEditActivity extends AppCompatActivity {
     protected RepoEditViewModel _model;
 
     @BindingAdapter("items")
-    public static void BindLanguageRepoList(RecyclerView recyclerView, List<RepoEditViewModel.EditRepoViewModel> repos) {
+    public static void BindLanguageRepoList(RecyclerView recyclerView,
+                                            List<RepoEditViewModel.EditRepoViewModel> repos) {
         RepoEditAdapter adapter = (RepoEditAdapter) recyclerView.getAdapter();
 
         assert adapter != null;
@@ -60,7 +61,8 @@ public class RepoEditActivity extends AppCompatActivity {
             actionBar.show();
         }
 
-        ActivityRepoEditBinding binding = DataBindingUtil.setContentView(this, R.layout.activity_repo_edit);
+        ActivityRepoEditBinding binding =
+                DataBindingUtil.setContentView(this, R.layout.activity_repo_edit);
         _model = new ViewModelProvider(this).get(RepoEditViewModel.class);
 
         binding.setViewmodel(_model);
@@ -123,7 +125,8 @@ public class RepoEditActivity extends AppCompatActivity {
         setResult(RESULT_OK, i);
     }
 
-    public static class RepoEditAdapter extends RecyclerView.Adapter<RepoEditAdapter.ItemLanguageRepoViewHolder> {
+    public static class RepoEditAdapter
+            extends RecyclerView.Adapter<RepoEditAdapter.ItemLanguageRepoViewHolder> {
         protected int _selected = -1;
         private List<RepoEditViewModel.EditRepoViewModel> _items = new ArrayList<>();
 
@@ -133,9 +136,11 @@ public class RepoEditActivity extends AppCompatActivity {
 
         @NonNull
         @Override
-        public ItemLanguageRepoViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        public ItemLanguageRepoViewHolder onCreateViewHolder(@NonNull ViewGroup parent,
+                                                             int viewType) {
             ItemLanguageRepoBinding binding =
-                    ItemLanguageRepoBinding.inflate(LayoutInflater.from(parent.getContext()), parent, false);
+                    ItemLanguageRepoBinding.inflate(LayoutInflater.from(parent.getContext()),
+                            parent, false);
 
             return new ItemLanguageRepoViewHolder(binding);
         }
@@ -159,7 +164,8 @@ public class RepoEditActivity extends AppCompatActivity {
             void Changed(int selection);
         }
 
-        public class ItemLanguageRepoViewHolder extends RecyclerView.ViewHolder implements EditRepoDialogFragment.OnSaveListener {
+        public class ItemLanguageRepoViewHolder extends RecyclerView.ViewHolder
+                implements EditRepoDialogFragment.OnSaveListener {
             private final ItemLanguageRepoBinding _binding;
             private int _position;
 
@@ -198,7 +204,8 @@ public class RepoEditActivity extends AppCompatActivity {
                 fragment.show(context.getSupportFragmentManager(), "fragment-" + _position);
             }
 
-            public void Bind(RepoEditViewModel.EditRepoViewModel item, Boolean checked, int position) {
+            public void Bind(RepoEditViewModel.EditRepoViewModel item, Boolean checked,
+                             int position) {
                 _binding.setViewmodel(item);
                 _binding.setPresenter(this);
                 _binding.radioLanguage.setChecked(checked);

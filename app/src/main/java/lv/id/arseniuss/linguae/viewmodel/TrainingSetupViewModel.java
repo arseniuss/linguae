@@ -29,10 +29,12 @@ public class TrainingSetupViewModel extends AndroidViewModel {
     private static String _trainingId = "";
     private final SharedPreferences _sharedPreferences =
             PreferenceManager.getDefaultSharedPreferences(getApplication().getBaseContext());
-    private final String _language = _sharedPreferences.getString(Constants.PreferenceLanguageKey, "");
+    private final String _language =
+            _sharedPreferences.getString(Constants.PreferenceLanguageKey, "");
     private final TrainingDataAccess _trainingDataAccess =
             LanguageDatabase.GetInstance(getApplication(), _language).GetTrainingsDataAccess();
-    private final MutableLiveData<List<TrainingTaskViewModel>> _tasks = new MutableLiveData<>(new ArrayList<>());
+    private final MutableLiveData<List<TrainingTaskViewModel>> _tasks =
+            new MutableLiveData<>(new ArrayList<>());
 
     public TrainingSetupViewModel(@NonNull Application application) {
         super(application);
@@ -60,7 +62,8 @@ public class TrainingSetupViewModel extends AndroidViewModel {
         return tasksValue.stream()
                 .flatMap(t -> Objects.requireNonNull(t._categories.getValue()).stream())
                 .filter(t -> t._checked.getValue())
-                .map(t -> new TaskDataAccess.TrainingCategory(t.TrainingCategory.Task, t.TrainingCategory.Category,
+                .map(t -> new TaskDataAccess.TrainingCategory(t.TrainingCategory.Task,
+                        t.TrainingCategory.Category,
                         t.TrainingCategory.Description))
                 .collect(Collectors.toList());
     }
@@ -111,13 +114,15 @@ public class TrainingSetupViewModel extends AndroidViewModel {
         }
     }
 
-    public static class TrainingCategoryViewModel extends BaseObservable implements Observer<Boolean> {
+    public static class TrainingCategoryViewModel extends BaseObservable
+            implements Observer<Boolean> {
         public final TrainingCategory TrainingCategory;
 
         private final SharedPreferences _sharedPreferences;
         private final MutableLiveData<Boolean> _checked;
 
-        public TrainingCategoryViewModel(SharedPreferences sharedPreferences, TrainingCategory trainingCategory) {
+        public TrainingCategoryViewModel(SharedPreferences sharedPreferences,
+                                         TrainingCategory trainingCategory) {
             _sharedPreferences = sharedPreferences;
             TrainingCategory = trainingCategory;
             _checked = new MutableLiveData<>(sharedPreferences.getBoolean(GetKey(), true));

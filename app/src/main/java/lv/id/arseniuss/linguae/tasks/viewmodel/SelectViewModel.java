@@ -23,7 +23,8 @@ public class SelectViewModel extends AbstractTaskViewModel {
 
     private final MutableLiveData<String> _sentence = new MutableLiveData<>("");
     private final MutableLiveData<String> _meaning = new MutableLiveData<>("");
-    private final MutableLiveData<List<WordViewModel>> _words = new MutableLiveData<>(new ArrayList<>());
+    private final MutableLiveData<List<WordViewModel>> _words =
+            new MutableLiveData<>(new ArrayList<>());
 
     public SelectViewModel(@NonNull Application application) {
         super(application);

@@ -15,7 +15,8 @@ public class TaskError {
         CorrectAnswer = correctAnswer;
     }
 
-    public TaskError(TaskType taskType, String title, String incorrectAnswer, String correctAnswer) {
+    public TaskError(TaskType taskType, String title, String incorrectAnswer,
+                     String correctAnswer) {
         Type = taskType;
         Title = title;
         IncorrectAnswer = incorrectAnswer;

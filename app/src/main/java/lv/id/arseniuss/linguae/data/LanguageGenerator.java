@@ -14,7 +14,8 @@ import lv.id.arseniuss.linguae.db.entities.Task;
 
 public class LanguageGenerator {
 
-    public static String[] Generate(Description description, Task task, String base, String[] options)
+    public static String[] Generate(Description description, Task task, String base,
+                                    String[] options)
             throws GeneratorException {
         List<String> result = new ArrayList<>();
 
@@ -22,14 +23,18 @@ public class LanguageGenerator {
 
         if (!match.find()) {
             throw new GeneratorException(
-                    "The base " + base + " does not match pattern " + description.Pattern.pattern());
+                    "The base " + base + " does not match pattern " +
+                            description.Pattern.pattern());
         }
 
         if (match.groupCount() != description.Groups) {
             throw new GeneratorException(
-                    "The pattern " + description.Pattern.pattern() + " did not generate " + description.Groups +
+                    "The pattern " + description.Pattern.pattern() + " did not generate " +
+                            description.Groups +
                             " groups: " +
-                            IntStream.range(0, match.groupCount()).mapToObj(match::group).collect(Collectors.joining(", ")));
+                            IntStream.range(0, match.groupCount())
+                                    .mapToObj(match::group)
+                                    .collect(Collectors.joining(", ")));
         }
 
         for (String option : options) {
@@ -39,7 +44,8 @@ public class LanguageGenerator {
 
             if (!optionalInt.isPresent()) {
                 throw new GeneratorException(
-                        task.Type.GetName() + " " + description.Category + " " + description.Description +
+                        task.Type.GetName() + " " + description.Category + " " +
+                                description.Description +
                                 " generator cannot generate for " + option);
             }
 
@@ -63,7 +69,8 @@ public class LanguageGenerator {
                                 part = Utilities.StripAccents(part);
                                 break;
                             default:
-                                throw new GeneratorException("Unknown transformation: " + rule.charAt(i + 1));
+                                throw new GeneratorException(
+                                        "Unknown transformation: " + rule.charAt(i + 1));
                         }
 
                         i++;

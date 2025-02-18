@@ -36,7 +36,8 @@ public class StartActivity extends AppCompatActivity {
     private ViewDataBinding _binding;
 
     @BindingAdapter("items")
-    public static void BindRepositoriesList(Spinner spinner, List<StartViewModel.RepositoryViewModel> entries) {
+    public static void BindRepositoriesList(Spinner spinner,
+                                            List<StartViewModel.RepositoryViewModel> entries) {
         ArrayAdapter<String> adapter = (ArrayAdapter<String>) spinner.getAdapter();
 
         assert adapter != null;
@@ -48,7 +49,8 @@ public class StartActivity extends AppCompatActivity {
     }
 
     @BindingAdapter("items")
-    public static void BindLanguagesList(RecyclerView recyclerView, List<StartViewModel.LanguageViewModel> entries) {
+    public static void BindLanguagesList(RecyclerView recyclerView,
+                                         List<StartViewModel.LanguageViewModel> entries) {
         MyRecyclerViewAdapter<StartViewModel.LanguageViewModel, ItemStartLanguageBinding> adapter =
                 (MyRecyclerViewAdapter<StartViewModel.LanguageViewModel, ItemStartLanguageBinding>) recyclerView.getAdapter();
 
@@ -99,7 +101,8 @@ public class StartActivity extends AppCompatActivity {
         _model = new ViewModelProvider(this).get(StartViewModel.class);
 
         if (shouldParseLanguage()) {
-            _binding = DataBindingUtil.<ActivityLoadBinding>setContentView(this, R.layout.activity_load);
+            _binding = DataBindingUtil.<ActivityLoadBinding>setContentView(this,
+                    R.layout.activity_load);
         } else {
             ActivityRepositoriesBinding repositoriesBinding = DataBindingUtil
                     .setContentView(this, R.layout.activity_repositories);
@@ -119,7 +122,8 @@ public class StartActivity extends AppCompatActivity {
 
         _model.State().setValue(StartViewModel.State.STATE_LOADING.ordinal());
 
-        if (i.hasExtra(Constants.PreferenceLanguageKey) && i.hasExtra(Constants.PreferenceLanguageUrlKey)) {
+        if (i.hasExtra(Constants.PreferenceLanguageKey) &&
+                i.hasExtra(Constants.PreferenceLanguageUrlKey)) {
             _model.StartLanguageParsing(i.hasExtra(RESTART),
                     i.getStringExtra(Constants.PreferenceLanguageKey),
                     i.getStringExtra(Constants.PreferenceLanguageUrlKey), this::Continue,
@@ -127,7 +131,8 @@ public class StartActivity extends AppCompatActivity {
         } else if (i.hasExtra(RESTART)) {
             _model.StartRepositoryLoad(this::Inform);
         } else if (_model.HasSelectedLanguage()) {
-            _model.StartLanguageParsing(i.hasExtra(RESTART), this::Continue, this::requestDatabaseUpdate);
+            _model.StartLanguageParsing(i.hasExtra(RESTART), this::Continue,
+                    this::requestDatabaseUpdate);
         } else {
             _model.StartRepositoryLoad(this::Inform);
         }
@@ -158,7 +163,8 @@ public class StartActivity extends AppCompatActivity {
     protected boolean shouldParseLanguage() {
         Intent i = getIntent();
 
-        if (i.hasExtra(Constants.PreferenceLanguageKey) && i.hasExtra(Constants.PreferenceLanguageUrlKey))
+        if (i.hasExtra(Constants.PreferenceLanguageKey) &&
+                i.hasExtra(Constants.PreferenceLanguageUrlKey))
             return true;
 
         if (i.hasExtra(RESTART)) return false;

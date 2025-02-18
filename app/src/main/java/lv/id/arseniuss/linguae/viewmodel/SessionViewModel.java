@@ -31,7 +31,8 @@ public class SessionViewModel extends AndroidViewModel {
 
     private final SharedPreferences _sharedPreferences =
             PreferenceManager.getDefaultSharedPreferences(getApplication().getBaseContext());
-    private final String _language = _sharedPreferences.getString(Constants.PreferenceLanguageKey, "");
+    private final String _language =
+            _sharedPreferences.getString(Constants.PreferenceLanguageKey, "");
     private final TaskDataAccess _taskDataAccess =
             LanguageDatabase.GetInstance(getApplication(), _language).GetTaskDataAccess();
     private final MutableLiveData<String> _counterString = new MutableLiveData<>("0");
@@ -40,7 +41,8 @@ public class SessionViewModel extends AndroidViewModel {
     private final SessionResultWithTaskResults _result = new SessionResultWithTaskResults();
 
     public int CurrentTaskIndex = -1;
-    ScheduledExecutorService _scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
+    ScheduledExecutorService _scheduledExecutorService =
+            Executors.newSingleThreadScheduledExecutor();
     private int _counter = 0;
     private List<SessionTaskData> _tasks = new ArrayList<>();
 
@@ -92,7 +94,8 @@ public class SessionViewModel extends AndroidViewModel {
         _taskProgress.setValue((CurrentTaskIndex + 1) + "/" + _tasks.size());
     }
 
-    public void LoadTraining(String training, List<TaskDataAccess.TrainingCategory> categories, ILoaded loaded) {
+    public void LoadTraining(String training, List<TaskDataAccess.TrainingCategory> categories,
+                             ILoaded loaded) {
         int taskCount = _sharedPreferences.getInt(Constants.PreferenceTaskCountKey, 10);
 
         Disposable d = _taskDataAccess.SelectTrainingTasks(training, taskCount, categories)
@@ -119,8 +122,10 @@ public class SessionViewModel extends AndroidViewModel {
     public String GetResult() {
         _result.SessionResult.StartTime = new Date();
         _result.SessionResult.PassedTime = _counter;
-        _result.SessionResult.Points = _tasks.stream().map(t -> t.Result.Points).reduce(0, Integer::sum);
-        _result.SessionResult.Amount = _tasks.stream().map(t -> t.Result.Amount).reduce(0, Integer::sum);
+        _result.SessionResult.Points =
+                _tasks.stream().map(t -> t.Result.Points).reduce(0, Integer::sum);
+        _result.SessionResult.Amount =
+                _tasks.stream().map(t -> t.Result.Amount).reduce(0, Integer::sum);
         _result.TaskResults = _tasks.stream().map(t -> t.Result).collect(Collectors.toList());
 
         return new Gson().toJson(_result);

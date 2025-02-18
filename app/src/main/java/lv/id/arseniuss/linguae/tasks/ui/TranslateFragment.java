@@ -34,7 +34,8 @@ public class TranslateFragment extends AbstractTaskFragment<TranslateViewModel> 
     }
 
     @BindingAdapter("items")
-    public static void BindWordList(AdapterFlexboxLayout flexboxLayout, List<TranslateViewModel.WordViewModel> entries) {
+    public static void BindWordList(AdapterFlexboxLayout flexboxLayout,
+                                    List<TranslateViewModel.WordViewModel> entries) {
         WordAdapter adapter = (WordAdapter) flexboxLayout.getAdapter();
 
         assert adapter != null;
@@ -55,9 +56,11 @@ public class TranslateFragment extends AbstractTaskFragment<TranslateViewModel> 
         _binding.setViewmodel(_model);
         _binding.setLifecycleOwner(this);
 
-        _answerAdapter = new WordAdapter(getContext(), getViewLifecycleOwner(), R.layout.item_task_translate_word,
+        _answerAdapter = new WordAdapter(getContext(), getViewLifecycleOwner(),
+                R.layout.item_task_translate_word,
                 position -> OnItemSelected(position, _model.Answers(), _model.Options()));
-        _optionsAdapter = new WordAdapter(getContext(), getViewLifecycleOwner(), R.layout.item_task_translate_word,
+        _optionsAdapter = new WordAdapter(getContext(), getViewLifecycleOwner(),
+                R.layout.item_task_translate_word,
                 position -> OnItemSelected(position, _model.Options(), _model.Answers()));
 
         _binding.options.setAdapter(_optionsAdapter);
@@ -66,9 +69,11 @@ public class TranslateFragment extends AbstractTaskFragment<TranslateViewModel> 
         return _binding.getRoot();
     }
 
-    private void OnItemSelected(int position, MutableLiveData<List<TranslateViewModel.WordViewModel>> origin,
+    private void OnItemSelected(int position,
+                                MutableLiveData<List<TranslateViewModel.WordViewModel>> origin,
                                 MutableLiveData<List<TranslateViewModel.WordViewModel>> target) {
-        if (!_model.IsValidated().getValue() && position >= 0 && position < origin.getValue().size()) {
+        if (!_model.IsValidated().getValue() && position >= 0 &&
+                position < origin.getValue().size()) {
             List<TranslateViewModel.WordViewModel> originValue = origin.getValue();
             List<TranslateViewModel.WordViewModel> targetValue = target.getValue();
 
@@ -90,7 +95,8 @@ public class TranslateFragment extends AbstractTaskFragment<TranslateViewModel> 
         }
 
         @Override
-        public MyAdapter<TranslateViewModel.WordViewModel>.ViewHolder createViewHolder(ViewDataBinding viewDataBinding) {
+        public MyAdapter<TranslateViewModel.WordViewModel>.ViewHolder createViewHolder(
+                ViewDataBinding viewDataBinding) {
             return new WordViewHolder(viewDataBinding);
         }
 

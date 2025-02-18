@@ -13,7 +13,8 @@ import java.util.Objects;
 import lv.id.arseniuss.linguae.data.TaskType;
 
 @Entity(tableName = "training_category", indices = {@Index(value = "training_id")},
-        foreignKeys = @ForeignKey(entity = Training.class, parentColumns = "id", childColumns = "training_id",
+        foreignKeys = @ForeignKey(entity = Training.class, parentColumns = "id",
+                childColumns = "training_id",
                 onDelete = ForeignKey.CASCADE))
 public class TrainingCategory {
     @PrimaryKey(autoGenerate = true)

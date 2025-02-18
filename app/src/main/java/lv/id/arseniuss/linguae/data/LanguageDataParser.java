@@ -97,7 +97,8 @@ public class LanguageDataParser {
         }
     }
 
-    private boolean parseTask(Task task, String line, String[] words, Map<String, String> references)
+    private boolean parseTask(Task task, String line, String[] words,
+                              Map<String, String> references)
             throws ParserException {
         if (words.length < 3) {
             logError("Expecting format: task <id> <task-type> <task-data>");
@@ -181,12 +182,14 @@ public class LanguageDataParser {
 
                 if (references2.startsWith(_gen_prefix)) {
                     Optional<LanguageGenerator.Description> description = _generators.stream()
-                            .filter(d -> d.TaskType == task.Type && Objects.equals(d.Category, task.Category) &&
+                            .filter(d -> d.TaskType == task.Type &&
+                                    Objects.equals(d.Category, task.Category) &&
                                     Objects.equals(d.Description, task.Description))
                             .findAny();
 
                     if (!description.isPresent()) {
-                        logError("There is no generator for " + task.Type.GetName() + " " + task.Category + " " +
+                        logError("There is no generator for " + task.Type.GetName() + " " +
+                                task.Category + " " +
                                 task.Description);
                         return false;
                     }
@@ -195,7 +198,8 @@ public class LanguageDataParser {
                         String base = references2.substring(_gen_prefix.length());
 
                         declineTask.Answers =
-                                LanguageGenerator.Generate(description.get(), task, base, declineTask.Cases);
+                                LanguageGenerator.Generate(description.get(), task, base,
+                                        declineTask.Cases);
                     } catch (LanguageGenerator.GeneratorException ex) {
                         logError(ex.getMessage());
                         return false;
@@ -204,7 +208,8 @@ public class LanguageDataParser {
                     declineTask.Answers = references2.split(",", -1);
 
                     if (declineTask.Cases.length != declineTask.Answers.length) {
-                        logError("Decline task case count is not the same as answers: " + declineTask.Cases.length +
+                        logError("Decline task case count is not the same as answers: " +
+                                declineTask.Cases.length +
                                 "/" + declineTask.Answers.length);
                         return false;
                     }
@@ -236,12 +241,14 @@ public class LanguageDataParser {
 
                 if (references4.startsWith(_gen_prefix)) {
                     Optional<LanguageGenerator.Description> description = _generators.stream()
-                            .filter(d -> d.TaskType == task.Type && Objects.equals(d.Category, task.Category) &&
+                            .filter(d -> d.TaskType == task.Type &&
+                                    Objects.equals(d.Category, task.Category) &&
                                     Objects.equals(d.Description, task.Description))
                             .findAny();
 
                     if (!description.isPresent()) {
-                        logError("There is no generator for " + task.Type.GetName() + " " + task.Category + " " +
+                        logError("There is no generator for " + task.Type.GetName() + " " +
+                                task.Category + " " +
                                 task.Description);
                         return false;
                     }
@@ -250,7 +257,8 @@ public class LanguageDataParser {
                         String base = references4.substring(_gen_prefix.length());
 
                         conjugateTask.Answers =
-                                LanguageGenerator.Generate(description.get(), task, base, conjugateTask.Persons);
+                                LanguageGenerator.Generate(description.get(), task, base,
+                                        conjugateTask.Persons);
                     } catch (LanguageGenerator.GeneratorException ex) {
                         logError(ex.getMessage());
                         return false;
@@ -260,7 +268,8 @@ public class LanguageDataParser {
                 }
 
                 if (conjugateTask.Persons.length != conjugateTask.Answers.length) {
-                    logError("Conjugate task person count is not the same as answers: " + conjugateTask.Persons.length +
+                    logError("Conjugate task person count is not the same as answers: " +
+                            conjugateTask.Persons.length +
                             "/" + conjugateTask.Answers.length);
                     return false;
                 }
@@ -317,7 +326,8 @@ public class LanguageDataParser {
         return true;
     }
 
-    private String resolveReferences(String word, Map<String, String> references) throws ParserException {
+    private String resolveReferences(String word, Map<String, String> references) throws
+            ParserException {
 
         if (!word.isEmpty()) {
             Matcher matcher = _referencePattern.matcher(word);
@@ -384,7 +394,8 @@ public class LanguageDataParser {
 
                 String[] next = getWords(l.substring(_eol_prefix.length()), r);
 
-                words = Stream.concat(Arrays.stream(words), Arrays.stream(next)).toArray(String[]::new);
+                words = Stream.concat(Arrays.stream(words), Arrays.stream(next))
+                        .toArray(String[]::new);
             }
         }
 
@@ -397,7 +408,8 @@ public class LanguageDataParser {
         log(Log.INFO, "Parsing training file: " + t.Filename);
 
         InputStream trainingFileStream = getFile(base + "/" + t.Filename);
-        LineNumberReader r = new LineNumberReader(new BufferedReader(new InputStreamReader(trainingFileStream)));
+        LineNumberReader r =
+                new LineNumberReader(new BufferedReader(new InputStreamReader(trainingFileStream)));
 
         Map<String, Task> tasks = new HashMap<>();
         Map<String, String> references = new HashMap<>();
@@ -495,7 +507,8 @@ public class LanguageDataParser {
         log(Log.INFO, "Parsing lesson file " + l.Lesson.Id);
 
         InputStream lessonFileStream = getFile(base + "/" + l.Lesson.Id);
-        LineNumberReader r = new LineNumberReader(new BufferedReader(new InputStreamReader(lessonFileStream)));
+        LineNumberReader r =
+                new LineNumberReader(new BufferedReader(new InputStreamReader(lessonFileStream)));
         Map<String, Task> lessonTasks = new HashMap<>();
         Map<String, String> references = new HashMap<>();
 
@@ -549,7 +562,8 @@ public class LanguageDataParser {
                         continue;
                     }
 
-                    l.Lesson.Description = Arrays.stream(words).skip(1).collect(Collectors.joining(" "));
+                    l.Lesson.Description =
+                            Arrays.stream(words).skip(1).collect(Collectors.joining(" "));
                     break;
                 case "task":
                     Task task = new Task();
@@ -620,7 +634,8 @@ public class LanguageDataParser {
         log(Log.INFO, "Parsing language file: " + base + _filename);
 
         InputStream languageFileStream = getFile(base + "/Language.txt");
-        LineNumberReader r = new LineNumberReader(new BufferedReader(new InputStreamReader(languageFileStream)));
+        LineNumberReader r =
+                new LineNumberReader(new BufferedReader(new InputStreamReader(languageFileStream)));
 
         String languageName = "";
         int lessonIndex = 0;
@@ -637,8 +652,9 @@ public class LanguageDataParser {
             switch (keyword) {
                 case "gen":
                     if (words.length != 7) {
-                        logError("Expected format: gen <task type> <task category> <task description> <list> <gen " +
-                                "rules>");
+                        logError(
+                                "Expected format: gen <task type> <task category> <task description> <list> <gen " +
+                                        "rules>");
                         continue;
                     }
 
@@ -796,7 +812,8 @@ public class LanguageDataParser {
                     break;
                 case "setting":
                     if (words.length != 5) {
-                        logError("Expecting format: setting <key> <description> <type> <default value>");
+                        logError(
+                                "Expecting format: setting <key> <description> <type> <default value>");
                         continue;
                     }
 
@@ -917,7 +934,8 @@ public class LanguageDataParser {
         log(Log.INFO, "Parsing theory file: " + _filename);
 
         InputStream languageFileStream = getFile(base + "/" + theory.Id);
-        LineNumberReader r = new LineNumberReader(new BufferedReader(new InputStreamReader(languageFileStream)));
+        LineNumberReader r =
+                new LineNumberReader(new BufferedReader(new InputStreamReader(languageFileStream)));
         Map<String, Chapter> theoryChapters = new HashMap<>();
         Map<String, String> references = new HashMap<>();
 
@@ -1002,7 +1020,8 @@ public class LanguageDataParser {
 
                 InputStream languageFileStream = getFile(repository + "/Languages.txt");
                 LineNumberReader r =
-                        new LineNumberReader(new BufferedReader(new InputStreamReader(languageFileStream)));
+                        new LineNumberReader(
+                                new BufferedReader(new InputStreamReader(languageFileStream)));
 
                 String line;
                 while ((line = r.readLine()) != null) {

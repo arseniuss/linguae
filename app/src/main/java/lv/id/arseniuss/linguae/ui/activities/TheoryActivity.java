@@ -34,7 +34,8 @@ public class TheoryActivity extends AppCompatActivity {
     private ActivityTheoryBinding _binding;
 
     @BindingAdapter("items")
-    public static void BindLessonList(RecyclerView recyclerView, List<TheoryViewModel.ChapterViewModel> chapters) {
+    public static void BindLessonList(RecyclerView recyclerView,
+                                      List<TheoryViewModel.ChapterViewModel> chapters) {
         MyRecyclerViewAdapter<TheoryViewModel.ChapterViewModel, ItemChapterBinding> adapter =
                 (MyRecyclerViewAdapter<TheoryViewModel.ChapterViewModel, ItemChapterBinding>) recyclerView.getAdapter();
 
@@ -107,11 +108,13 @@ public class TheoryActivity extends AppCompatActivity {
         MyRecyclerViewAdapter<TheoryViewModel.ChapterViewModel, ItemChapterBinding> adapter =
                 new MyRecyclerViewAdapter<>(_binding.getLifecycleOwner(), R.layout.item_chapter);
 
-        MyRecyclerViewAdapter<TheoryViewModel.ChapterViewModel, ItemChapterBinding>.OnBinded binded =
+        MyRecyclerViewAdapter<TheoryViewModel.ChapterViewModel, ItemChapterBinding>.OnBinded
+                binded =
                 adapter.new OnBinded() {
 
                     @Override
-                    public void Binded(ItemChapterBinding binding, TheoryViewModel.ChapterViewModel item) {
+                    public void Binded(ItemChapterBinding binding,
+                                       TheoryViewModel.ChapterViewModel item) {
                         binding.setPresenter(_this);
                     }
                 };

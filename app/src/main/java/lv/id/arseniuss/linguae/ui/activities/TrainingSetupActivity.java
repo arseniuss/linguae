@@ -32,7 +32,8 @@ public class TrainingSetupActivity extends AppCompatActivity {
     @BindingAdapter("items")
     public static void BindTrainingList(RecyclerView recyclerView,
                                         List<TrainingSetupViewModel.TrainingTaskViewModel> trainings) {
-        MyRecyclerViewAdapter<TrainingSetupViewModel.TrainingTaskViewModel, ItemTrainingTaskBinding> adapter =
+        MyRecyclerViewAdapter<TrainingSetupViewModel.TrainingTaskViewModel, ItemTrainingTaskBinding>
+                adapter =
                 (MyRecyclerViewAdapter<TrainingSetupViewModel.TrainingTaskViewModel, ItemTrainingTaskBinding>) recyclerView.getAdapter();
 
         assert adapter != null;
@@ -44,7 +45,8 @@ public class TrainingSetupActivity extends AppCompatActivity {
     @BindingAdapter("items")
     public static void BindCategoryList(RecyclerView recyclerView,
                                         List<TrainingSetupViewModel.TrainingCategoryViewModel> categories) {
-        MyRecyclerViewAdapter<TrainingSetupViewModel.TrainingCategoryViewModel, ItemTrainingCategoryBinding> adapter =
+        MyRecyclerViewAdapter<TrainingSetupViewModel.TrainingCategoryViewModel, ItemTrainingCategoryBinding>
+                adapter =
                 (MyRecyclerViewAdapter<TrainingSetupViewModel.TrainingCategoryViewModel, ItemTrainingCategoryBinding>) recyclerView.getAdapter();
 
         assert adapter != null;
@@ -93,10 +95,12 @@ public class TrainingSetupActivity extends AppCompatActivity {
     }
 
     private RecyclerView.Adapter getMyAdapter() {
-        MyRecyclerViewAdapter<TrainingSetupViewModel.TrainingTaskViewModel, ItemTrainingTaskBinding> adapter =
+        MyRecyclerViewAdapter<TrainingSetupViewModel.TrainingTaskViewModel, ItemTrainingTaskBinding>
+                adapter =
                 new MyRecyclerViewAdapter<>(this, R.layout.item_training_task);
 
-        MyRecyclerViewAdapter<TrainingSetupViewModel.TrainingTaskViewModel, ItemTrainingTaskBinding>.OnBinded binded =
+        MyRecyclerViewAdapter<TrainingSetupViewModel.TrainingTaskViewModel, ItemTrainingTaskBinding>.OnBinded
+                binded =
                 adapter.new OnBinded() {
 
                     @Override

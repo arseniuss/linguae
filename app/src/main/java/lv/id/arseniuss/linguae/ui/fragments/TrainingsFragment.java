@@ -53,7 +53,8 @@ public class TrainingsFragment extends Fragment {
         startActivity(i);
     }
 
-    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
         _model = new ViewModelProvider(this).get(TrainingsViewModel.class);
         _binding = FragmentTrainingsBinding.inflate(inflater, container, false);
 
@@ -99,13 +100,14 @@ public class TrainingsFragment extends Fragment {
                     startActivity(i);
                 });
 
-        MyRecyclerViewAdapter<EntryViewModel, ItemTrainingBinding>.OnBinded binded = adapter.new OnBinded() {
+        MyRecyclerViewAdapter<EntryViewModel, ItemTrainingBinding>.OnBinded binded =
+                adapter.new OnBinded() {
 
-            @Override
-            public void Binded(ItemTrainingBinding binding, EntryViewModel item) {
-                binding.setPresenter(_this);
-            }
-        };
+                    @Override
+                    public void Binded(ItemTrainingBinding binding, EntryViewModel item) {
+                        binding.setPresenter(_this);
+                    }
+                };
 
         adapter.SetOnBinded(binded);
 

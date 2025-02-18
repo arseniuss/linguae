@@ -29,7 +29,8 @@ public class AdapterGridLayout extends GridLayout {
         super(context, attrs, defStyleAttr);
     }
 
-    public AdapterGridLayout(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+    public AdapterGridLayout(Context context, AttributeSet attrs, int defStyleAttr,
+                             int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
     }
 
@@ -64,10 +65,13 @@ public class AdapterGridLayout extends GridLayout {
                 final int columnCount = getColumnCount();
 
                 if (columnCount != 0) {
-                    GridLayout.LayoutParams layoutParams = new GridLayout.LayoutParams(v.getLayoutParams());
+                    GridLayout.LayoutParams layoutParams =
+                            new GridLayout.LayoutParams(v.getLayoutParams());
 
-                    layoutParams.columnSpec = GridLayout.spec(position % columnCount, GridLayout.FILL, 1f);
-                    layoutParams.rowSpec = GridLayout.spec(position / columnCount, GridLayout.FILL, 1f);
+                    layoutParams.columnSpec =
+                            GridLayout.spec(position % columnCount, GridLayout.FILL, 1f);
+                    layoutParams.rowSpec =
+                            GridLayout.spec(position / columnCount, GridLayout.FILL, 1f);
                     layoutParams.setMargins(10, 10, 10, 10);
 
                     v.setLayoutParams(layoutParams);

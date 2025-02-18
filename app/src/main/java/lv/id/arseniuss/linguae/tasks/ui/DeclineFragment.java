@@ -31,7 +31,8 @@ public class DeclineFragment extends AbstractTaskFragment<DeclineViewModel> {
     }
 
     @BindingAdapter("items")
-    public static void BindLessonList(RecyclerView recyclerView, List<DeclineViewModel.CaseViewModel> entries) {
+    public static void BindLessonList(RecyclerView recyclerView,
+                                      List<DeclineViewModel.CaseViewModel> entries) {
         MyRecyclerViewAdapter<DeclineViewModel.CaseViewModel, ItemTaskDeclineCaseBinding> adapter =
                 (MyRecyclerViewAdapter<DeclineViewModel.CaseViewModel, ItemTaskDeclineCaseBinding>) recyclerView.getAdapter();
 
@@ -52,7 +53,8 @@ public class DeclineFragment extends AbstractTaskFragment<DeclineViewModel> {
         _binding.setPresenter(this);
         _binding.setLifecycleOwner(this);
 
-        MyRecyclerViewAdapter<DeclineViewModel.CaseViewModel, ItemTaskDeclineCaseBinding> adapter = getAdapter();
+        MyRecyclerViewAdapter<DeclineViewModel.CaseViewModel, ItemTaskDeclineCaseBinding> adapter =
+                getAdapter();
 
         _binding.cases.setAdapter(adapter);
 

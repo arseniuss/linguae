@@ -38,8 +38,10 @@ public class Utilities {
 
     static {
         _recycle.addAll(
-                Arrays.asList(0xfff44336, 0xffe91e63, 0xff9c27b0, 0xff673ab7, 0xff3f51b5, 0xff2196f3, 0xff03a9f4,
-                        0xff00bcd4, 0xff009688, 0xff4caf50, 0xff8bc34a, 0xffcddc39, 0xffffeb3b, 0xffffc107, 0xffff9800,
+                Arrays.asList(0xfff44336, 0xffe91e63, 0xff9c27b0, 0xff673ab7, 0xff3f51b5,
+                        0xff2196f3, 0xff03a9f4,
+                        0xff00bcd4, 0xff009688, 0xff4caf50, 0xff8bc34a, 0xffcddc39, 0xffffeb3b,
+                        0xffffc107, 0xffff9800,
                         0xffff5722, 0xff795548, 0xff9e9e9e, 0xff607d8b, 0xff333333));
     }
 
@@ -53,7 +55,8 @@ public class Utilities {
         String vowels = "aeiuoAEIOU";
         String replacement = "āēīūōĀĒĪŌŪ";
 
-        return s.chars().map(c -> {
+        return s.chars()
+                .map(c -> {
                     int idx = vowels.indexOf(c);
 
                     if (idx != -1) {
@@ -61,7 +64,9 @@ public class Utilities {
                     } else {
                         return c;
                     }
-                }).mapToObj(codePoint -> new String(Character.toChars(codePoint))) // Convert code points to characters
+                })
+                .mapToObj(codePoint -> new String(
+                        Character.toChars(codePoint))) // Convert code points to characters
                 .collect(Collectors.joining());
     }
 
@@ -126,7 +131,8 @@ public class Utilities {
         return GetInputStream(context, filename, 5000);
     }
 
-    public static InputStream GetInputStream(Context context, String filename, int timeout) throws Exception {
+    public static InputStream GetInputStream(Context context, String filename, int timeout) throws
+            Exception {
         Uri filenameUri = Uri.parse(filename);
         String scheme = filenameUri.getScheme();
 
@@ -153,9 +159,9 @@ public class Utilities {
                 URLConnection connection;
 
                 if (scheme.equals("http"))
-                    connection = (HttpURLConnection) url.openConnection();
+                    connection = url.openConnection();
                 else
-                    connection = (HttpsURLConnection) url.openConnection();
+                    connection = url.openConnection();
 
                 connection.setConnectTimeout(timeout);
 
@@ -167,7 +173,9 @@ public class Utilities {
 
     private static Uri getDocument(Context context, Uri filenameUri) {
         ContentResolver resolver = context.getContentResolver();
-        Uri result = new Uri.Builder().scheme(filenameUri.getScheme()).authority(filenameUri.getAuthority()).build();
+        Uri result = new Uri.Builder().scheme(filenameUri.getScheme())
+                .authority(filenameUri.getAuthority())
+                .build();
 
         List<String> pathSegments = filenameUri.getPathSegments();
         int start = 0;
@@ -187,7 +195,8 @@ public class Utilities {
             String pathSegment = pathSegments.get(i);
 
             Cursor cursor = resolver.query(result, new String[]{
-                    DocumentsContract.Document.COLUMN_DOCUMENT_ID, DocumentsContract.Document.COLUMN_DISPLAY_NAME,
+                    DocumentsContract.Document.COLUMN_DOCUMENT_ID,
+                    DocumentsContract.Document.COLUMN_DISPLAY_NAME,
                     DocumentsContract.Document.COLUMN_MIME_TYPE
             }, null, null, null);
 
@@ -199,9 +208,11 @@ public class Utilities {
 
                     if (displayName.equals(pathSegment)) {
                         if (DocumentsContract.Document.MIME_TYPE_DIR.equals(mimeType)) {
-                            result = DocumentsContract.buildChildDocumentsUriUsingTree(result, documentId);
+                            result = DocumentsContract.buildChildDocumentsUriUsingTree(result,
+                                    documentId);
                         } else {
-                            result = DocumentsContract.buildDocumentUriUsingTree(result, documentId);
+                            result =
+                                    DocumentsContract.buildDocumentUriUsingTree(result, documentId);
                         }
                         break;
                     }

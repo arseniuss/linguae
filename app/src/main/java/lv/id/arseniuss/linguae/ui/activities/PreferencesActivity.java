@@ -50,10 +50,12 @@ public class PreferencesActivity extends AppCompatActivity {
                     .commit();
         }
 
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
+        SharedPreferences sharedPreferences =
+                PreferenceManager.getDefaultSharedPreferences(getBaseContext());
         String language = sharedPreferences.getString(Constants.PreferenceLanguageKey, "");
 
-        _mainDataAccess = LanguageDatabase.GetInstance(getBaseContext(), language).GetMainDataAccess();
+        _mainDataAccess =
+                LanguageDatabase.GetInstance(getBaseContext(), language).GetMainDataAccess();
     }
 
     @Override
@@ -75,7 +77,8 @@ public class PreferencesActivity extends AppCompatActivity {
 
             return true;
         } else if (R.id.item_clear_settings == item.getItemId()) {
-            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
+            SharedPreferences preferences =
+                    PreferenceManager.getDefaultSharedPreferences(getBaseContext());
 
             preferences.edit().clear().apply();
             this.finish();
@@ -105,7 +108,8 @@ public class PreferencesActivity extends AppCompatActivity {
         }
 
         private void load() {
-            Preference languagePreferences = findPreference(getString(R.string.PreferencesLanguageKey));
+            Preference languagePreferences =
+                    findPreference(getString(R.string.PreferencesLanguageKey));
 
             if (languagePreferences != null) {
                 PreferenceCategory preferenceCategory = (PreferenceCategory) languagePreferences;
@@ -123,11 +127,12 @@ public class PreferencesActivity extends AppCompatActivity {
                                 _sharedPreferences.edit()
                                         .putBoolean(settingKey, Boolean.parseBoolean(setting.Value))
                                         .apply();
-                                preference.setOnPreferenceChangeListener((preference1, newValue) -> {
-                                    setting.Value = newValue.toString();
+                                preference.setOnPreferenceChangeListener(
+                                        (preference1, newValue) -> {
+                                            setting.Value = newValue.toString();
 
-                                    return true;
-                                });
+                                            return true;
+                                        });
                                 break;
                         }
 

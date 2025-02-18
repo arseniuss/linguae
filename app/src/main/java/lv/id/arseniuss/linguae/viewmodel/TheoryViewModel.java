@@ -26,10 +26,12 @@ public class TheoryViewModel extends AndroidViewModel {
     protected boolean _showTranslation = false;
     private final SharedPreferences _sharedPreferences =
             PreferenceManager.getDefaultSharedPreferences(getApplication().getBaseContext());
-    private final String _language = _sharedPreferences.getString(Constants.PreferenceLanguageKey, "");
+    private final String _language =
+            _sharedPreferences.getString(Constants.PreferenceLanguageKey, "");
     private final TheoryDataAccess _theoryDataAccess =
             LanguageDatabase.GetInstance(getApplication(), _language).GetTheoryDataAccess();
-    private final MutableLiveData<List<ChapterViewModel>> _chapters = new MutableLiveData<>(new ArrayList<>());
+    private final MutableLiveData<List<ChapterViewModel>> _chapters =
+            new MutableLiveData<>(new ArrayList<>());
 
     public TheoryViewModel(@NonNull Application application) {
         super(application);

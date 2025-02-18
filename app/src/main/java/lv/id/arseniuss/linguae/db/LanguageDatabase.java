@@ -48,9 +48,11 @@ public abstract class LanguageDatabase extends RoomDatabase {
 
     public static synchronized LanguageDatabase GetInstance(Context context, String language) {
         if (_instance == null || !Objects.equals(_instance._language, language)) {
-            _instance = Room.databaseBuilder(context.getApplicationContext(), LanguageDatabase.class, language)
-                    .fallbackToDestructiveMigration()
-                    .build();
+            _instance =
+                    Room.databaseBuilder(context.getApplicationContext(), LanguageDatabase.class,
+                                    language)
+                            .fallbackToDestructiveMigration()
+                            .build();
             _instance._language = language;
         }
         return _instance;

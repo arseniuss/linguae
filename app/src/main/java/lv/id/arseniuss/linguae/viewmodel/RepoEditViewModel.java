@@ -25,7 +25,8 @@ public class RepoEditViewModel extends AndroidViewModel {
     private final Type _listType = new TypeToken<List<ItemLanguageRepo>>() {
     }.getType();
 
-    private final MutableLiveData<List<EditRepoViewModel>> _repos = new MutableLiveData<>(new ArrayList<>());
+    private final MutableLiveData<List<EditRepoViewModel>> _repos =
+            new MutableLiveData<>(new ArrayList<>());
     private final MutableLiveData<Integer> _selected = new MutableLiveData<>(-1);
 
     public RepoEditViewModel(@NonNull Application app) {
@@ -55,7 +56,9 @@ public class RepoEditViewModel extends AndroidViewModel {
 
         if (data == null) data = new ArrayList<>();
 
-        _repos.setValue(data.stream().map(d -> new EditRepoViewModel(d, canSelect)).collect(Collectors.toList()));
+        _repos.setValue(data.stream()
+                .map(d -> new EditRepoViewModel(d, canSelect))
+                .collect(Collectors.toList()));
     }
 
     public String GetData() {
