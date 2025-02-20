@@ -21,14 +21,12 @@
         tools:context=".ui.activities.SessionActivity">
 
         <LinearLayout
-            android:id="@+id/header"
+            style="@style/MyAppTheme.Layout.Squash"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="5dp"
             android:orientation="horizontal">
 
             <TextView
-                android:id="@+id/textTimeCounter"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
@@ -38,7 +36,6 @@
                 tools:text="Time" />
 
             <TextView
-                android:id="@+id/textProgress"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
@@ -61,27 +58,24 @@
 
         <androidx.fragment.app.FragmentContainerView
             android:id="@+id/fragmentContainerView"
+            style="@style/MyAppTheme.Layout.HorizontalSquash"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
-            android:padding="10dp"
             tools:layout="@layout/fragment_task_decline" />
 
         <LinearLayout
-            android:id="@+id/footer"
+            style="@style/MyAppTheme.Layout.Squash"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="10dp"
             android:orientation="horizontal"
             tools:layout_editor_absoluteX="1dp">
 
             <Button
                 android:id="@+id/btnContinue"
                 style="?android:attr/buttonBarStyle"
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:layout_weight="1"
                 android:enabled="@{viewmodel.CanCheck()}"
                 android:onClick="@{() -> presenter.OnCheckClicked()}"
                 android:text="@string/ButtonCheckTitle" />
