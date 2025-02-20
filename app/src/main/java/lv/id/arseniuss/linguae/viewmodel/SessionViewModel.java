@@ -11,6 +11,7 @@ import androidx.preference.PreferenceManager;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.Executors;
@@ -25,6 +26,7 @@ import lv.id.arseniuss.linguae.Constants;
 import lv.id.arseniuss.linguae.db.LanguageDatabase;
 import lv.id.arseniuss.linguae.db.dataaccess.TaskDataAccess;
 import lv.id.arseniuss.linguae.db.entities.SessionResultWithTaskResults;
+import lv.id.arseniuss.linguae.db.entities.Task;
 import lv.id.arseniuss.linguae.tasks.entities.SessionTaskData;
 
 public class SessionViewModel extends AndroidViewModel {
@@ -75,6 +77,7 @@ public class SessionViewModel extends AndroidViewModel {
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe((tasks) -> {
+                    Collections.shuffle(tasks);
                     _tasks = tasks.stream().map(SessionTaskData::new).collect(Collectors.toList());
                     NextTask(loaded);
                 }, throwable -> loaded.Loaded(throwable.getMessage()));
@@ -102,6 +105,7 @@ public class SessionViewModel extends AndroidViewModel {
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe((tasks) -> {
+                    Collections.shuffle(tasks);
                     _tasks = tasks.stream().map(SessionTaskData::new).collect(Collectors.toList());
                     NextTask(loaded);
                 }, throwable -> loaded.Loaded(throwable.getMessage()));

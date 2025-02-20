@@ -6,8 +6,8 @@ import androidx.room.Query;
 import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
-import java.util.Random;
 import java.util.stream.Collectors;
 
 import io.reactivex.rxjava3.core.Maybe;
@@ -88,7 +88,8 @@ public abstract class TaskDataAccess {
                                 count + ")");
             }
 
-            int[] indexes = new SecureRandom().ints(0, taskIds.size()).distinct().limit(count).toArray();
+            int[] indexes =
+                    new SecureRandom().ints(0, taskIds.size()).distinct().limit(count).toArray();
 
             List<String> selectedIds =
                     Arrays.stream(indexes).mapToObj(taskIds::get).collect(Collectors.toList());

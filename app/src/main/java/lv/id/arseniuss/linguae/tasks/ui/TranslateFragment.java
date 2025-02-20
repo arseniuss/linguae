@@ -58,10 +58,10 @@ public class TranslateFragment extends AbstractTaskFragment<TranslateViewModel> 
 
         _answerAdapter = new WordAdapter(getContext(), getViewLifecycleOwner(),
                 R.layout.item_task_translate_word,
-                position -> OnItemSelected(position, _model.Answers(), _model.Options()));
+                position -> OnItemSelected(position, _model.Responses(), _model.Options()));
         _optionsAdapter = new WordAdapter(getContext(), getViewLifecycleOwner(),
                 R.layout.item_task_translate_word,
-                position -> OnItemSelected(position, _model.Options(), _model.Answers()));
+                position -> OnItemSelected(position, _model.Options(), _model.Responses()));
 
         _binding.options.setAdapter(_optionsAdapter);
         _binding.answer.setAdapter(_answerAdapter);
@@ -88,8 +88,8 @@ public class TranslateFragment extends AbstractTaskFragment<TranslateViewModel> 
             target.setValue(targetValue);
         }
 
-        if (_listener != null && _answerAdapter != null)
-            _listener.OnCanCheckChanged(_answerAdapter.getCount() != 0);
+        if (_listener != null)
+            _listener.OnCanCheckChanged(true);
     }
 
     public static class WordAdapter extends MyAdapter<TranslateViewModel.WordViewModel> {

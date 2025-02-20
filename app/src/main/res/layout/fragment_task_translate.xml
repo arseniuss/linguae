@@ -61,7 +61,7 @@
 
                     <lv.id.arseniuss.linguae.ui.AdapterFlexboxLayout
                         android:id="@+id/answer"
-                        items="@{viewmodel.Answers()}"
+                        items="@{viewmodel.Responses()}"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
 

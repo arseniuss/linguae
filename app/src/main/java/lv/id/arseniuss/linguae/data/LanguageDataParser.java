@@ -110,10 +110,13 @@ public class LanguageDataParser {
 
         String taskType = words[2].trim().toLowerCase();
 
+        final String formatPrefix = "task <id> " + taskType;
+
         switch (taskType) {
             case "select":
                 if (words.length != 3 + 4) {
-                    logError("Expected format: <meaning> <sentence> <answers> <options>");
+                    logError("Expected format: " + formatPrefix +
+                            " <meaning> <sentence> <answers> <options>");
                     logError("Got: " + line);
                     return false;
                 }
@@ -160,7 +163,8 @@ public class LanguageDataParser {
                 break;
             case "decline":
                 if (words.length != 3 + 6) {
-                    logError("Expecting format: <type> <description> <word> <meaning> <options> " +
+                    logError("Expecting format: " + formatPrefix +
+                            " <type> <description> <word> <meaning> <options> " +
                             "<answers>");
                     logError("Got: " + line);
                     return false;
@@ -220,7 +224,8 @@ public class LanguageDataParser {
                 break;
             case "conjugate":
                 if (words.length != 3 + 6) {
-                    logError("Expecting format: <conjugation> \"<mood> <tense> <voice>\" <word> " +
+                    logError("Expecting format: " + formatPrefix +
+                            " <conjugation> \"<mood> <tense> <voice>\" <word> " +
                             "<meaning> <persons> <answers>");
                     logError("Got: " + line);
                     return false;
@@ -279,7 +284,8 @@ public class LanguageDataParser {
                 break;
             case "choose":
                 if (words.length != 3 + 4) {
-                    logError("Expected format: <description> <word> <answer> <additionals>");
+                    logError("Expecting format: " + formatPrefix +
+                            " <description> <word> <answer> <additionals>");
                     logError("Got: " + line);
                     return false;
                 }
@@ -300,7 +306,7 @@ public class LanguageDataParser {
                 break;
             case "translate":
                 if (words.length != 6) {
-                    logError("Expected format: <text> <answer>");
+                    logError("Expecting format: " + formatPrefix + " <text> <answer> <additional>");
                     logError("Got: " + line);
                     return false;
                 }
@@ -312,7 +318,7 @@ public class LanguageDataParser {
                 task.Description = null;
 
                 translateTask.Text = resolveReferences(words[3], references);
-                translateTask.Answer = resolveReferences(words[4], references).split(" ");
+                translateTask.Answer = resolveReferences(words[4], references).split(",");
                 translateTask.Additional = resolveReferences(words[5], references);
 
                 task.Amount = translateTask.Answer.length;

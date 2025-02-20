@@ -1,5 +1,7 @@
 package lv.id.arseniuss.linguae.tasks.viewmodel;
 
+import static java.lang.Integer.max;
+
 import android.app.Application;
 
 import androidx.annotation.NonNull;
@@ -48,36 +50,44 @@ public class TranslateViewModel extends AbstractTaskViewModel {
 
     @Override
     public boolean Validate() {
-        String answer;
-        String[] correct = translateTask().Answer;
+        boolean isValid = true;
+        List<WordViewModel> responses = Responses().getValue();
+        List<List<String>> answers = Arrays.stream(translateTask().Answer)
+                .map(a -> Arrays.stream(a.split("/")).collect(Collectors.toList()))
+                .collect(Collectors.toList());
 
-        if (Boolean.TRUE.equals(_isEditMode.getValue())) {
-            Answers().setValue(Arrays.stream(Answer().getValue().split(" "))
-                    .map(String::trim)
-                    .filter(a -> !a.isEmpty())
-                    .map(WordViewModel::new)
-                    .collect(Collectors.toList()));
-        }
+        assert responses != null;
 
-        answer = Answers().getValue().stream().map(a -> a.Option).collect(Collectors.joining(" "));
+        final int iterations = max(responses.size(), answers.size());
 
-        boolean isValid = answer.equals(String.join(" ", translateTask().Answer));
+        for (int i = 0; i < iterations; i++) {
+            boolean hasError = true;
+            String response = null;
+            WordViewModel model = null;
+            String correctOptions = "";
 
-        if (!isValid) {
-            for (int i = 0; i < Answers().getValue().size(); i++) {
-                boolean hasError = true;
-                WordViewModel model = Answers().getValue().get(i);
+            if (i < responses.size()) {
+                response = responses.get(i).Option;
+                model = responses.get(i);
+            }
 
-                if (i < correct.length) {
-                    hasError = !Objects.equals(correct[i], model.Option);
+            if (i < answers.size()) {
+                for (String answer : answers.get(i)) {
+                    if (response != null && Objects.equals(response, answer)) {
+                        hasError = false;
+                        break;
+                    }
                 }
+                correctOptions = translateTask().Answer[i];
+            }
 
+            if (i < responses.size())
                 model.SetHasError(hasError);
 
-                if (hasError) {
-                    _taskResult.Result.Errors.add(new TaskError(TaskType.TranslateTask,
-                            model.Option, correct[i]));
-                }
+            if (hasError) {
+                _taskResult.Result.Errors.add(
+                        new TaskError(TaskType.TranslateTask, response, correctOptions));
+                isValid = false;
             }
         }
 
@@ -98,7 +108,7 @@ public class TranslateViewModel extends AbstractTaskViewModel {
         return (TranslateTask) _taskResult.Task.Data;
     }
 
-    public MutableLiveData<List<WordViewModel>> Answers() {
+    public MutableLiveData<List<WordViewModel>> Responses() {
         return _answers;
     }
 
@@ -113,9 +123,12 @@ public class TranslateViewModel extends AbstractTaskViewModel {
         _isEditMode.setValue(
                 !_sharedPreferences.getBoolean(Constants.PreferenceNoKeyboardKey, false));
 
-        List<String> answers = Arrays.asList(translateTask().Answer);
+        List<String> answers = Arrays.stream(translateTask().Answer)
+                .map(a -> a.contains("/") ? a.split("/")[0] : a)
+                .collect(Collectors.toList());
+
         List<String> additional = Arrays.stream(translateTask().Additional.split(","))
-                .limit((answers.size() * 2L))
+                .limit((long) (answers.size() * 2.5))
                 .collect(Collectors.toList());
 
         Collections.shuffle(additional);
