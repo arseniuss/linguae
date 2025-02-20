@@ -35,7 +35,7 @@
                 android:orientation="vertical">
 
                 <TextView
-                    style="@style/MyAppTheme.TextView.Header"
+                    style="@style/MyAppTheme.TextView.Header.2"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@{viewmodel.Title}"

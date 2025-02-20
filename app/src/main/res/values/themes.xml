@@ -61,9 +61,14 @@
         <item name="android:focusable">true</item>
     </style>
 
-    <style name="MyAppTheme.TextView.Header" parent="MyAppTheme">
+    <style name="MyAppTheme.TextView.Header.1" parent="MyAppTheme">
+        <item name="android:textSize">@dimen/text_size_header_2</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="MyAppTheme.TextView.Header.2" parent="MyAppTheme">
         <item name="android:paddingBottom">10dp</item>
-        <item name="android:textSize">@dimen/text_size_header</item>
+        <item name="android:textSize">@dimen/text_size_header_2</item>
         <item name="android:textStyle">bold</item>
     </style>
 
@@ -86,6 +91,10 @@
 
     <style name="MyAppTheme.Layout.Padded" parent="MyAppTheme">
         <item name="android:padding">@dimen/margin_1</item>
+        <item name="android:layout_margin">@dimen/margin_2</item>
+    </style>
+
+    <style name="MyAppTheme.Layout.Squash" parent="MyAppTheme">
         <item name="android:layout_margin">@dimen/margin_2</item>
     </style>
 

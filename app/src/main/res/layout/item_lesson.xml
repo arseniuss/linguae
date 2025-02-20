@@ -45,7 +45,7 @@
                     android:layout_weight="1"
                     android:paddingBottom="5dp"
                     android:text="@{viewmodel.Name}"
-                    android:textSize="@dimen/text_size_header"
+                    android:textSize="@dimen/text_size_header_2"
                     android:textStyle="bold"
                     tools:text="Lesson\nl" />
 

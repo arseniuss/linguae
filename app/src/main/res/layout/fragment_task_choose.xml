@@ -22,22 +22,21 @@
         android:padding="10dp">
 
         <TextView
+            style="@style/MyAppTheme.Layout.Squash"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="10dp"
             android:gravity="center"
             android:text="@{viewmodel.Description}"
             android:textAlignment="center"
             tools:text="Choose" />
 
         <TextView
+            style="@style/MyAppTheme.TextView.Header.1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
             android:text="@{viewmodel.Word}"
             android:textAlignment="center"
-            android:textSize="24sp"
-            android:textStyle="bold"
             tools:text="amō, amāre" />
 
         <lv.id.arseniuss.linguae.ui.AdapterGridLayout
@@ -47,8 +46,8 @@
             android:layout_marginTop="20dp"
             android:layout_weight="1"
             android:columnCount="2"
-            tools:listitem="@layout/item_task_choose_option"
-            app:items="@{viewmodel.Options}" />
+            app:items="@{viewmodel.Options}"
+            tools:listitem="@layout/item_task_choose_option" />
 
     </LinearLayout>
 </layout>
