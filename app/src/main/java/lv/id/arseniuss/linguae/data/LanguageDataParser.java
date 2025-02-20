@@ -645,6 +645,7 @@ public class LanguageDataParser {
 
         String languageName = "";
         int lessonIndex = 0;
+        int trainingIndex = 0;
 
         String line;
         while ((line = r.readLine()) != null) {
@@ -791,6 +792,8 @@ public class LanguageDataParser {
 
                     t.Training = new Training();
                     t.Training.Id = words[1];
+                    t.Training.Index = trainingIndex++;
+
                     t.Training.Filename = words[1];
 
                     _data.Trainings.put(words[1], t);
