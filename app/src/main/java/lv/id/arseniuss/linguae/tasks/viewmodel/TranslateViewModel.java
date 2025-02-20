@@ -24,20 +24,20 @@ import lv.id.arseniuss.linguae.tasks.AbstractTaskViewModel;
 import lv.id.arseniuss.linguae.tasks.entities.SessionTaskData;
 
 public class TranslateViewModel extends AbstractTaskViewModel {
-    private final MutableLiveData<List<WordViewModel>> _answers =
+    private final MutableLiveData<List<WordViewModel>> _respoonses =
             new MutableLiveData<>(new ArrayList<>());
     private final MutableLiveData<List<WordViewModel>> _options =
             new MutableLiveData<>(new ArrayList<>());
     private final MutableLiveData<String> _answer = new MutableLiveData<>("");
 
-    private final MutableLiveData<Boolean> _isEditMode = new MutableLiveData<>(false);
+    private final MutableLiveData<Boolean> _isClickMode = new MutableLiveData<>(false);
 
     public TranslateViewModel(@NonNull Application application) {
         super(application);
     }
 
-    public MutableLiveData<Boolean> IsEditMode() {
-        return _isEditMode;
+    public MutableLiveData<Boolean> IsClickMode() {
+        return _isClickMode;
     }
 
     public MutableLiveData<String> Answer() {
@@ -51,44 +51,145 @@ public class TranslateViewModel extends AbstractTaskViewModel {
     @Override
     public boolean Validate() {
         boolean isValid = true;
-        List<WordViewModel> responses = Responses().getValue();
+        int points = 0;
+        boolean isClickMode = Boolean.TRUE.equals(IsClickMode().getValue());
         List<List<String>> answers = Arrays.stream(translateTask().Answer)
                 .map(a -> Arrays.stream(a.split("/")).collect(Collectors.toList()))
                 .collect(Collectors.toList());
 
-        assert responses != null;
+        if (isClickMode) {
+            List<WordViewModel> clickedResponses = Responses().getValue();
 
-        final int iterations = max(responses.size(), answers.size());
+            assert clickedResponses != null;
 
-        for (int i = 0; i < iterations; i++) {
-            boolean hasError = true;
-            String response = null;
-            WordViewModel model = null;
-            String correctOptions = "";
+            final int iterations = max(clickedResponses.size(), answers.size());
 
-            if (i < responses.size()) {
-                response = responses.get(i).Option;
-                model = responses.get(i);
+            for (int i = 0; i < iterations; i++) {
+                boolean hasError = true;
+                String response = null;
+                WordViewModel model = null;
+                String correctOptions = "";
+
+                if (i < clickedResponses.size()) {
+                    response = clickedResponses.get(i).Option;
+                    model = clickedResponses.get(i);
+                }
+
+                if (i < answers.size()) {
+                    for (String answer : answers.get(i)) {
+                        if (response != null && Objects.equals(response, answer)) {
+                            hasError = false;
+                            points++;
+                            break;
+                        }
+                    }
+                    correctOptions = translateTask().Answer[i];
+                }
+
+                if (model != null)
+                    model.SetHasError(hasError);
+
+                if (hasError) {
+                    _taskResult.Result.Errors.add(
+                            new TaskError(TaskType.TranslateTask, response, correctOptions));
+                    isValid = false;
+                }
             }
+        } else {
+            int answerIndex = 0;
+            int responseIndex = 0;
+            String answer = Answer().getValue();
 
-            if (i < answers.size()) {
-                for (String answer : answers.get(i)) {
-                    if (response != null && Objects.equals(response, answer)) {
-                        hasError = false;
-                        break;
+            assert answer != null;
+
+            if (answer.charAt(answer.length() - 1) == '.')
+                answer = answer.substring(0, answer.length() - 1);
+
+            String[] writtenResponses = answer.split(" ");
+
+            while (responseIndex < writtenResponses.length && answerIndex < answers.size()) {
+                List<String> answerOptions = answers.get(answerIndex);
+                boolean isOneWord = answerOptions.stream()
+                        .map(a -> Arrays.stream(a.split(" ")).count())
+                        .reduce(Long::max)
+                        .get() == 1;
+                String correctOption = answerOptions.get(0);
+
+                WordViewModel model = new WordViewModel();
+
+                if (isOneWord) {
+                    boolean isCorrect = false;
+
+                    for (String option : answerOptions) {
+                        if (Objects.equals(writtenResponses[responseIndex], option)) {
+                            isCorrect = true;
+                            points++;
+                            model.Option = option;
+                            break;
+                        }
+                    }
+
+                    if (!isCorrect) {
+                        _taskResult.Result.Errors.add(
+                                new TaskError(TaskType.TranslateTask,
+                                        writtenResponses[responseIndex],
+                                        correctOption));
+                        model.Option = writtenResponses[responseIndex];
+                        isValid = false;
+                    }
+
+                    model.SetHasError(!isCorrect);
+                } else {
+                    if (responseIndex + 1 < writtenResponses.length) {
+                        boolean isCorrect = false;
+                        String combinedResponse = writtenResponses[responseIndex] + " " +
+                                writtenResponses[responseIndex + 1];
+
+                        for (String option : answerOptions) {
+                            if (combinedResponse.equals(option)) {
+                                isCorrect = true;
+                                points++;
+                                break;
+                            }
+                        }
+
+                        if (!isCorrect) {
+                            _taskResult.Result.Errors.add(
+                                    new TaskError(TaskType.TranslateTask, combinedResponse,
+                                            correctOption));
+                            model.Option = combinedResponse;
+                            isValid = false;
+                        }
+
+                        model.SetHasError(!isCorrect);
+                        responseIndex += 1;
+                    } else {
+                        _taskResult.Result.Errors.add(
+                                new TaskError(TaskType.TranslateTask,
+                                        writtenResponses[responseIndex],
+                                        correctOption));
+                        isValid = false;
+                        model.Option = writtenResponses[responseIndex];
+                        model.SetHasError(true);
                     }
                 }
-                correctOptions = translateTask().Answer[i];
+
+                Objects.requireNonNull(Responses().getValue()).add(model);
+                responseIndex += 1;
+                answerIndex += 1;
             }
 
-            if (i < responses.size())
-                model.SetHasError(hasError);
 
-            if (hasError) {
-                _taskResult.Result.Errors.add(
-                        new TaskError(TaskType.TranslateTask, response, correctOptions));
-                isValid = false;
+            for (; responseIndex < writtenResponses.length; responseIndex++) {
+                WordViewModel model = new WordViewModel(writtenResponses[responseIndex]);
+
+                model.SetHasError(true);
+
+                Objects.requireNonNull(Responses().getValue()).add(model);
             }
+
+
+            Responses().setValue(Responses().getValue());
         }
 
         _taskResult.Result.Points = isValid ? translateTask().Answer.length : 0;
@@ -100,7 +201,7 @@ public class TranslateViewModel extends AbstractTaskViewModel {
 
     public void SwitchInputMode() {
         if (Boolean.FALSE.equals(_isValidated.getValue())) {
-            _isEditMode.setValue(Boolean.FALSE.equals(_isEditMode.getValue()));
+            _isClickMode.setValue(Boolean.FALSE.equals(_isClickMode.getValue()));
         }
     }
 
@@ -109,7 +210,7 @@ public class TranslateViewModel extends AbstractTaskViewModel {
     }
 
     public MutableLiveData<List<WordViewModel>> Responses() {
-        return _answers;
+        return _respoonses;
     }
 
     public MutableLiveData<List<WordViewModel>> Options() {
@@ -120,8 +221,8 @@ public class TranslateViewModel extends AbstractTaskViewModel {
     public void Load(SessionTaskData task) {
         super.Load(task);
 
-        _isEditMode.setValue(
-                !_sharedPreferences.getBoolean(Constants.PreferenceNoKeyboardKey, false));
+        _isClickMode.setValue(
+                _sharedPreferences.getBoolean(Constants.PreferenceNoKeyboardKey, false));
 
         List<String> answers = Arrays.stream(translateTask().Answer)
                 .map(a -> a.contains("/") ? a.split("/")[0] : a)
@@ -144,11 +245,15 @@ public class TranslateViewModel extends AbstractTaskViewModel {
 
     public static class WordViewModel extends BaseObservable {
 
-        public final String Option;
+        public String Option;
         private final MutableLiveData<Boolean> _hasError = new MutableLiveData<Boolean>(false);
 
         public WordViewModel(String option) {
             Option = option;
+        }
+
+        public WordViewModel() {
+
         }
 
         public MutableLiveData<Boolean> HasError() {

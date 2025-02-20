@@ -66,7 +66,8 @@ public class TranslateFragment extends AbstractTaskFragment<TranslateViewModel> 
         _binding.options.setAdapter(_optionsAdapter);
         _binding.answer.setAdapter(_answerAdapter);
 
-        _listener.OnCanCheckChanged(_answerAdapter.getCount() != 0);
+        if (_listener != null)
+            _listener.OnCanCheckChanged(true);
 
         return _binding.getRoot();
     }
