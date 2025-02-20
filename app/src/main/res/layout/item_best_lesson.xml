@@ -15,20 +15,21 @@
         android:orientation="horizontal">
 
         <TextView
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="left"
             android:layout_weight="1"
             android:text="@{viewmodel.LessonName()}"
-            tools:text="Lesson name" />
+            tools:text="Very long and big lesson name which will take a lot of space" />
 
         <TextView
-            android:layout_width="0dp"
+            style="@style/MyAppTheme.Layout.HorizontalSquash"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="left"
-            android:layout_weight="1"
+            android:layout_weight="0"
             android:text="@{viewmodel.Result()}"
-            tools:text="Lesson name" />
+            tools:text="XX/XX" />
 
     </LinearLayout>
 
