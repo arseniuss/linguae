@@ -27,7 +27,7 @@ import java.util.List;
 import lv.id.arseniuss.linguae.R;
 import lv.id.arseniuss.linguae.databinding.ActivityRepoEditBinding;
 import lv.id.arseniuss.linguae.databinding.ItemLanguageRepoBinding;
-import lv.id.arseniuss.linguae.ui.fragments.EditRepoDialogFragment;
+import lv.id.arseniuss.linguae.ui.dialogs.EditRepoDialogFragment;
 import lv.id.arseniuss.linguae.viewmodel.RepoEditViewModel;
 
 public class RepoEditActivity extends AppCompatActivity {
@@ -90,11 +90,11 @@ public class RepoEditActivity extends AppCompatActivity {
         if (android.R.id.home == item.getItemId()) {
             new MaterialAlertDialogBuilder(this)
                     .setMessage(R.string.SaveRepositoriesTitle)
-                    .setPositiveButton(android.R.string.yes, (dialog, which) -> {
+                    .setPositiveButton(R.string.yes, (dialog, which) -> {
                         setData();
                         finish();
                     })
-                    .setNegativeButton(android.R.string.no, (dialog, which) -> {
+                    .setNegativeButton(R.string.no, (dialog, which) -> {
                         finish();
                     })
                     .show();

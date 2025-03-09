@@ -15,6 +15,7 @@
     </data>
 
     <LinearLayout
+        android:id="@+id/content"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
@@ -50,7 +51,7 @@
                 android:layout_weight="0"
                 android:background="@drawable/button2"
                 android:contentDescription="@string/DescriptionReportABug"
-                android:onClick="@{() -> presenter.OnReportABug()}"
+                android:onClick="@{() -> presenter.OnReportBug()}"
                 android:padding="3dp"
                 app:srcCompat="@drawable/baseline_bug_report_24" />
 

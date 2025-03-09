@@ -62,8 +62,8 @@ public class StartActivity extends AppCompatActivity {
 
     private void requestDatabaseUpdate(StartViewModel.ConfirmResponseCallback callback) {
         new MaterialAlertDialogBuilder(this).setMessage(R.string.MessageConfirmUpdate)
-                .setPositiveButton(android.R.string.ok, (d, w) -> callback.ConfirmResponse(true))
-                .setNegativeButton(android.R.string.no, (d, w) -> callback.ConfirmResponse(false))
+                .setPositiveButton(R.string.ok, (d, w) -> callback.ConfirmResponse(true))
+                .setNegativeButton(R.string.no, (d, w) -> callback.ConfirmResponse(false))
                 .show();
     }
 

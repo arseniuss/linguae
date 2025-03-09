@@ -72,4 +72,10 @@
     <string name="TitleNextTraining">Next training</string>
     <string name="TitleNextTheory">Next theory</string>
     <string name="TitleBestLessons">Best lessons</string>
+    <string name="TitleReportABug">Report a bug</string>
+    <string name="SaveBugReportTitle">Do you want to save a bug report?</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="cancel">Cancel</string>
+    <string name="ok">OK</string>
 </resources>

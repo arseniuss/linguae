@@ -69,6 +69,11 @@
             android:exported="false"
             android:label="@string/TitleTaskList"
             android:theme="@style/MyAppTheme" />
+        <activity
+            android:name=".ui.activities.BugReportActivity"
+            android:exported="false"
+            android:label="@string/TitleReportABug"
+            android:theme="@style/MyAppTheme" />
     </application>
 
 </manifest>

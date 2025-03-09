@@ -1,8 +1,7 @@
-package lv.id.arseniuss.linguae.ui.fragments;
+package lv.id.arseniuss.linguae.ui.dialogs;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Intent;
 import android.net.Uri;
@@ -17,15 +16,17 @@ import androidx.documentfile.provider.DocumentFile;
 import androidx.fragment.app.DialogFragment;
 import androidx.lifecycle.MutableLiveData;
 
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+
 import java.util.Objects;
 
 import lv.id.arseniuss.linguae.R;
-import lv.id.arseniuss.linguae.databinding.FragmentEditLanguageRepoBinding;
+import lv.id.arseniuss.linguae.databinding.DialogEditLanguageRepoBinding;
 
 public class EditRepoDialogFragment extends DialogFragment {
     private static final int REQUEST_CODE_OPEN_DIRECTORY = 101;
     private final ViewModel _model;
-    private FragmentEditLanguageRepoBinding _binding;
+    private DialogEditLanguageRepoBinding _binding;
     private OnSaveListener _onSaved = null;
 
     public EditRepoDialogFragment() {
@@ -45,10 +46,10 @@ public class EditRepoDialogFragment extends DialogFragment {
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(requireContext());
         LayoutInflater inflater = requireActivity().getLayoutInflater();
 
-        _binding = DataBindingUtil.inflate(inflater, R.layout.fragment_edit_language_repo,
+        _binding = DataBindingUtil.inflate(inflater, R.layout.dialog_edit_language_repo,
                 null, false);
 
         _binding.setViewmodel(_model);

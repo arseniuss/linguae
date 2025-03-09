@@ -26,7 +26,6 @@ import lv.id.arseniuss.linguae.Constants;
 import lv.id.arseniuss.linguae.db.LanguageDatabase;
 import lv.id.arseniuss.linguae.db.dataaccess.TaskDataAccess;
 import lv.id.arseniuss.linguae.db.entities.SessionResultWithTaskResults;
-import lv.id.arseniuss.linguae.db.entities.Task;
 import lv.id.arseniuss.linguae.tasks.entities.SessionTaskData;
 
 public class SessionViewModel extends AndroidViewModel {
@@ -46,14 +45,17 @@ public class SessionViewModel extends AndroidViewModel {
     ScheduledExecutorService _scheduledExecutorService =
             Executors.newSingleThreadScheduledExecutor();
     private int _counter = 0;
+    private boolean _counterRunning = true;
     private List<SessionTaskData> _tasks = new ArrayList<>();
 
     public SessionViewModel(@NonNull Application application) {
         super(application);
 
-        _scheduledExecutorService.scheduleAtFixedRate(() -> {
-            _counter += 1;
-            _counterString.postValue(_counter + " s");
+        _scheduledExecutorService.scheduleWithFixedDelay(() -> {
+            if (_counterRunning) {
+                _counter += 1;
+                _counterString.postValue(_counter + " s");
+            }
         }, 0, 1, TimeUnit.SECONDS);
     }
 
@@ -81,6 +83,10 @@ public class SessionViewModel extends AndroidViewModel {
                     _tasks = tasks.stream().map(SessionTaskData::new).collect(Collectors.toList());
                     NextTask(loaded);
                 }, throwable -> loaded.Loaded(throwable.getMessage()));
+    }
+
+    public void SetCounterRunning(boolean isRunning) {
+        _counterRunning = isRunning;
     }
 
     public void NextTask(ILoaded loaded) {

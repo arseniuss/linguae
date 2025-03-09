@@ -8,8 +8,12 @@ import androidx.room.TypeConverter;
 import androidx.room.TypeConverters;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParseException;
 import com.google.gson.JsonParser;
 import com.google.gson.annotations.SerializedName;
 
@@ -72,7 +76,13 @@ public class Task {
         JsonElement jelement = JsonParser.parseString(str);
         JsonObject jobject = jelement.getAsJsonObject();
 
-        switch (TaskType.ValueOf(jobject.get("type").getAsString())) {
+        return deserialize(jobject);
+    }
+
+    private static ITaskData deserialize(JsonObject jsonObject) {
+        String str = jsonObject.toString();
+
+        switch (TaskType.ValueOf(jsonObject.get("type").getAsString())) {
             case SelectTask:
                 return new Gson().fromJson(str, SelectTask.class);
             case ChooseTask:
@@ -85,6 +95,21 @@ public class Task {
                 return new Gson().fromJson(str, DeclineTask.class);
             default:
                 return null;
+        }
+    }
+
+    public static Gson GetGson() {
+        return new GsonBuilder()
+                .registerTypeAdapter(ITaskData.class, new TaskDataTypeAdapter())
+                .create();
+    }
+
+    public static class TaskDataTypeAdapter implements JsonDeserializer<ITaskData> {
+
+        @Override
+        public ITaskData deserialize(JsonElement json, java.lang.reflect.Type typeOfT,
+                                     JsonDeserializationContext context) throws JsonParseException {
+            return Task.deserialize(json.getAsJsonObject());
         }
     }
 

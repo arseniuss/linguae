@@ -5,11 +5,11 @@
 
         <variable
             name="presenter"
-            type="lv.id.arseniuss.linguae.ui.fragments.EditRepoDialogFragment" />
+            type="lv.id.arseniuss.linguae.ui.dialogs.EditRepoDialogFragment" />
 
         <variable
             name="viewmodel"
-            type="lv.id.arseniuss.linguae.ui.fragments.EditRepoDialogFragment.ViewModel" />
+            type="lv.id.arseniuss.linguae.ui.dialogs.EditRepoDialogFragment.ViewModel" />
     </data>
 
     <LinearLayout

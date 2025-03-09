@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <data>
+
+        <variable
+            name="presenter"
+            type="lv.id.arseniuss.linguae.ui.dialogs.BugReportDialogFragment" />
+    </data>
+
+    <LinearLayout
+        style="@style/MyAppTheme.Layout.RoundedPadded"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            style="@style/MyAppTheme.TextView.Header.2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="Bug location" />
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:onClick="@{() -> presenter.OnApplicationBugClick()}"
+            android:text="In application" />
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:onClick="@{() -> presenter.OnContentBugClick()}"
+            android:text="In content" />
+
+    </LinearLayout>
+</layout>

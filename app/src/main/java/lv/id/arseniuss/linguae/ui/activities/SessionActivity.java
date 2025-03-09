@@ -1,7 +1,9 @@
 package lv.id.arseniuss.linguae.ui.activities;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.view.View;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AppCompatActivity;
@@ -17,6 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import lv.id.arseniuss.linguae.R;
+import lv.id.arseniuss.linguae.Utilities;
 import lv.id.arseniuss.linguae.databinding.ActivitySessionBinding;
 import lv.id.arseniuss.linguae.db.dataaccess.TaskDataAccess;
 import lv.id.arseniuss.linguae.tasks.AbstractTaskFragment;
@@ -26,10 +29,12 @@ import lv.id.arseniuss.linguae.tasks.ui.ConjugateFragment;
 import lv.id.arseniuss.linguae.tasks.ui.DeclineFragment;
 import lv.id.arseniuss.linguae.tasks.ui.SelectFragment;
 import lv.id.arseniuss.linguae.tasks.ui.TranslateFragment;
+import lv.id.arseniuss.linguae.ui.dialogs.BugReportDialogFragment;
 import lv.id.arseniuss.linguae.viewmodel.SessionViewModel;
 
 public class SessionActivity extends AppCompatActivity
-        implements AbstractTaskFragment.TaskChangeListener {
+        implements AbstractTaskFragment.TaskChangeListener,
+        BugReportDialogFragment.DialogActionListener {
     public static final String LessonExtraTag = "LESSON";
     public static final String TrainingExtraTag = "TRAINING";
     public static final String TrainingCategoriesExtraTag = "TRAINING_CATEGORIES";
@@ -76,10 +81,10 @@ public class SessionActivity extends AppCompatActivity
             @Override
             public void handleOnBackPressed() {
                 new MaterialAlertDialogBuilder(_this).setMessage(R.string.MessageEditSession)
-                        .setPositiveButton(android.R.string.yes, (dialog, which) -> {
+                        .setPositiveButton(R.string.yes, (dialog, which) -> {
                             finish();
                         })
-                        .setNegativeButton(android.R.string.cancel, (dialog, which) -> {
+                        .setNegativeButton(R.string.cancel, (dialog, which) -> {
                         })
                         .show();
             }
@@ -98,8 +103,12 @@ public class SessionActivity extends AppCompatActivity
         finish();
     }
 
-    public void OnReportABug() {
+    public void OnReportBug() {
+        BugReportDialogFragment bugReportDialogFragment = new BugReportDialogFragment();
 
+        _model.SetCounterRunning(false);
+
+        bugReportDialogFragment.show(getSupportFragmentManager(), "fragment-report-bug");
     }
 
     public void OnCheckClicked() {
@@ -126,7 +135,7 @@ public class SessionActivity extends AppCompatActivity
     private void loaded(String error) {
         if (error != null) {
             new MaterialAlertDialogBuilder(this).setMessage(error)
-                    .setNeutralButton(android.R.string.ok, (dialog, which) -> finish())
+                    .setNeutralButton(R.string.ok, (dialog, which) -> finish())
                     .show();
         } else {
             createFragment();
@@ -162,5 +171,40 @@ public class SessionActivity extends AppCompatActivity
     @Override
     public void OnCanCheckChanged(boolean canCheck) {
         _model.CanCheck().setValue(canCheck);
+    }
+
+    @Override
+    public void OnCancelBugReport() {
+        _model.SetCounterRunning(true);
+    }
+
+    @Override
+    public void OnApplicationBug() {
+        Intent i = new Intent(this, BugReportActivity.class);
+        View rootView = getWindow().getDecorView().getRootView();
+        SessionTaskData sessionTaskData = _model.GetTask(_model.CurrentTaskIndex);
+        String taskData = new Gson().toJson(sessionTaskData.Task);
+
+        rootView.setDrawingCacheEnabled(true);
+
+        Bitmap bitmap = Bitmap.createBitmap(rootView.getDrawingCache());
+
+        rootView.setDrawingCacheEnabled(false);
+
+        i.putExtra(BugReportActivity.TASK_KEY, taskData);
+        i.putExtra(BugReportActivity.IMAGE_KEY, Utilities.BitmapToBase64(bitmap));
+
+        startActivity(i);
+    }
+
+    @Override
+    public void OnContentBug() {
+        Intent i = new Intent(this, BugReportActivity.class);
+        SessionTaskData sessionTaskData = _model.GetTask(_model.CurrentTaskIndex);
+        String taskData = new Gson().toJson(sessionTaskData.Task);
+
+        i.putExtra(BugReportActivity.TASK_KEY, taskData);
+
+        startActivity(i);
     }
 }

@@ -11,6 +11,5 @@ public class SessionTaskData {
     public SessionTaskData(Task task) {
         this.Task = task;
         this.Result = new TaskResult(task);
-
     }
 }
