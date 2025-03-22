@@ -11,7 +11,7 @@ android {
         minSdkVersion 24
         targetSdkVersion 34
         versionCode 1
-        versionName '1.0'
+        versionName 'v0.0.1'
 
         testInstrumentationRunner = 'androidx.test.runner.AndroidJUnitRunner'
         vectorDrawables {
@@ -22,15 +22,25 @@ android {
     buildTypes {
         debug {
             applicationIdSuffix '.debug'
-            resValue("string", "DefaultLanguageRepositories", "https://raw.githubusercontent.com/arseniuss/linguae-data/refs/heads/master/,http://10.0.2.2:8000/,http://192.168.88.253:8000/,http://example.com")
+            resValue("string", "DefaultLanguageRepositories",
+                    "https://raw.githubusercontent.com/arseniuss/linguae-data/refs/heads/master/," +
+                            "http://10.0.2.2:8000/," + "http://192.168.88.253:8000/," + "http://example.com")
         }
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             resValue("string", "DefaultLanguageRepositories", "https://raw.githubusercontent.com/arseniuss/linguae-data/refs/heads/master/")
-            signingConfig signingConfigs.debug
         }
     }
+
+    applicationVariants.configureEach { variant ->
+        variant.outputs.each { output ->
+            def version = project.hasProperty('gitTag') ? project.gitTag : variant.versionName
+            def apkName = "linguae-app-${version}-${variant.buildType.name}.apk"
+            output.outputFileName = apkName
+        }
+    }
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
