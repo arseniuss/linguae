@@ -8,15 +8,11 @@ android {
 
     defaultConfig {
         minSdk 24
-
-
-        consumerProguardFiles "consumer-rules.pro"
     }
 
     buildTypes {
         release {
             minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
     compileOptions {
@@ -24,8 +20,42 @@ android {
         targetCompatibility JavaVersion.VERSION_11
     }
 
-    dependencies {
-        implementation 'com.google.code.gson:gson:2.11.0'
+
+}
+
+dependencies {
+    implementation 'com.google.code.gson:gson:2.11.0'
+}
+
+configurations {
+    jarDependencies {
+        canBeResolved = true
+        canBeConsumed = false
+        extendsFrom implementation
     }
 }
 
+task createRunnableJar(type: Jar) {
+    archiveBaseName.set("linguae-parser")
+
+    // Add compiled classes from the release folder
+    from fileTree(dir: "$buildDir/intermediates/javac/debug/compileDebugJavaWithJavac/classes", includes: ["**/*.class"])
+
+    // If that directory doesn't exist, you can try this instead (for merged classes)
+    // from fileTree(dir: "$buildDir/intermediates/merged_java_res/release/classes", includes: ["**/*.class"])
+
+    // Include dependencies, resolve jars, and handle duplicates
+    from {
+        configurations.jarDependencies.collect {
+            it.isDirectory() ? it : zipTree(it)
+        }
+    }
+
+    // Handle duplicate files by excluding them
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+
+    // Define the main class to make the JAR runnable
+    manifest {
+        attributes 'Main-Class': 'lv.id.arseniuss.linguae.Main'
+    }
+}
