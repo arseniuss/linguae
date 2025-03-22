@@ -6,11 +6,11 @@
 
         <variable
             name="presenter"
-            type="lv.id.arseniuss.linguae.ui.fragments.LessonsFragment" />
+            type="lv.id.arseniuss.linguae.app.ui.fragments.LessonsFragment" />
 
         <variable
             name="viewmodel"
-            type="lv.id.arseniuss.linguae.viewmodel.LessonsViewModel.EntryViewModel" />
+            type="lv.id.arseniuss.linguae.app.viewmodel.LessonsViewModel.EntryViewModel" />
     </data>
 
     <LinearLayout

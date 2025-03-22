@@ -7,11 +7,11 @@
 
         <variable
             name="presenter"
-            type="lv.id.arseniuss.linguae.tasks.ui.ConjugateFragment" />
+            type="lv.id.arseniuss.linguae.app.tasks.ui.ConjugateFragment" />
 
         <variable
             name="viewmodel"
-            type="lv.id.arseniuss.linguae.tasks.viewmodel.ConjugateViewModel" />
+            type="lv.id.arseniuss.linguae.app.tasks.viewmodel.ConjugateViewModel" />
     </data>
 
     <LinearLayout

@@ -7,11 +7,11 @@
 
         <variable
             name="presenter"
-            type="lv.id.arseniuss.linguae.ui.activities.RepoEditActivity" />
+            type="lv.id.arseniuss.linguae.app.ui.activities.RepoEditActivity" />
 
         <variable
             name="viewmodel"
-            type="lv.id.arseniuss.linguae.viewmodel.RepoEditViewModel" />
+            type="lv.id.arseniuss.linguae.app.viewmodel.RepoEditViewModel" />
     </data>
 
     <androidx.recyclerview.widget.RecyclerView

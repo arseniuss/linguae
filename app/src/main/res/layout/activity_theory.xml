@@ -7,11 +7,11 @@
 
         <variable
             name="viewmodel"
-            type="lv.id.arseniuss.linguae.viewmodel.TheoryViewModel" />
+            type="lv.id.arseniuss.linguae.app.viewmodel.TheoryViewModel" />
 
         <variable
             name="presenter"
-            type="lv.id.arseniuss.linguae.ui.activities.TheoryActivity" />
+            type="lv.id.arseniuss.linguae.app.ui.activities.TheoryActivity" />
     </data>
 
     <LinearLayout

@@ -6,11 +6,11 @@
 
         <variable
             name="presenter"
-            type="lv.id.arseniuss.linguae.ui.activities.RepoEditActivity.RepoEditAdapter.ItemLanguageRepoViewHolder" />
+            type="lv.id.arseniuss.linguae.app.ui.activities.RepoEditActivity.RepoEditAdapter.ItemLanguageRepoViewHolder" />
 
         <variable
             name="viewmodel"
-            type="lv.id.arseniuss.linguae.viewmodel.RepoEditViewModel.EditRepoViewModel" />
+            type="lv.id.arseniuss.linguae.app.viewmodel.RepoEditViewModel.EditRepoViewModel" />
     </data>
 
     <LinearLayout

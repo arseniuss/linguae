@@ -6,28 +6,28 @@
     app:startDestination="@+id/nav_summary">
     <fragment
         android:id="@+id/nav_summary"
-        android:name="lv.id.arseniuss.linguae.ui.fragments.SummaryFragment"
+        android:name="lv.id.arseniuss.linguae.app.ui.fragments.SummaryFragment"
         android:label="@string/TitleSummary"
         tools:layout="@layout/fragment_summary" />
     <fragment
         android:id="@+id/nav_lessons"
-        android:name="lv.id.arseniuss.linguae.ui.fragments.LessonsFragment"
+        android:name="lv.id.arseniuss.linguae.app.ui.fragments.LessonsFragment"
         android:label="@string/TitleLessons"
         tools:layout="@layout/fragment_lessons" />
 
     <fragment
         android:id="@+id/nav_training"
-        android:name="lv.id.arseniuss.linguae.ui.fragments.TrainingsFragment"
+        android:name="lv.id.arseniuss.linguae.app.ui.fragments.TrainingsFragment"
         android:label="@string/TitleTrainings"
         tools:layout="@layout/fragment_trainings" />
     <fragment
         android:id="@+id/nav_theory"
-        android:name="lv.id.arseniuss.linguae.ui.fragments.TheoriesFragment"
+        android:name="lv.id.arseniuss.linguae.app.ui.fragments.TheoriesFragment"
         android:label="@string/TitleTheories"
         tools:layout="@layout/fragment_theories" />
     <fragment
         android:id="@+id/nav_license"
-        android:name="lv.id.arseniuss.linguae.ui.fragments.LicensesFragment"
+        android:name="lv.id.arseniuss.linguae.app.ui.fragments.LicensesFragment"
         android:label="@string/TitleLicenses"
         tools:layout="@layout/fragment_licenses" />
 </navigation>

@@ -5,11 +5,11 @@
 
         <variable
             name="presenter"
-            type="lv.id.arseniuss.linguae.ui.activities.BugReportActivity" />
+            type="lv.id.arseniuss.linguae.app.ui.activities.BugReportActivity" />
 
         <variable
             name="viewmodel"
-            type="lv.id.arseniuss.linguae.viewmodel.BugReportViewModel" />
+            type="lv.id.arseniuss.linguae.app.viewmodel.BugReportViewModel" />
     </data>
 
     <LinearLayout

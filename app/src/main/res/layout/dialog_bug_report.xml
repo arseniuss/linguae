@@ -5,7 +5,7 @@
 
         <variable
             name="presenter"
-            type="lv.id.arseniuss.linguae.ui.dialogs.BugReportDialogFragment" />
+            type="lv.id.arseniuss.linguae.app.ui.dialogs.BugReportDialogFragment" />
     </data>
 
     <LinearLayout

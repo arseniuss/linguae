@@ -7,11 +7,11 @@
 
         <variable
             name="presenter"
-            type="lv.id.arseniuss.linguae.tasks.ui.TranslateFragment" />
+            type="lv.id.arseniuss.linguae.app.tasks.ui.TranslateFragment" />
 
         <variable
             name="viewmodel"
-            type="lv.id.arseniuss.linguae.tasks.viewmodel.TranslateViewModel" />
+            type="lv.id.arseniuss.linguae.app.tasks.viewmodel.TranslateViewModel" />
     </data>
 
     <LinearLayout
@@ -59,7 +59,7 @@
                     android:layout_height="match_parent"
                     tools:ignore="UselessParent">
 
-                    <lv.id.arseniuss.linguae.ui.AdapterFlexboxLayout
+                    <lv.id.arseniuss.linguae.app.ui.AdapterFlexboxLayout
                         android:id="@+id/answer"
                         items="@{viewmodel.Responses()}"
                         android:layout_width="match_parent"
@@ -105,7 +105,7 @@
                     android:layout_height="match_parent"
                     android:background="@drawable/corners2">
 
-                    <lv.id.arseniuss.linguae.ui.AdapterFlexboxLayout
+                    <lv.id.arseniuss.linguae.app.ui.AdapterFlexboxLayout
                         android:id="@+id/options"
                         items="@{viewmodel.Options()}"
                         android:layout_width="match_parent"

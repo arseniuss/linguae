@@ -4,15 +4,15 @@
 
     <data>
 
-        <import type="lv.id.arseniuss.linguae.tasks.AbstractTaskAnswerViewModel.TaskState" />
+        <import type="lv.id.arseniuss.linguae.app.tasks.AbstractTaskAnswerViewModel" />
 
         <variable
             name="presenter"
-            type="lv.id.arseniuss.linguae.tasks.ui.ChooseFragment.OptionAdapter.ChoseViewHolder" />
+            type="lv.id.arseniuss.linguae.app.tasks.ui.ChooseFragment.OptionAdapter.ChoseViewHolder" />
 
         <variable
             name="viewmodel"
-            type="lv.id.arseniuss.linguae.tasks.viewmodel.ChooseViewModel.OptionViewModel" />
+            type="lv.id.arseniuss.linguae.app.tasks.viewmodel.ChooseViewModel.OptionViewModel" />
     </data>
 
     <LinearLayout

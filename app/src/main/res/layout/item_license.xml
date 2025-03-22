@@ -7,7 +7,7 @@
 
         <variable
             name="viewmodel"
-            type="lv.id.arseniuss.linguae.viewmodel.LicenseViewModel.EntryViewModel" />
+            type="lv.id.arseniuss.linguae.app.viewmodel.LicenseViewModel.EntryViewModel" />
     </data>
 
     <LinearLayout

@@ -6,7 +6,7 @@
 
         <variable
             name="viewmodel"
-            type="lv.id.arseniuss.linguae.tasks.viewmodel.DeclineViewModel.CaseViewModel" />
+            type="lv.id.arseniuss.linguae.app.tasks.viewmodel.DeclineViewModel.CaseViewModel" />
     </data>
 
     <LinearLayout

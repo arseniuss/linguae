@@ -8,11 +8,11 @@
 
         <variable
             name="presenter"
-            type="lv.id.arseniuss.linguae.tasks.ui.SelectFragment.WordAdapter.WordViewHolder" />
+            type="lv.id.arseniuss.linguae.app.tasks.ui.SelectFragment" />
 
         <variable
             name="viewmodel"
-            type="lv.id.arseniuss.linguae.tasks.viewmodel.SelectViewModel.WordViewModel" />
+            type="lv.id.arseniuss.linguae.app.tasks.viewmodel.SelectViewModel.WordViewModel" />
     </data>
 
 

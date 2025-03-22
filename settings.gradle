@@ -20,4 +20,6 @@ dependencyResolutionManagement {
 }
 
 rootProject.name = 'Sīc locūtus'
+
 include ':app'
+include ':parser'

@@ -7,11 +7,11 @@
 
         <variable
             name="viewmodel"
-            type="lv.id.arseniuss.linguae.viewmodel.SessionResultViewModel" />
+            type="lv.id.arseniuss.linguae.app.viewmodel.SessionResultViewModel" />
 
         <variable
             name="presenter"
-            type="lv.id.arseniuss.linguae.ui.activities.SessionResultActivity" />
+            type="lv.id.arseniuss.linguae.app.ui.activities.SessionResultActivity" />
     </data>
 
     <LinearLayout
@@ -96,7 +96,7 @@
 
                 </LinearLayout>
 
-                <lv.id.arseniuss.linguae.ui.AdapterLinearLayout
+                <lv.id.arseniuss.linguae.app.ui.AdapterLinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"

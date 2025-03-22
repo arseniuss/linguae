@@ -7,11 +7,11 @@
 
         <variable
             name="viewmodel"
-            type="lv.id.arseniuss.linguae.viewmodel.SessionViewModel" />
+            type="lv.id.arseniuss.linguae.app.viewmodel.SessionViewModel" />
 
         <variable
             name="presenter"
-            type="lv.id.arseniuss.linguae.ui.activities.SessionActivity" />
+            type="lv.id.arseniuss.linguae.app.ui.activities.SessionActivity" />
     </data>
 
     <LinearLayout
@@ -19,7 +19,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        tools:context=".ui.activities.SessionActivity">
+        tools:context=".app.ui.activities.SessionActivity">
 
         <LinearLayout
             style="@style/MyAppTheme.Layout.Squash"

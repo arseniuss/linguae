@@ -7,11 +7,11 @@
 
         <variable
             name="presenter"
-            type="lv.id.arseniuss.linguae.ui.fragments.LicensesFragment" />
+            type="lv.id.arseniuss.linguae.app.ui.fragments.LicensesFragment" />
 
         <variable
             name="viewmodel"
-            type="lv.id.arseniuss.linguae.viewmodel.LicenseViewModel" />
+            type="lv.id.arseniuss.linguae.app.viewmodel.LicenseViewModel" />
     </data>
 
     <LinearLayout

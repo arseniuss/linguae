@@ -7,11 +7,11 @@
 
         <variable
             name="presenter"
-            type="lv.id.arseniuss.linguae.ui.fragments.SummaryFragment" />
+            type="lv.id.arseniuss.linguae.app.ui.fragments.SummaryFragment" />
 
         <variable
             name="viewmodel"
-            type="lv.id.arseniuss.linguae.viewmodel.SummaryViewModel" />
+            type="lv.id.arseniuss.linguae.app.viewmodel.SummaryViewModel" />
     </data>
 
     <LinearLayout
@@ -48,7 +48,7 @@
                 android:divider="@drawable/divider_2"
                 android:orientation="vertical"
                 android:showDividers="middle"
-                tools:context=".ui.fragments.SummaryFragment">
+                tools:context=".app.ui.fragments.SummaryFragment">
 
                 <LinearLayout
                     style="@style/MyAppTheme.RoundedPadded"
@@ -189,7 +189,7 @@
                         android:layout_height="wrap_content"
                         android:text="@string/TitleBestLessons" />
 
-                    <lv.id.arseniuss.linguae.ui.AdapterLinearLayout
+                    <lv.id.arseniuss.linguae.app.ui.AdapterLinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="vertical"

@@ -6,7 +6,7 @@
 
         <variable
             name="viewmodel"
-            type="lv.id.arseniuss.linguae.viewmodel.ItemMarkdownViewModel" />
+            type="lv.id.arseniuss.linguae.app.viewmodel.ItemMarkdownViewModel" />
     </data>
 
     <TextView

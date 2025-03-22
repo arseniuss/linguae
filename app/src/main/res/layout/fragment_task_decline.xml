@@ -7,11 +7,11 @@
 
         <variable
             name="presenter"
-            type="lv.id.arseniuss.linguae.tasks.ui.DeclineFragment" />
+            type="lv.id.arseniuss.linguae.app.tasks.ui.DeclineFragment" />
 
         <variable
             name="viewmodel"
-            type="lv.id.arseniuss.linguae.tasks.viewmodel.DeclineViewModel" />
+            type="lv.id.arseniuss.linguae.app.tasks.viewmodel.DeclineViewModel" />
     </data>
 
     <LinearLayout

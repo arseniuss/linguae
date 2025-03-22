@@ -6,11 +6,11 @@
 
         <variable
             name="viewmodel"
-            type="lv.id.arseniuss.linguae.viewmodel.LessonSummaryViewModel" />
+            type="lv.id.arseniuss.linguae.app.viewmodel.LessonSummaryViewModel" />
 
         <variable
             name="presenter"
-            type="lv.id.arseniuss.linguae.ui.activities.LessonSummaryActivity" />
+            type="lv.id.arseniuss.linguae.app.ui.activities.LessonSummaryActivity" />
     </data>
 
     <ScrollView
@@ -36,7 +36,7 @@
                     android:layout_marginBottom="@dimen/margin_2"
                     android:text="@string/TitleVocabulary" />
 
-                <lv.id.arseniuss.linguae.ui.AdapterFlexboxLayout
+                <lv.id.arseniuss.linguae.app.ui.AdapterFlexboxLayout
                     items="@{viewmodel.Vocabulary()}"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -62,7 +62,7 @@
                     android:layout_marginBottom="@dimen/margin_2"
                     android:text="@string/TitleSentences" />
 
-                <lv.id.arseniuss.linguae.ui.AdapterFlexboxLayout
+                <lv.id.arseniuss.linguae.app.ui.AdapterFlexboxLayout
                     items="@{viewmodel.Sentences()}"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

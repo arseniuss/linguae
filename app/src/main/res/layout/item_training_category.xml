@@ -6,11 +6,11 @@
 
         <variable
             name="viewmodel"
-            type="lv.id.arseniuss.linguae.viewmodel.TrainingSetupViewModel.TrainingCategoryViewModel" />
+            type="lv.id.arseniuss.linguae.app.viewmodel.TrainingSetupViewModel.TrainingCategoryViewModel" />
 
         <variable
             name="presenter"
-            type="lv.id.arseniuss.linguae.ui.activities.TrainingSetupActivity" />
+            type="lv.id.arseniuss.linguae.app.ui.activities.TrainingSetupActivity" />
     </data>
 
     <CheckBox

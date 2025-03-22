@@ -6,11 +6,11 @@
 
         <variable
             name="presenter"
-            type="lv.id.arseniuss.linguae.tasks.ui.TranslateFragment.WordAdapter.WordViewHolder" />
+            type="lv.id.arseniuss.linguae.app.tasks.ui.TranslateFragment.WordAdapter.WordViewHolder" />
 
         <variable
             name="viewmodel"
-            type="lv.id.arseniuss.linguae.tasks.viewmodel.TranslateViewModel.WordViewModel" />
+            type="lv.id.arseniuss.linguae.app.tasks.viewmodel.TranslateViewModel.WordViewModel" />
     </data>
 
     <TextView

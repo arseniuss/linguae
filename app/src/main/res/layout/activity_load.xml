@@ -5,11 +5,11 @@
 
         <variable
             name="viewmodel"
-            type="lv.id.arseniuss.linguae.viewmodel.StartViewModel" />
+            type="lv.id.arseniuss.linguae.app.viewmodel.StartViewModel" />
 
         <variable
             name="presenter"
-            type="lv.id.arseniuss.linguae.ui.activities.StartActivity" />
+            type="lv.id.arseniuss.linguae.app.ui.activities.StartActivity" />
     </data>
 
     <LinearLayout

@@ -7,11 +7,11 @@
 
         <variable
             name="presenter"
-            type="lv.id.arseniuss.linguae.tasks.ui.ChooseFragment" />
+            type="lv.id.arseniuss.linguae.app.tasks.ui.ChooseFragment" />
 
         <variable
             name="viewmodel"
-            type="lv.id.arseniuss.linguae.tasks.viewmodel.ChooseViewModel" />
+            type="lv.id.arseniuss.linguae.app.tasks.viewmodel.ChooseViewModel" />
     </data>
 
     <LinearLayout
@@ -39,7 +39,7 @@
             android:textAlignment="center"
             tools:text="amō, amāre" />
 
-        <lv.id.arseniuss.linguae.ui.AdapterGridLayout
+        <lv.id.arseniuss.linguae.app.ui.AdapterGridLayout
             android:id="@+id/options"
             android:layout_width="match_parent"
             android:layout_height="0dp"

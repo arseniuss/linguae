@@ -6,7 +6,7 @@
 
         <variable
             name="viewmodel"
-            type="lv.id.arseniuss.linguae.viewmodel.SummaryViewModel.BestLessonViewModel" />
+            type="lv.id.arseniuss.linguae.app.viewmodel.SummaryViewModel.BestLessonViewModel" />
     </data>
 
     <LinearLayout
