@@ -23,7 +23,7 @@
             android:gravity="center_vertical"
             android:minWidth="75dp"
             android:text="@{viewmodel.PersonName()}"
-            tools:text="datīvus" />
+            tools:text="I. pers. sg." />
 
         <ViewAnimator
             android:layout_width="wrap_content"

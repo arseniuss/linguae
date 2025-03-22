@@ -16,6 +16,7 @@ public class Configuration {
     public static final String IMAGE_URL_KEY = "image-url";
     public static final String IMAGE_KEY = "image";
     public static final String AUTHOR_KEY = "author";
+    public static final String CODE_KEY = "code";
 
     private static final List<OnConfigChangedListener> _listeners = new ArrayList<>();
     private static Map<String, String> _configs;
@@ -28,6 +29,12 @@ public class Configuration {
     public static String GetLanguageVersion() {
         if (_configs.containsKey(VERSION_KEY))
             return _configs.get(VERSION_KEY);
+        return null;
+    }
+
+    public static String GetLanguageCode() {
+        if (_configs.containsKey(CODE_KEY))
+            return _configs.get(CODE_KEY);
         return null;
     }
 

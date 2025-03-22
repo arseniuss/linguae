@@ -23,9 +23,9 @@ import lv.id.arseniuss.linguae.databinding.FragmentLessonsBinding;
 import lv.id.arseniuss.linguae.databinding.ItemLessonBinding;
 import lv.id.arseniuss.linguae.db.dataaccess.LessonDataAccess;
 import lv.id.arseniuss.linguae.ui.MyRecyclerViewAdapter;
+import lv.id.arseniuss.linguae.ui.activities.LessonSummaryActivity;
 import lv.id.arseniuss.linguae.ui.activities.MainActivity;
 import lv.id.arseniuss.linguae.ui.activities.SessionActivity;
-import lv.id.arseniuss.linguae.ui.activities.TaskListActivity;
 import lv.id.arseniuss.linguae.ui.activities.TheoryActivity;
 import lv.id.arseniuss.linguae.viewmodel.LessonsViewModel;
 
@@ -112,6 +112,14 @@ public class LessonsFragment extends Fragment {
         return adapter;
     }
 
+    public void OnLessonClick(LessonsViewModel.EntryViewModel entryViewModel) {
+        Intent i = new Intent(getContext(), SessionActivity.class);
+
+        i.putExtra(SessionActivity.LessonExtraTag, entryViewModel.getNo());
+
+        startActivity(i);
+    }
+
     public void OnTheoryClick(LessonsViewModel.EntryViewModel entryViewModel) {
         Intent i = new Intent(getContext(), TheoryActivity.class);
 
@@ -122,10 +130,10 @@ public class LessonsFragment extends Fragment {
     }
 
     public void OnSummaryClick(LessonsViewModel.EntryViewModel entryViewModel) {
-        Intent i = new Intent(getContext(), TaskListActivity.class);
+        Intent i = new Intent(getContext(), LessonSummaryActivity.class);
 
-        i.putExtra(TaskListActivity.LessonExtraTag, entryViewModel.getNo());
-        i.putExtra(TaskListActivity.LessonNameExtraTag, entryViewModel.getName());
+        i.putExtra(LessonSummaryActivity.LessonExtraTag, entryViewModel.getNo());
+        i.putExtra(LessonSummaryActivity.LessonNameExtraTag, entryViewModel.getName());
 
         startActivity(i);
     }

@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <variable
+            name="viewmodel"
+            type="lv.id.arseniuss.linguae.viewmodel.LessonSummaryViewModel" />
+
+        <variable
+            name="presenter"
+            type="lv.id.arseniuss.linguae.ui.activities.LessonSummaryActivity" />
+    </data>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <LinearLayout
+                style="@style/MyAppTheme.Layout.RoundedPadded"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="@{viewmodel.HasVocabulary()}">
+
+                <TextView
+                    style="@style/MyAppTheme.TextView.Header.1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/margin_2"
+                    android:text="@string/TitleVocabulary" />
+
+                <lv.id.arseniuss.linguae.ui.AdapterFlexboxLayout
+                    items="@{viewmodel.Vocabulary()}"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:minHeight="10dp"
+                    app:dividerDrawable="@drawable/divider_1"
+                    app:flexWrap="wrap"
+                    app:itemLayout="@layout/item_bubble_markdown"
+                    app:justifyContent="flex_start"
+                    app:showDivider="middle" />
+            </LinearLayout>
+
+            <LinearLayout
+                style="@style/MyAppTheme.Layout.RoundedPadded"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="@{viewmodel.HasSentences()}">
+
+                <TextView
+                    style="@style/MyAppTheme.TextView.Header.1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/margin_2"
+                    android:text="@string/TitleSentences" />
+
+                <lv.id.arseniuss.linguae.ui.AdapterFlexboxLayout
+                    items="@{viewmodel.Sentences()}"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:minHeight="10dp"
+                    app:dividerDrawable="@drawable/divider_1"
+                    app:flexWrap="wrap"
+                    app:justifyContent="flex_start"
+                    app:showDivider="middle" />
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+</layout>

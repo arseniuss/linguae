@@ -1,6 +1,7 @@
 package lv.id.arseniuss.linguae.ui;
 
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.database.DataSetObserver;
 import android.util.AttributeSet;
 import android.view.View;
@@ -8,8 +9,11 @@ import android.widget.Adapter;
 
 import com.google.android.flexbox.FlexboxLayout;
 
+import lv.id.arseniuss.linguae.R;
+
 public class AdapterFlexboxLayout extends FlexboxLayout {
     private Adapter _adapter;
+    private int _itemLayoutResId;
 
     private final DataSetObserver _dataSetObserver = new DataSetObserver() {
         @Override
@@ -25,10 +29,24 @@ public class AdapterFlexboxLayout extends FlexboxLayout {
 
     public AdapterFlexboxLayout(Context context, AttributeSet attrs) {
         super(context, attrs);
+        init(context, attrs);
     }
 
     public AdapterFlexboxLayout(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+        init(context, attrs);
+    }
+
+    private void init(Context context, AttributeSet attrs) {
+        TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.AdapterLinearLayout);
+
+        _itemLayoutResId = a.getResourceId(R.styleable.AdapterLinearLayout_itemLayout, 0);
+
+        a.recycle();
+    }
+
+    public int getItemLayoutResId() {
+        return _itemLayoutResId;
     }
 
     public Adapter getAdapter() {

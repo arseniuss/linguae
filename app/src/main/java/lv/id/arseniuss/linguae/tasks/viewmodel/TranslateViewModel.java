@@ -229,7 +229,7 @@ public class TranslateViewModel extends AbstractTaskViewModel {
                 .collect(Collectors.toList());
 
         List<String> additional = Arrays.stream(translateTask().Additional.split(","))
-                .limit((long) (answers.size() * 2.5))
+                .limit((long) (answers.size() * 0.75))
                 .collect(Collectors.toList());
 
         Collections.shuffle(additional);

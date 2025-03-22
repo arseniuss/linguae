@@ -72,7 +72,7 @@ public class SummaryViewModel extends AndroidViewModel {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(bestLessons -> {
                     _lessons.setValue(
-                            bestLessons.stream().map(l -> new BestLessonViewModel(l)).collect(
+                            bestLessons.stream().map(BestLessonViewModel::new).collect(
                                     Collectors.toList()));
                 });
     }

@@ -25,7 +25,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:text="@string/TextDeclineANoun"
+            android:textSize="24sp"
+            android:text="@string/TextDecline"
             android:textAlignment="center" />
 
         <TextView
@@ -34,7 +35,8 @@
             android:gravity="center"
             android:text="@{viewmodel.Description}"
             android:textAlignment="center"
-            tools:text="nominativus, singular" />
+            android:textSize="16sp"
+            tools:text="masculīnum, singulāris" />
 
         <TextView
             android:layout_width="match_parent"

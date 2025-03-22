@@ -13,10 +13,15 @@ import android.util.Base64;
 import android.util.TypedValue;
 import android.widget.Toast;
 
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
+
+import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URL;
@@ -27,8 +32,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Stack;
 import java.util.stream.Collectors;
-
-import javax.net.ssl.HttpsURLConnection;
 
 import io.reactivex.rxjava3.core.Single;
 
@@ -228,6 +231,39 @@ public class Utilities {
             InputStream input = Utilities.GetInputStream(context, imageUrl);
 
             return BitmapFactory.decodeStream(input);
+        });
+    }
+
+    public static Single<JsonElement> FetchJson(String jsonUrl) {
+        return Single.fromCallable(() -> {
+            URL url = new URL(jsonUrl);
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+
+            try {
+                connection.setRequestMethod("GET");
+                connection.setConnectTimeout(2000);
+                connection.setReadTimeout(2000);
+
+                int responseCode = connection.getResponseCode();
+                if (responseCode != HttpURLConnection.HTTP_OK) {
+                    throw new Exception("HTTP error code: " + responseCode);
+                }
+
+                InputStream inputStream = connection.getInputStream();
+                BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
+                StringBuilder result = new StringBuilder();
+                String line;
+
+                while ((line = reader.readLine()) != null) {
+                    result.append(line);
+                }
+
+                reader.close();
+
+                return JsonParser.parseString(result.toString());
+            } finally {
+                connection.disconnect();
+            }
         });
     }
 }

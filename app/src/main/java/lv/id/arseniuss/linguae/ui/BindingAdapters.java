@@ -3,6 +3,9 @@ package lv.id.arseniuss.linguae.ui;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
+import android.graphics.text.LineBreaker;
+import android.os.Build;
+import android.text.Layout;
 import android.view.View;
 import android.widget.Adapter;
 import android.widget.AdapterView;
@@ -28,13 +31,17 @@ import io.noties.markwon.ext.tables.TablePlugin;
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.disposables.Disposable;
 import io.reactivex.rxjava3.schedulers.Schedulers;
+import lv.id.arseniuss.linguae.R;
 import lv.id.arseniuss.linguae.Utilities;
 
 public class BindingAdapters {
+    private static Markwon _markwonNoLinks = null;
+    private static Markwon _markwon = null;
+
 
     @BindingAdapter("items")
     public static <T extends BaseObservable>
-    void SetAdapterLinearLayoutItems(AdapterLinearLayout container, List<T> entries) {
+    void SetAdapterLinearLayoutObservableItems(AdapterLinearLayout container, List<T> entries) {
         if (entries == null || container.getItemLayoutResId() == 0) return;
 
         Adapter adapter = container.getAdapter();
@@ -58,6 +65,76 @@ public class BindingAdapters {
         myAdapter.clear();
         myAdapter.addAll(entries);
         myAdapter.notifyDataSetChanged();
+    }
+
+    @BindingAdapter("items")
+    public static <T extends BaseObservable>
+    void SetAdapterFlexboxLayoutObservableItems(AdapterFlexboxLayout container,
+                                                List<T> entries) {
+        if (entries == null) return;
+
+        Adapter adapter = container.getAdapter();
+
+        if (!(adapter instanceof MyAdapter)) {
+            Context context = container.getContext();
+            LifecycleOwner lifecycleOwner = null;
+
+            if (context instanceof LifecycleOwner) {
+                lifecycleOwner = (LifecycleOwner) context;
+            }
+
+            adapter = new MyAdapter<T>(container.getContext(), lifecycleOwner,
+                    container.getItemLayoutResId());
+            container.setAdapter(adapter);
+        }
+
+        MyAdapter<T> myAdapter = (MyAdapter<T>) container.getAdapter();
+
+        myAdapter.clear();
+        myAdapter.addAll(entries);
+        myAdapter.notifyDataSetChanged();
+    }
+
+    @BindingAdapter("items")
+    public static void SetAdapterLinearLayoutItems(AdapterLinearLayout container,
+                                                   List<String> entries) {
+        if (entries == null) return;
+
+        Adapter adapter = container.getAdapter();
+
+        if (!(adapter instanceof ArrayAdapter)) {
+            Context context = container.getContext();
+
+            adapter = new ArrayAdapter<String>(context, R.layout.item_bubble_string);
+            container.setAdapter(adapter);
+        }
+
+        ArrayAdapter<String> stringArrayAdapter = (ArrayAdapter<String>) container.getAdapter();
+
+        stringArrayAdapter.clear();
+        stringArrayAdapter.addAll(entries);
+        stringArrayAdapter.notifyDataSetChanged();
+    }
+
+    @BindingAdapter("items")
+    public static void SetAdapterFlexboxLayoutItems(AdapterFlexboxLayout container,
+                                                    List<String> entries) {
+        if (entries == null) return;
+
+        Adapter adapter = container.getAdapter();
+
+        if (!(adapter instanceof ArrayAdapter)) {
+            Context context = container.getContext();
+
+            adapter = new ArrayAdapter<String>(context, R.layout.item_bubble_string);
+            container.setAdapter(adapter);
+        }
+
+        ArrayAdapter<String> stringArrayAdapter = (ArrayAdapter<String>) container.getAdapter();
+
+        stringArrayAdapter.clear();
+        stringArrayAdapter.addAll(entries);
+        stringArrayAdapter.notifyDataSetChanged();
     }
 
     @BindingAdapter("android:items")
@@ -151,21 +228,39 @@ public class BindingAdapters {
         }
     }
 
-    @BindingAdapter("markdown")
-    public static void SetMarkdown(TextView textView, String text) {
-        final Markwon markwon =
-                Markwon.builder(textView.getContext())
-                        .usePlugin(TablePlugin.create(textView.getContext()))
-                        .build();
+    @BindingAdapter("markdown.nolinks")
+    public static void SetMarkdownNoLinks(TextView textView, String text) {
+        if (_markwonNoLinks == null) {
+            _markwonNoLinks = Markwon.builder(textView.getContext())
+                    .usePlugin(TablePlugin.create(textView.getContext()))
+                    .build();
+        }
 
         if (text != null && !text.isEmpty()) {
-            markwon.setMarkdown(textView, text);
+            _markwonNoLinks.setMarkdown(textView, text);
+            textView.setMovementMethod(null);
         } else {
             textView.setText("");
         }
     }
 
-    @BindingAdapter("binding:divider")
+    @BindingAdapter("markdown")
+    public static void SetMarkdown(TextView textView, String text) {
+        if (_markwon == null) {
+            _markwon = Markwon.builder(textView.getContext())
+                    .usePlugin(TablePlugin.create(textView.getContext()))
+                    .usePlugin(WiktionaryLinkMarkwonPlugin.create(textView.getContext()))
+                    .build();
+        }
+
+        if (text != null && !text.isEmpty()) {
+            _markwon.setMarkdown(textView, text);
+        } else {
+            textView.setText("");
+        }
+    }
+
+    @BindingAdapter("divider")
     public static void SetRecycleViewSpacing(RecyclerView recyclerView, Drawable divider) {
         if (recyclerView == null) return;
 

@@ -23,11 +23,11 @@
     <string name="LanguageRepoEditNameTitle">Name</string>
     <string name="LanguageRepoLocationTitle">Location</string>
     <string name="title_activity_language_repo">Language repositories</string>
-    <string name="TextDeclineANoun">Decline a noun</string>
+    <string name="TextDecline">Decline</string>
     <string name="TrainingSettingsDescription">Training settings</string>
     <string name="TitleTrainingSetup">Training setup</string>
     <string name="ButtonContinueText">Continue?</string>
-    <string name="TextConjugateAVerb">Conjugate a verb</string>
+    <string name="TextConjugate">Conjugate</string>
     <string name="ButtonCheckTitle">Check</string>
     <string name="MessageEditSession">Do you really want to exit this session?</string>
     <string name="TitleSessionResult">Session results</string>
@@ -78,4 +78,6 @@
     <string name="no">No</string>
     <string name="cancel">Cancel</string>
     <string name="ok">OK</string>
+    <string name="TitleVocabulary">Vocabulary</string>
+    <string name="TitleSentences">Sentences</string>
 </resources>

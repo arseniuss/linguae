@@ -11,18 +11,20 @@ import io.reactivex.rxjava3.core.Single;
 @Dao
 public abstract class SummaryDataAccess {
 
-    @Query("SELECT l.name, SUM(tr.points), SUM(tr.amount) FROM task_result tr " +
-            "INNER JOIN lesson_task lt ON lt.task_id = tr.task_id INNER JOIN lesson l ON l.id = lt.lesson_id LIMIT 3")
+    @Query("SELECT l.name, SUM(tr.points) AS points, SUM(tr.amount) AS amount " +
+            " FROM task_result tr " +
+            "INNER JOIN lesson_task lt ON lt.task_id = tr.task_id " +
+            "INNER JOIN lesson l ON l.id = lt.lesson_id GROUP BY l.id ORDER BY points DESC LIMIT 3")
     public abstract Single<List<BestLesson>> GetBestLessons();
 
     public static class BestLesson {
         @ColumnInfo(name = "name")
         public String Name;
 
-        @ColumnInfo(name = "SUM(tr.points)")
+        @ColumnInfo(name = "points")
         public Integer Points;
 
-        @ColumnInfo(name = "SUM(tr.amount)")
+        @ColumnInfo(name = "amount")
         public Integer Amount;
     }
 }

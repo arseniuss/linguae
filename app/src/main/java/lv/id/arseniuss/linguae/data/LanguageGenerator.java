@@ -37,10 +37,20 @@ public class LanguageGenerator {
                                     .collect(Collectors.joining(", ")));
         }
 
-        for (String option : options) {
+        for (int option_index = 0; option_index < options.length; option_index++) {
+            String option = options[option_index];
+
             OptionalInt optionalInt = IntStream.range(0, description.List.length)
-                    .filter(i -> Objects.equals(description.List[i], option))
+                    .filter(j -> Objects.equals(description.List[j], option))
                     .findAny();
+
+            if (!optionalInt.isPresent()) {
+                int finalI = option_index;
+
+                optionalInt = IntStream.range(0, description.List.length)
+                        .filter(j -> j == finalI)
+                        .findAny();
+            }
 
             if (!optionalInt.isPresent()) {
                 throw new GeneratorException(

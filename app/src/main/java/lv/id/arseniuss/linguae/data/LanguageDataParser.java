@@ -137,7 +137,7 @@ public class LanguageDataParser {
                         .filter(s -> !s.isEmpty())
                         .toArray(String[]::new);
 
-                long count = Arrays.stream(selectTask.Sentence)
+                long selectedCount = Arrays.stream(selectTask.Sentence)
                         .filter(w -> w.startsWith("<") && w.endsWith(">"))
                         .count();
 
@@ -145,8 +145,11 @@ public class LanguageDataParser {
 
                 selectTask.Answers = answers.split(",");
 
-                if (count != Arrays.stream(selectTask.Answers).count()) {
-                    logError("Answer count doesn't match number of words to be selected");
+                long answerCount = Arrays.stream(selectTask.Answers).count();
+
+                if (selectedCount != answerCount) {
+                    logError("Answer count doesn't match number of words to be selected " +
+                            selectedCount + "/" + answerCount);
                     return false;
                 }
 
@@ -185,29 +188,40 @@ public class LanguageDataParser {
                 declineTask.Cases = references1.split(",", -1);
 
                 if (references2.startsWith(_gen_prefix)) {
-                    Optional<LanguageGenerator.Description> description = _generators.stream()
+                    List<LanguageGenerator.Description> descriptions = _generators.stream()
                             .filter(d -> d.TaskType == task.Type &&
                                     Objects.equals(d.Category, task.Category) &&
                                     Objects.equals(d.Description, task.Description))
-                            .findAny();
+                            .collect(Collectors.toList());
 
-                    if (!description.isPresent()) {
+                    if (descriptions.isEmpty()) {
                         logError("There is no generator for " + task.Type.GetName() + " " +
                                 task.Category + " " +
                                 task.Description);
                         return false;
                     }
 
-                    try {
-                        String base = references2.substring(_gen_prefix.length());
+                    String[] generated = null;
+                    String base = references2.substring(_gen_prefix.length());
+                    String error = "";
 
-                        declineTask.Answers =
-                                LanguageGenerator.Generate(description.get(), task, base,
-                                        declineTask.Cases);
-                    } catch (LanguageGenerator.GeneratorException ex) {
-                        logError(ex.getMessage());
+                    for (LanguageGenerator.Description description : descriptions) {
+                        try {
+                            generated =
+                                    LanguageGenerator.Generate(description, task, base,
+                                            declineTask.Cases);
+                            break;
+                        } catch (LanguageGenerator.GeneratorException e) {
+                            error = e.getMessage();
+                        }
+                    }
+
+                    if (generated == null) {
+                        logError("Could not generate answers for " + base + ": " + error);
                         return false;
                     }
+
+                    declineTask.Answers = generated;
                 } else {
                     declineTask.Answers = references2.split(",", -1);
 
@@ -430,6 +444,9 @@ public class LanguageDataParser {
 
             String keyword = words[0].trim().toLowerCase();
 
+            if (keyword.equals("stop") && words.length == 1)
+                break;
+
             switch (keyword) {
                 case "name":
                     if (words.length != 2) {
@@ -463,7 +480,9 @@ public class LanguageDataParser {
                         continue;
                     }
 
-                    references.put(words[1], words[2]);
+                    String resolved = resolveReferences(words[2], references);
+
+                    references.put(words[1], resolved);
                     break;
                 case "task":
                     Task task = new Task();
@@ -507,6 +526,103 @@ public class LanguageDataParser {
         return new ArrayList<>(tasks.values());
     }
 
+    private boolean parseGeneratorDecl(String[] words, Map<String, String> references) throws
+            Exception {
+        if (words.length != 7) {
+            logError(
+                    "Expected format: gen <task type> <task category> <task description> <list> <gen " +
+                            "rules>");
+            return false;
+        }
+
+        LanguageGenerator.Description description = new LanguageGenerator.Description();
+
+        if ((description.TaskType = TaskType.ValueOf(words[1])) == null) {
+            logError("Generator task type is not set");
+            return false;
+        }
+
+        description.Category = resolveReferences(words[2], references);
+        description.Description = resolveReferences(words[3], references);
+        String[] pattern = resolveReferences(words[4], references).split("-", -1);
+        description.List = resolveReferences(words[5], references).split(",", -1);
+        description.Rules = resolveReferences(words[6], references).split(",", -1);
+
+        if (description.List.length != description.Rules.length) {
+            logError("Generator list is not the same as rules: " + description.List.length + "/" +
+                    description.Rules.length);
+            return false;
+        }
+
+        String regex = Arrays.stream(pattern)
+                .map(p -> p.isEmpty() ? "(.*?)" : "(" + p + ")")
+                .collect(Collectors.joining());
+
+        description.Pattern = Pattern.compile("^" + regex + "$");
+        description.Groups = pattern.length;
+
+        _generators.add(description);
+
+        return true;
+    }
+
+    private void parseInclude(String base, String includeFile,
+                              Map<String, Task> tasks,
+                              Map<String, String> references) throws Exception {
+        _filename = includeFile;
+
+        log(Log.INFO, "Parsing include file: " + includeFile);
+
+        InputStream lessonFileStream = getFile(base + "/" + includeFile);
+        LineNumberReader r =
+                new LineNumberReader(new BufferedReader(new InputStreamReader(lessonFileStream)));
+
+        String line;
+
+        while ((line = r.readLine()) != null) {
+            _line = r.getLineNumber();
+            String[] words = getWords(line, r);
+
+            if (words.length == 0) continue;
+
+            String keyword = words[0].trim().toLowerCase();
+
+            if (keyword.equals("stop") && words.length == 1)
+                break;
+
+            switch (keyword) {
+                case "gen":
+                    if (!parseGeneratorDecl(words, references))
+                        continue;
+                    break;
+                case "ref":
+                    if (words.length != 3) {
+                        logError("Expected format: ref <name> <text>");
+                        continue;
+                    }
+
+                    String resolved = resolveReferences(words[2], references);
+
+                    references.put(words[1], resolved);
+                    break;
+                case "task":
+                    Task task = new Task();
+
+                    if (!parseTask(task, line, words, references)) continue;
+
+                    if (tasks.containsKey(task.Id)) {
+                        logError("Task " + task.Id + " already exists!");
+                        continue;
+                    }
+
+                    tasks.put(task.Id, task);
+                    break;
+                default:
+                    logError("Unrecognised keyword in include file: " + keyword);
+            }
+        }
+    }
+
     private Collection<Task> parseLessonFile(String base, LessonWithAttrs l) throws Exception {
         _filename = l.Lesson.Id;
 
@@ -528,6 +644,9 @@ public class LanguageDataParser {
 
             String keyword = words[0].trim().toLowerCase();
 
+            if (keyword.equals("stop") && words.length == 1)
+                break;
+
             switch (keyword) {
                 case "theory":
                     if (words.length != 2) {
@@ -547,7 +666,9 @@ public class LanguageDataParser {
                         continue;
                     }
 
-                    references.put(words[1], words[2]);
+                    String resolved = resolveReferences(words[2], references);
+
+                    references.put(words[1], resolved);
                     break;
                 case "name":
                     if (words.length != 2) {
@@ -609,6 +730,14 @@ public class LanguageDataParser {
 
                     lessonTasks.put(words[1], new Task(words[1]));
                     break;
+                case "include":
+                    if (words.length != 2) {
+                        logError("Expecting format: include <filename>");
+                        continue;
+                    }
+
+                    parseInclude(base, words[1], lessonTasks, references);
+                    break;
                 default:
                     logError("Unrecognised keyword in lesson file: " + keyword);
             }
@@ -656,41 +785,13 @@ public class LanguageDataParser {
 
             String keyword = words[0].trim().toLowerCase();
 
+            if (keyword.equals("stop") && words.length == 1)
+                break;
+
             switch (keyword) {
                 case "gen":
-                    if (words.length != 7) {
-                        logError(
-                                "Expected format: gen <task type> <task category> <task description> <list> <gen " +
-                                        "rules>");
+                    if (!parseGeneratorDecl(words, _references))
                         continue;
-                    }
-
-                    LanguageGenerator.Description description = new LanguageGenerator.Description();
-
-                    if ((description.TaskType = TaskType.ValueOf(words[1])) == null) {
-                        logError("Generator task type is not set");
-                        continue;
-                    }
-
-                    description.Category = resolveReferences(words[2], _references);
-                    description.Description = resolveReferences(words[3], _references);
-                    String[] pattern = resolveReferences(words[4], _references).split("-", -1);
-                    description.List = resolveReferences(words[5], _references).split(",", -1);
-                    description.Rules = resolveReferences(words[6], _references).split(",", -1);
-
-                    if (description.List.length != description.Rules.length) {
-                        logError("Generator list os not the same as rules");
-                        continue;
-                    }
-
-                    String regex = Arrays.stream(pattern)
-                            .map(p -> p.isEmpty() ? "(.*?)" : "(" + p + ")")
-                            .collect(Collectors.joining());
-
-                    description.Pattern = Pattern.compile("^" + regex + "$");
-                    description.Groups = pattern.length;
-
-                    _generators.add(description);
                     break;
                 case "ref":
                     if (words.length != 3) {
@@ -698,7 +799,9 @@ public class LanguageDataParser {
                         continue;
                     }
 
-                    _references.put(words[1], words[2]);
+                    String resolved = resolveReferences(words[2], _references);
+
+                    _references.put(words[1], resolved);
                     break;
                 case "name":
                     if (!languageName.isEmpty()) {
@@ -811,13 +914,16 @@ public class LanguageDataParser {
                     _data.LanguageVersion = words[1];
                     _data.Config.put("version", _data.LanguageVersion);
                     break;
+                /* general configuration */
                 case "author":
+                case "code":
+                case "translation":
                     if (words.length != 2) {
-                        logError("Expecting format: author <version>");
+                        logError("Expecting format: " + keyword + " <text>");
                         continue;
                     }
 
-                    _data.Config.put("author", words[1]);
+                    _data.Config.put(keyword, words[1]);
                     break;
                 case "setting":
                     if (words.length != 5) {
@@ -879,12 +985,12 @@ public class LanguageDataParser {
 
             return _throwError || !_hasError;
         } catch (FileNotFoundException e) {
-            log(Log.INFO, "File not found: " + e.getMessage());
+            log(Log.INFO, _filename + ":" + _line + "file not found: " + e.getMessage());
         } catch (ParserException e) {
-            log(Log.INFO, "Parsing error: " + e.getMessage());
+            log(Log.INFO, _filename + ":" + _line + "parsing error: " + e.getMessage());
         } catch (Exception e) {
             Log.e("TAG", "Error", e);
-            log(Log.INFO, "Error: " + e);
+            log(Log.INFO, _filename + ":" + _line + ": error:" + e);
         }
 
         return false;
@@ -931,7 +1037,7 @@ public class LanguageDataParser {
             log(Log.INFO, "Parsing error: " + e.getMessage());
         } catch (Exception e) {
             Log.e("TAG", "Error", e);
-            log(Log.INFO, "Error: " + e);
+            log(Log.INFO, _filename + ":" + _line + ": error:" + e);
         }
 
         return false;
@@ -957,6 +1063,9 @@ public class LanguageDataParser {
 
             String keyword = words[0].trim().toLowerCase();
 
+            if (keyword.equals("stop") && words.length == 1)
+                break;
+
             switch (keyword) {
                 case "ref":
                     if (words.length != 3) {
@@ -964,7 +1073,9 @@ public class LanguageDataParser {
                         continue;
                     }
 
-                    references.put(words[1], words[2]);
+                    String resolved = resolveReferences(words[2], references);
+
+                    references.put(words[1], resolved);
                     break;
                 case "description":
                     if (words.length != 2) {
@@ -1040,6 +1151,9 @@ public class LanguageDataParser {
                     if (words.length == 0) continue;
 
                     String keyword = words[0].trim().toLowerCase();
+
+                    if (keyword.equals("stop") && words.length == 1)
+                        break;
 
                     switch (keyword) {
                         case "name":
