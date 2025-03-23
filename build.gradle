@@ -4,3 +4,7 @@ plugins {
     id 'com.android.library' version '8.8.2' apply false
     id 'maven-publish'
 }
+
+ext {
+    versionName = project.hasProperty('gitTag') ? project.gitTag : "v0.0.1"
+}

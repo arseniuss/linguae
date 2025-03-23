@@ -11,7 +11,7 @@ android {
         minSdkVersion 24
         targetSdkVersion 34
         versionCode 1
-        versionName 'v0.0.1'
+        versionName rootProject.ext.versionName
 
         vectorDrawables {
             useSupportLibrary = true
@@ -34,7 +34,7 @@ android {
 
     applicationVariants.configureEach { variant ->
         variant.outputs.each { output ->
-            def version = project.hasProperty('gitTag') ? project.gitTag : variant.versionName
+            def version = rootProject.ext.versionName
             def apkName = "linguae-app-${version}-${variant.buildType.name}.apk"
             output.outputFileName = apkName
         }

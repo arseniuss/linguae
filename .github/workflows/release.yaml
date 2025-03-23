@@ -1,4 +1,4 @@
-name: Android Release
+name: Create Release
 
 on:
   push:
@@ -34,9 +34,6 @@ jobs:
           GIT_TAG: ${{ github.ref_name }}
         run: ./gradlew assembleRelease -PgitTag=${{ github.ref_name }}
 
-      - name: List APK files
-        run: ls -lah app/build/outputs/apk/release/
-
       - name: Sign APK
         env:
           KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
@@ -61,9 +58,41 @@ jobs:
           name: release-apk
           path: app/build/outputs/apk/release/linguae-app-${{ github.ref_name }}.apk
 
+  parser:
+    name: Build content repository parser
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up JDK
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Setup Gradle Caching
+        uses: gradle/gradle-build-action@v2
+
+      - name: Build parser
+        env:
+          GIT_TAG: ${{ github.ref_name }}
+        run: |
+          ./gradlew createRunnableJar -PgitTag=${{ github.ref_name }}
+
+      - name: Test parser
+        run: java -jar parser/build/libs/linguae-parser-${{ github.ref_name }}.jar -h
+      
+      - name: Upload Java executable
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-jar
+          path: parser/build/libs/linguae-parser-${{ github.ref_name }}.jar
+
   release:
     name: Create GitHub Release
-    needs: build
+    needs: [build, parser]
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -99,14 +128,22 @@ jobs:
         with:
           name: release-apk
           path: ./downloads/
+      
+      - name: Download Built Jar
+        uses: actions/download-artifact@v4
+        with:
+          name: release-jar
+          path: ./downloads/
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v1
         with:
-          files: ./downloads/linguae-app-${{ github.ref_name }}.apk
+          files: |
+            ./downloads/linguae-app-${{ github.ref_name }}.apk
+            ./downloads/linguae-parser-${{ github.ref_name }}.jar
           token: ${{ secrets.GITHUB_TOKEN }}
           tag_name: ${{ github.ref_name }}
-          draft: true
+          draft: false
           generate_release_notes: true
           prerelease: true
           name: Release of ${{ github.ref_name }}

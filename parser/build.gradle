@@ -35,8 +35,10 @@ configurations {
     }
 }
 
-task createRunnableJar(type: Jar) {
-    archiveBaseName.set("linguae-parser")
+def versionName = rootProject.ext.versionName
+
+task createRunnableJar(type: Jar, dependsOn: build) {
+    archiveBaseName.set("linguae-parser-${versionName}")
 
     // Add compiled classes from the release folder
     from fileTree(dir: "$buildDir/intermediates/javac/debug/compileDebugJavaWithJavac/classes", includes: ["**/*.class"])
