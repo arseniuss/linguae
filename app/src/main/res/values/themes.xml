@@ -108,6 +108,11 @@
         <item name="android:layout_marginBottom">@dimen/margin_2</item>
     </style>
 
+    <style name="MyAppTheme.Layout.VerticalPadding" parent="MyAppTheme">
+        <item name="android:paddingTop">@dimen/margin_2</item>
+        <item name="android:paddingBottom">@dimen/margin_2</item>
+    </style>
+
     <style name="MyAppTheme.Rounded" parent="MyAppTheme">
         <item name="android:background">@drawable/button</item>
     </style>
