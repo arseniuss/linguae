@@ -48,7 +48,7 @@ public class WiktionaryLinkMarkwonPlugin extends AbstractMarkwonPlugin {
 
         if (!langVariants.isEmpty()) {
 
-            builder.append("**Wiktionary on ").append(word).append("**\n\n");
+            builder.append("**Wiktionary:").append("**\n\n");
 
             for (JsonElement langVariantElement : langVariants) {
                 JsonObject langVariantObject = langVariantElement.getAsJsonObject();
