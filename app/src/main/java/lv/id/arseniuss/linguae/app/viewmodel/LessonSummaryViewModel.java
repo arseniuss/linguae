@@ -19,7 +19,6 @@ import io.reactivex.rxjava3.disposables.Disposable;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 import lv.id.arseniuss.linguae.app.Configuration;
 import lv.id.arseniuss.linguae.app.Constants;
-import lv.id.arseniuss.linguae.app.Utilities;
 import lv.id.arseniuss.linguae.app.db.LanguageDatabase;
 import lv.id.arseniuss.linguae.app.db.dataaccess.TaskDataAccess;
 import lv.id.arseniuss.linguae.app.db.entities.TaskEntity;
@@ -112,8 +111,7 @@ public class LessonSummaryViewModel extends AndroidViewModel {
                     }
 
                     if (word != null) {
-                        final String markdown =
-                                "[" + word + "](wikt:" + Utilities.StripAccents(word) + ")";
+                        final String markdown = word;
 
                         if (vocabulary.stream()
                                 .noneMatch(w -> Objects.equals(w.Markdown, markdown)))

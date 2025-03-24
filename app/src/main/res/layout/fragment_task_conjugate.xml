@@ -39,10 +39,10 @@
             tools:text="coniogātio prīmum" />
 
         <TextView
+            markdown="@{viewmodel.Word}"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:text="@{viewmodel.Word}"
             android:textAlignment="center"
             android:textSize="24sp"
             android:textStyle="bold"
