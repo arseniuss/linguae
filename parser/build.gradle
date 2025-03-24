@@ -43,9 +43,6 @@ task createRunnableJar(type: Jar, dependsOn: build) {
     // Add compiled classes from the release folder
     from fileTree(dir: "$buildDir/intermediates/javac/debug/compileDebugJavaWithJavac/classes", includes: ["**/*.class"])
 
-    // If that directory doesn't exist, you can try this instead (for merged classes)
-    // from fileTree(dir: "$buildDir/intermediates/merged_java_res/release/classes", includes: ["**/*.class"])
-
     // Include dependencies, resolve jars, and handle duplicates
     from {
         configurations.jarDependencies.collect {
