@@ -9,6 +9,7 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Random;
@@ -125,8 +126,12 @@ public class ConjugateViewModel extends AbstractTaskViewModel {
 
         public PersonViewModel(String person, List<String> options, String correct,
                                Boolean noKeyboard) {
+            List<String> o = new ArrayList<>(options);
+
+            Collections.shuffle(o);
+
             _personName.setValue(person);
-            _options.setValue(options);
+            _options.setValue(o);
             _correct = correct;
             if (noKeyboard) _state.setValue(TaskState.STATE_CHOOSE.ordinal());
             else _state.setValue(TaskState.STATE_EDIT.ordinal());
