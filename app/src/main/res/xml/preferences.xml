@@ -53,7 +53,7 @@
             android:layout_height="wrap_content"
             android:defaultValue="6"
             android:key="@string/ChooseOptionCountKey"
-            android:title="Answer option count in choose task"
+            android:title="@string/TitleChooseTaskOptions"
             app:useSimpleSummaryProvider="true" />
     </PreferenceCategory>
 </PreferenceScreen>

@@ -23,7 +23,7 @@ android {
             applicationIdSuffix '.debug'
             resValue("string", "DefaultLanguageRepositories",
                     "https://raw.githubusercontent.com/arseniuss/linguae-data/refs/heads/master/," +
-                            "http://10.0.2.2:8000/," + "http://192.168.88.253:8000/," + "http://example.com")
+                            "http://10.0.2.2:8000/," + "http://172.16.255.255:8000/," + "http://example.com")
         }
         release {
             minifyEnabled false

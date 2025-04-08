@@ -78,6 +78,9 @@
     <string name="PreferenceRepositoryLanguageNotSelected">Repository and language is not selected</string>
     <string name="PreferenceRepositoryLanguageTitle">Repository and language</string>
     <string name="PreferenceDefaultLocaleCodeKey" translatable="false">en</string>
+    <string name="TitleChooseTaskOptions">Answer option count in choose task</string>
+    <string name="NotEnoughTrainingTasksMessage">Not enough tasks in the training (got: %d, needs: %d)</string>
+    <string name="NotEnoughLessonTasksMessage">Not enough tasks in the lesson (got: %d, needs: %d)</string>
     <plurals name="RepositoryCount">
         <item quantity="one">%d repository</item>
         <item quantity="zero">%d repositories</item>

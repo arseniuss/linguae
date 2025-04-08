@@ -15,8 +15,7 @@ import lv.id.arseniuss.linguae.app.db.entities.SettingEntity;
 import lv.id.arseniuss.linguae.app.db.entities.TaskEntity;
 import lv.id.arseniuss.linguae.types.TaskType;
 
-@Dao
-public abstract class TaskDataAccess {
+@Dao public abstract class TaskDataAccess {
     @Query("SELECT task_id FROM lesson_task WHERE lesson_id = :lessonId")
     protected abstract List<String> GetLessonTasks(String lessonId);
 
@@ -49,9 +48,7 @@ public abstract class TaskDataAccess {
             int taskCount = GetLessonTaskCount(lessonId);
 
             if (taskCount < count) {
-                throw new RuntimeException(
-                        "Not enough tasks in the lesson (got: " + taskCount + ", needs: " + count +
-                                ")");
+                throw new NotEnoughLessonTasksException(taskCount, count);
             }
 
             int[] indexes = new SecureRandom().ints(0, taskCount).distinct().limit(count).toArray();
@@ -81,9 +78,7 @@ public abstract class TaskDataAccess {
             }
 
             if (taskIds.size() < count) {
-                throw new RuntimeException(
-                        "Not enough tasks in the training (got: " + taskIds.size() + ", needs: " +
-                                count + ")");
+                throw new NotEnoughTrainingTasksException(taskIds.size(), count);
             }
 
             int[] indexes =
@@ -94,6 +89,28 @@ public abstract class TaskDataAccess {
 
             return GetTasks(selectedIds);
         });
+    }
+
+    public static class NotEnoughTrainingTasksException extends RuntimeException {
+        public final int RequiredTrainings;
+        public final int TrainingCount;
+
+        public NotEnoughTrainingTasksException(int got, int needs) {
+            super("Not enough tasks in the training (got: " + got + ", needs: " + needs + ")");
+            TrainingCount = got;
+            RequiredTrainings = needs;
+        }
+    }
+
+    public static class NotEnoughLessonTasksException extends RuntimeException {
+        public final int RequiredTrainings;
+        public final int TrainingCount;
+
+        public NotEnoughLessonTasksException(int got, int needs) {
+            super("Not enough tasks in the lesson (got: " + got + ", needs: " + needs + ")");
+            TrainingCount = got;
+            RequiredTrainings = needs;
+        }
     }
 
     public static class TrainingCategory {

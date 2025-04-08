@@ -23,6 +23,7 @@ import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.disposables.Disposable;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 import lv.id.arseniuss.linguae.app.Constants;
+import lv.id.arseniuss.linguae.app.R;
 import lv.id.arseniuss.linguae.app.db.LanguageDatabase;
 import lv.id.arseniuss.linguae.app.db.dataaccess.TaskDataAccess;
 import lv.id.arseniuss.linguae.app.db.entities.SessionResultWithTaskResults;
@@ -82,7 +83,7 @@ public class SessionViewModel extends AndroidViewModel {
                     Collections.shuffle(tasks);
                     _tasks = tasks.stream().map(SessionTaskData::new).collect(Collectors.toList());
                     NextTask(loaded);
-                }, throwable -> loaded.Loaded(throwable.getMessage()));
+                }, throwable -> loaded.Loaded(handleSelectException(throwable)));
     }
 
     public void SetCounterRunning(boolean isRunning) {
@@ -114,7 +115,26 @@ public class SessionViewModel extends AndroidViewModel {
                     Collections.shuffle(tasks);
                     _tasks = tasks.stream().map(SessionTaskData::new).collect(Collectors.toList());
                     NextTask(loaded);
-                }, throwable -> loaded.Loaded(throwable.getMessage()));
+                }, throwable -> loaded.Loaded(handleSelectException(throwable)));
+    }
+
+    private String handleSelectException(Throwable throwable) {
+        if (throwable instanceof TaskDataAccess.NotEnoughTrainingTasksException) {
+            TaskDataAccess.NotEnoughTrainingTasksException ex =
+                    (TaskDataAccess.NotEnoughTrainingTasksException) throwable;
+
+            return getApplication().getString(R.string.NotEnoughTrainingTasksMessage,
+                    ex.TrainingCount, ex.RequiredTrainings);
+        }
+        if (throwable instanceof TaskDataAccess.NotEnoughLessonTasksException) {
+            TaskDataAccess.NotEnoughLessonTasksException ex =
+                    (TaskDataAccess.NotEnoughLessonTasksException) throwable;
+
+            return getApplication().getString(R.string.NotEnoughLessonTasksMessage,
+                    ex.TrainingCount, ex.RequiredTrainings);
+        }
+
+        return throwable.getLocalizedMessage();
     }
 
     public SessionTaskData GetTask(int currentIndex) {

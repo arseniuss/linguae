@@ -73,9 +73,12 @@
     <string name="TitleDisplayLanguage">Saskarnes valoda</string>
     <string name="PreferenceRepositoryLanguageNotSelected">Krātuve un valoda nav izvēlēti</string>
     <string name="PreferenceRepositoryLanguageTitle">Krātuve un valoda</string>
+    <string name="TitleChooseTaskOptions">Atbilžu skaits izvēles uzdevumā</string>
     <plurals name="RepositoryCount">
         <item quantity="one">%d krātuve</item>
         <item quantity="zero">%d krātuves</item>
         <item quantity="other">%d krātuves</item>
     </plurals>
+    <string name="NotEnoughTrainingTasksMessage">Nav pietiekošu daudz uzdevumu treniņā (atrada: %d, nepieciešams: %d)</string>
+    <string name="NotEnoughLessonTasksMessage">Nav pietiekoši daudz uzdevumu nodarbībā (atrada: %d, vajag: %d)</string>
 </resources>
