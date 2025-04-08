@@ -32,17 +32,16 @@ public class RepositoryLoadViewModel extends AndroidViewModel
     private final SharedPreferences _sharedPreferences =
             PreferenceManager.getDefaultSharedPreferences(getApplication().getBaseContext());
     private final LanguageDataParser _dataParser =
-            new LanguageDataParser(this, _sharedPreferences
-                    .getBoolean(Constants.PreferenceSaveImagesKey, false));
+            new LanguageDataParser(this, Utilities.GetLanguageCodes(_sharedPreferences),
+                    _sharedPreferences.getBoolean(Constants.PreferenceSaveImagesKey, false));
     private final MutableLiveData<Spanned> _messages =
             new MutableLiveData<>(new SpannableString(""));
 
     private final MutableLiveData<Boolean> _canContinue = new MutableLiveData<>(false);
     private Callback _continue;
     private RequestConfirmCallback _requestUpdateConfirm;
-    private String _language;
+
     private String _languageUrl;
-    private UpdateDataAccess _updateDataAccess;
     private String _databaseVersion = null;
     private Spanned _text = new SpannableString("");
     private Boolean _restart = false;
@@ -65,14 +64,14 @@ public class RepositoryLoadViewModel extends AndroidViewModel
         _requestUpdateConfirm = requestUpdateConfirm;
         _restart = restart;
 
-        _language = _sharedPreferences.getString(Constants.PreferenceLanguageKey, "");
+        final String languageCode  = _sharedPreferences.getString(Constants.PreferenceLanguageCodeKey, "");
         _languageUrl = _sharedPreferences.getString(Constants.PreferenceLanguageUrlKey, "");
 
-        _updateDataAccess =
-                LanguageDatabase.GetInstance(getApplication().getBaseContext(), _language)
+        UpdateDataAccess updateDataAccess =
+                LanguageDatabase.GetInstance(getApplication().getBaseContext(), languageCode)
                         .GetUpdateDataAccess();
 
-        Disposable d = _updateDataAccess.GetVersion()
+        Disposable d = updateDataAccess.GetVersion()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(this::onGotVersion, this::onError, this::onDoneVersionGetting);
@@ -95,10 +94,8 @@ public class RepositoryLoadViewModel extends AndroidViewModel
     }
 
     private void onLanguageFileResult(Boolean success) {
-        if (success)
-            validateVersions();
-        else
-            _canContinue.postValue(true);
+        if (success) validateVersions();
+        else _canContinue.postValue(true);
     }
 
     private void validateVersions() {
@@ -113,7 +110,7 @@ public class RepositoryLoadViewModel extends AndroidViewModel
             _requestUpdateConfirm.Request(this::onUpdateRequest);
         } else {
             Inform(Log.INFO, getApplication().getString(R.string.DatabaseUpdateNotRequired));
-            updateLanguagePreferences(_language, _languageUrl);
+            updateLanguagePreferences();
             _continue.Call();
         }
     }
@@ -134,15 +131,17 @@ public class RepositoryLoadViewModel extends AndroidViewModel
     }
 
     private void updateDatabase(boolean parseSuccessful) {
+        final String languageCode  = _sharedPreferences.getString(Constants.PreferenceLanguageCodeKey, "");
+
         UpdateDataAccess updateDataAccess =
-                LanguageDatabase.GetInstance(getApplication().getBaseContext(), _language)
+                LanguageDatabase.GetInstance(getApplication().getBaseContext(), languageCode)
                         .GetUpdateDataAccess();
 
         Disposable d = updateDataAccess.PerformUpdate(_dataParser.GetData())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(() -> {
-                    updateLanguagePreferences(_language, _languageUrl);
+                    updateLanguagePreferences();
 
                     Inform(Log.INFO, getApplication().getString(R.string.DataSaved));
 
@@ -154,10 +153,13 @@ public class RepositoryLoadViewModel extends AndroidViewModel
                 }, this::onError);
     }
 
-    private void updateLanguagePreferences(String language, String languageUrl) {
+    private void updateLanguagePreferences() {
+        LanguageDataParser.ParserData parserData = _dataParser.GetData();
+
         _sharedPreferences.edit()
-                .putString(Constants.PreferenceLanguageKey, language)
-                .putString(Constants.PreferenceLanguageUrlKey, languageUrl)
+                .putString(Constants.PreferenceLanguageCodeKey, parserData.LanguageCode)
+                .putString(Constants.PreferenceLanguageNameKey, parserData.LanguageName)
+                .putString(Constants.PreferenceLanguageUrlKey, parserData.LanguageUrl)
                 .apply();
     }
 

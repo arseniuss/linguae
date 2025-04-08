@@ -30,7 +30,7 @@ public class TrainingSetupViewModel extends AndroidViewModel {
     private final SharedPreferences _sharedPreferences =
             PreferenceManager.getDefaultSharedPreferences(getApplication().getBaseContext());
     private final String _language =
-            _sharedPreferences.getString(Constants.PreferenceLanguageKey, "");
+            _sharedPreferences.getString(Constants.PreferenceLanguageCodeKey, "");
     private final TrainingDataAccess _trainingDataAccess =
             LanguageDatabase.GetInstance(getApplication(), _language).GetTrainingsDataAccess();
     private final MutableLiveData<List<TrainingTaskViewModel>> _tasks =

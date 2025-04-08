@@ -15,6 +15,7 @@ public class LineParser {
         for (i = 0; i < line.length(); i++) {
             switch (line.charAt(i)) {
                 case ' ':
+                case '\t':
                     if (quotes < 0) {
                         String word = line.substring(start, i);
 

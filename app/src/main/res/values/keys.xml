@@ -3,7 +3,9 @@
     <string name="PreferenceLocaleCodeKey" translatable="false">PREF_LOCALE</string>
     <string name="PreferenceLocaleNameKey" translatable="false">PREF_LOCALE_NAME</string>
 
-    <string name="PreferenceLanguageKey" translatable="false">PREF_LANG</string>
+    <string name="PreferenceLanguageCodeKey" translatable="false">PREF_LANG_CODE</string>
+    <string name="PreferenceLanguageNameKey" translatable="false">PREF_LANG_NAME</string>
+
     <string name="PreferenceRepositoryKey" translatable="false">PREF_REPO</string>
     <string name="PreferenceRepositoryLanguageKey" translatable="false">PREF_REPO_LANG</string>
 

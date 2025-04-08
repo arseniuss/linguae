@@ -28,7 +28,7 @@ public class SummaryViewModel extends AndroidViewModel {
             PreferenceManager.getDefaultSharedPreferences(getApplication().getBaseContext());
 
     private final String _language =
-            _sharedPreferences.getString(Constants.PreferenceLanguageKey, "");
+            _sharedPreferences.getString(Constants.PreferenceLanguageNameKey, "");
 
     private final SummaryDataAccess _summaryDataAccess;
 

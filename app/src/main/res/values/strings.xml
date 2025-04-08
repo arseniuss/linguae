@@ -1,29 +1,17 @@
 <resources>
-    <string name="app_name">Sīc locūtus</string>
-    <string name="title_activity_main">MainActivity</string>
-    <string name="title_activity_settings">Settings</string>
-
-    <string name="btnLessons">Lessons</string>
-    <string name="btnTraining">Training</string>
-    <string name="btnBack">Back</string>
-    <string name="btnNext">Next</string>
-    <string name="nav_header_desc">Navigation header</string>
+    <string name="ApplicationName">Sīc locūtus</string>
+    <string name="SettingsTitle">Settings</string>
     <string name="ActionSettings">Settings</string>
-    <string name="ActionSetup">Setup</string>
     <string name="TitleLessons">Lessons</string>
     <string name="TitleTrainings">Trainings</string>
     <string name="TitleSummary">Summary</string>
-    <string name="WarningNoLanguageSelected">Warning: no language is selected!</string>
     <string name="TextClearSettings">Clear settings</string>
     <string name="MessageClearSettings">Do you really want to clear all settings?</string>
-    <string name="TextLoading">Loading…</string>
-    <string name="PreferenceLanguageTitle">Language</string>
-    <string name="PreferenceLanguageNotSelected">Language not selected</string>
     <string name="MenuLanguageAddTitle">Add</string>
     <string name="EditLanguageRepoButtonTitle">Edit</string>
     <string name="LanguageRepoEditNameTitle">Name</string>
     <string name="LanguageRepoLocationTitle">Location</string>
-    <string name="title_activity_language_repo">Language repositories</string>
+    <string name="TitleLanguageRepositories">Language repositories</string>
     <string name="TextDecline">Decline</string>
     <string name="TrainingSettingsDescription">Training settings</string>
     <string name="TitleTrainingSetup">Training setup</string>
@@ -32,8 +20,8 @@
     <string name="ButtonCheckTitle">Check</string>
     <string name="MessageEditSession">Do you really want to exit this session?</string>
     <string name="TitleSessionResult">Session results</string>
-    <string name="MessageConfirmUpdate">Found newer language version.\nUpdate?</string>
-    <string name="textSessionTime">Time</string>
+    <string name="MessageConfirmUpdate">Found newer version. Update?</string>
+    <string name="TextSessionTime">Time</string>
     <string name="TextTranslateASentence">Translate a sentence</string>
     <string name="TextTranslateChoose">Choose from below</string>
     <string name="TextTranslateEnter">Enter answer below</string>
@@ -43,15 +31,12 @@
     <string name="SaveButtonText">Save</string>
     <string name="CancelButtonText">Cancel</string>
     <string name="BrowseButtonText">Browse</string>
-    <string name="ChooseALanguageFile">Choose a language file</string>
     <string name="TitleTheories">Theory</string>
     <string name="ActionSwitchLanguage">Switch language</string>
     <string name="TitleSelectRepositoryLanguage">Select repository and language to learn</string>
-    <string name="TitleEditRepositories">Edit language repositories</string>
     <string name="TitleDelete">Delete</string>
     <string name="DataSaved">Saved</string>
     <string name="DatabaseUpdateNotRequired">Database update is not required</string>
-    <string name="DatabaseVersion">"Database version: "</string>
     <string name="RepositoryVersion">"Repository version: "</string>
     <string name="TitleLanguagePreferences">Language preferences</string>
     <string name="TitleDatabasePreferences">Database preferences</string>
@@ -62,7 +47,6 @@
     <string name="TitleTaskPreferences">Task preferences</string>
     <string name="TitleStartTraining">Start training</string>
     <string name="TitleLicenses">Licenses</string>
-    <string name="TitleTaskList">Task list</string>
     <string name="SaveRepositoriesTitle">Do you want to save repository list?</string>
     <string name="TextSummaryPoints">Points</string>
     <string name="DescriptionLanguageLogo">Logo of language</string>
@@ -82,11 +66,9 @@
     <string name="TitleVocabulary">Vocabulary</string>
     <string name="TitleSentences">Sentences</string>
     <string name="DescriptionAppLogo">Logo</string>
-    <string name="TextEnglishLanguage">English</string>
-    <string name="TextLatvianLanguage">latviešu</string>
+    <string name="TextEnglishLanguage" translatable="false">English</string>
+    <string name="TextLatvianLanguage" translatable="false">latviešu</string>
     <string name="TitleSelectLanguage">Select display language</string>
-    <string name="RepositoryNotSelected">Repository not selected</string>
-    <string name="PreferenceRepositoryTitle">Repository</string>
     <string name="TitleSystemPreferences">General preferences</string>
     <string name="PreferenceRepositoriesTitle">Repositories</string>
     <string name="TitleDisplayLanguage">Display language</string>
@@ -95,10 +77,10 @@
     <string name="EnglishLocaleName" translatable="false">English</string>
     <string name="PreferenceRepositoryLanguageNotSelected">Repository and language is not selected</string>
     <string name="PreferenceRepositoryLanguageTitle">Repository and language</string>
-    <string name="TextSkip">Skip</string>
+    <string name="PreferenceDefaultLocaleCodeKey" translatable="false">en</string>
     <plurals name="RepositoryCount">
         <item quantity="one">%d repository</item>
-        <item quantity="zero">no repositories</item>
+        <item quantity="zero">%d repositories</item>
         <item quantity="other">%d repositories</item>
     </plurals>
 </resources>

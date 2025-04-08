@@ -35,13 +35,13 @@ public class RepositoryLoader implements LanguageDataParser.ParserInterface {
     private final Gson _gson = new Gson();
     private final String _defaultLanguageRepositories;
 
-    private final List<Pair<String, Repository>> _repositories =
-            new ArrayList<>();
+    private final List<Pair<String, Repository>> _repositories = new ArrayList<>();
 
     public RepositoryLoader(Context context) {
         _context = context;
         _sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-        _dataParser = new LanguageDataParser(this,
+
+        _dataParser = new LanguageDataParser(this, Utilities.GetLanguageCodes(_sharedPreferences),
                 _sharedPreferences.getBoolean(Constants.PreferenceSaveImagesKey, false));
         _defaultLanguageRepositories = context.getString(R.string.DefaultLanguageRepositories);
     }
@@ -70,19 +70,13 @@ public class RepositoryLoader implements LanguageDataParser.ParserInterface {
     }
 
     private void loadRepositories(List<ItemLanguageRepo> repos, OnLoadedListener listener) {
-        List<String> locations = repos.stream()
-                .map(r -> r.Location)
-                .collect(Collectors.toList());
-
-        List<Single<Pair<String, Repository>>> singles =
-                new ArrayList<>();
+        List<Single<Pair<String, Repository>>> singles = new ArrayList<>();
 
         for (ItemLanguageRepo repo : repos) {
             String location = repo.Location;
 
-            Single<Pair<String, Repository>> single =
-                    Single.fromCallable(
-                            () -> new Pair<>(repo.Name, _dataParser.ParseRepository(location)));
+            Single<Pair<String, Repository>> single = Single.fromCallable(
+                    () -> new Pair<>(repo.Name, _dataParser.ParseRepository(location)));
 
             singles.add(single);
         }
@@ -93,8 +87,7 @@ public class RepositoryLoader implements LanguageDataParser.ParserInterface {
                 .flatMap(Single::toObservable)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(this::addRepository, this::onError,
-                        () -> repositoriesLoaded(listener));
+                .subscribe(this::addRepository, this::onError, () -> repositoriesLoaded(listener));
         try {
             d.wait();
         } catch (Throwable ignored) {
@@ -129,7 +122,7 @@ public class RepositoryLoader implements LanguageDataParser.ParserInterface {
 
     @Override
     public void Inform(int type, String message) {
-
+        Log.i("INFO", message);
     }
 
     public interface OnLoadedListener {

@@ -1,7 +1,6 @@
 package lv.id.arseniuss.linguae.app.ui.fragments;
 
 import android.content.SharedPreferences;
-import android.content.res.Configuration;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,10 +11,9 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.preference.PreferenceManager;
 
-import java.util.Locale;
-
 import lv.id.arseniuss.linguae.app.Constants;
 import lv.id.arseniuss.linguae.app.R;
+import lv.id.arseniuss.linguae.app.Utilities;
 import lv.id.arseniuss.linguae.app.databinding.FragmentLocaleSelectBinding;
 
 public class LocaleSelectFragment extends Fragment {
@@ -55,13 +53,7 @@ public class LocaleSelectFragment extends Fragment {
                 .putString(Constants.PreferenceLocaleNameKey, languageName)
                 .apply();
 
-        Locale locale = new Locale(languageCode);
-        Configuration configuration = new Configuration();
-
-        Locale.setDefault(locale);
-        configuration.setLocale(locale);
-
-        getResources().updateConfiguration(configuration, getResources().getDisplayMetrics());
+        Utilities.SetLocale(requireActivity().getBaseContext(), languageCode);
 
         _listener.LanguageSelected();
     }

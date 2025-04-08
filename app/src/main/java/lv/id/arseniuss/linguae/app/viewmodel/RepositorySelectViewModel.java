@@ -87,7 +87,7 @@ public class RepositorySelectViewModel extends AndroidViewModel {
         LanguageViewModel language = languages.get(position);
 
         _sharedPreferences.edit()
-                .putString(Constants.PreferenceLanguageKey, language.Name)
+                .putString(Constants.PreferenceLanguageCodeKey, language.Code)
                 .putString(Constants.PreferenceLanguageUrlKey, language.LanguageUrl)
                 .putString(Constants.PreferenceRepositoryKey, repository.Title)
                 .apply();
@@ -127,12 +127,14 @@ public class RepositorySelectViewModel extends AndroidViewModel {
 
     public static class LanguageViewModel extends BaseObservable {
         public final String Name;
+        public final String Code;
         public final String ImageUrl;
         public final String LanguageUrl;
         private final MutableLiveData<String> _language = new MutableLiveData<>();
 
         public LanguageViewModel(Language l) {
             Name = l.Name;
+            Code = l.Code;
             _language.setValue(l.Name);
             ImageUrl = l.Image;
             LanguageUrl = l.Location;

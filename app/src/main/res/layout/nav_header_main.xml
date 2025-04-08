@@ -16,7 +16,6 @@
         style="@style/MyAppTheme.RoundedPadded"
         android:layout_width="@dimen/image_size"
         android:layout_height="@dimen/image_size"
-        android:layout_gravity="center"
-        android:contentDescription="@string/nav_header_desc" />
+        android:layout_gravity="center"/>
 
 </LinearLayout>

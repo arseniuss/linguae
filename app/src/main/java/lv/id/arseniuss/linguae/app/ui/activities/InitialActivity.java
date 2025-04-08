@@ -14,6 +14,7 @@ import java.util.List;
 
 import lv.id.arseniuss.linguae.app.Constants;
 import lv.id.arseniuss.linguae.app.R;
+import lv.id.arseniuss.linguae.app.Utilities;
 import lv.id.arseniuss.linguae.app.data.RepositoryLoader;
 import lv.id.arseniuss.linguae.app.ui.fragments.LanguageLoadFragment;
 import lv.id.arseniuss.linguae.app.ui.fragments.LocaleSelectFragment;
@@ -81,8 +82,11 @@ public class InitialActivity extends AppCompatActivity {
                     .commit();
             return;
         }
+        else {
+            Utilities.SetLocale(this, displayLanguage);
+        }
 
-        String language = sharedPreferences.getString(Constants.PreferenceLanguageKey, "").trim();
+        String language = sharedPreferences.getString(Constants.PreferenceLanguageCodeKey, "").trim();
         String languageUrl =
                 sharedPreferences.getString(Constants.PreferenceLanguageUrlKey, "").trim();
 

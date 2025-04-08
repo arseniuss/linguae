@@ -16,7 +16,7 @@ public class BugReportViewModel extends AndroidViewModel {
     private final SharedPreferences _sharedPreferences =
             PreferenceManager.getDefaultSharedPreferences(getApplication().getBaseContext());
     private final String _language =
-            _sharedPreferences.getString(Constants.PreferenceLanguageKey, "");
+            _sharedPreferences.getString(Constants.PreferenceLanguageCodeKey, "");
     private final BugReportDataAccess _bugReportDataAccess =
             LanguageDatabase.GetInstance(getApplication(), _language).GetBugReportDataAccess();
     private TaskEntity _task;

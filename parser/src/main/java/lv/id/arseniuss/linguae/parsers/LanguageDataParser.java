@@ -53,6 +53,7 @@ public class LanguageDataParser {
     private final Map<String, String> _references = new HashMap<>();
     private final List<LanguageGenerator.Description> _generators = new ArrayList<>();
     private final Pattern _referencePattern = Pattern.compile("&([a-zA-Z0-9_-]+)");
+    private final String[] _languageCodes;
     private boolean _saveImages = false;
     private boolean _throwError = false;
     private int _line = 0;
@@ -60,13 +61,16 @@ public class LanguageDataParser {
     private boolean _hasError = false;
     private boolean _languageFileParsed = false;
 
-    public LanguageDataParser(ParserInterface parserInterface) {
+    public LanguageDataParser(ParserInterface parserInterface, String[] languageCodes) {
         _parserInterface = parserInterface;
+        _languageCodes = languageCodes;
     }
 
-    public LanguageDataParser(ParserInterface parserInterface, boolean saveImages) {
+    public LanguageDataParser(ParserInterface parserInterface, String[] languageCodes,
+                              boolean saveImages) {
         _parserInterface = parserInterface;
         _saveImages = saveImages;
+        _languageCodes = languageCodes;
     }
 
     public static <T> List<T> takeWhile(T[] list, Predicate<T> predicate) {
@@ -341,6 +345,20 @@ public class LanguageDataParser {
         return true;
     }
 
+    private String lookForReference(String ref, Map<String, String> references) {
+        String replacement = null;
+
+        if (references.containsKey(ref)) {
+            replacement = references.get(ref);
+        } else {
+            if (_references.containsKey(ref)) {
+                replacement = _references.get(ref);
+            }
+        }
+
+        return replacement;
+    }
+
     private String resolveReferences(String word, Map<String, String> references) throws
             ParserException {
 
@@ -350,17 +368,18 @@ public class LanguageDataParser {
 
             while (matcher.find()) {
                 String ref = matcher.group(1);
-                String replacement;
+                String replacement = lookForReference(ref, references);
 
-                if (references.containsKey(ref)) {
-                    replacement = references.get(ref);
-                } else {
-                    if (_references.containsKey(ref)) {
-                        replacement = _references.get(ref);
-                    } else {
-                        logError("Cannot find reference: '" + word + "'");
-                        return word;
+                if (replacement == null) {
+                    for (String languageCode : _languageCodes) {
+                        replacement = lookForReference(ref + "-" + languageCode, references);
+                        if (replacement != null) break;
                     }
+                }
+
+                if (replacement == null) {
+                    logError("Cannot find reference: '" + word + "'");
+                    return word;
                 }
 
                 matcher.appendReplacement(result, replacement);
@@ -417,9 +436,7 @@ public class LanguageDataParser {
         return words;
     }
 
-    private List<Task> parseTrainingFile(String base,
-                                         Training t) throws
-            Exception {
+    private List<Task> parseTrainingFile(String base, Training t) throws Exception {
         _filename = t.Filename;
 
         log(Log.INFO, "Parsing training file: " + t.Filename);
@@ -673,7 +690,7 @@ public class LanguageDataParser {
                         continue;
                     }
 
-                    l.Name = words[1];
+                    l.Name = resolveReferences(words[1], references);
                     break;
                 case "description":
                     if (!l.Description.isEmpty()) {
@@ -681,7 +698,7 @@ public class LanguageDataParser {
                         continue;
                     }
 
-                    l.Description = Arrays.stream(words).skip(1).collect(Collectors.joining(" "));
+                    l.Description = resolveReferences(words[1], references);
                     break;
                 case "task":
                     Task task = new Task();
@@ -759,11 +776,12 @@ public class LanguageDataParser {
 
         log(Log.INFO, "Parsing language file: " + base + _filename);
 
+        _data.LanguageUrl = base;
+
         InputStream languageFileStream = getFile(base + "/Language.txt");
         LineNumberReader r =
                 new LineNumberReader(new BufferedReader(new InputStreamReader(languageFileStream)));
 
-        String languageName = "";
         int lessonIndex = 0;
         int trainingIndex = 0;
 
@@ -793,7 +811,7 @@ public class LanguageDataParser {
                     _references.put(words[1], resolved);
                     break;
                 case "name":
-                    if (!languageName.isEmpty()) {
+                    if (!_data.LanguageName.isEmpty()) {
                         logError("Language name repeats");
                         continue;
                     }
@@ -802,14 +820,16 @@ public class LanguageDataParser {
                         continue;
                     }
 
-                    String suffix = getLine("name", line);
+                    String name = getLine("name", line);
 
-                    if (suffix == null) {
+                    if (name == null) {
                         logError("Language is empty");
                         continue;
                     }
 
-                    languageName = suffix;
+                    name = resolveReferences(name, _references);
+
+                    _data.LanguageName = name;
                     break;
                 case "image":
                     if (_data.Config.containsKey("image")) {
@@ -915,6 +935,15 @@ public class LanguageDataParser {
                         continue;
                     }
 
+                    if (_data.Config.containsKey(keyword)) {
+                        logError("Config " + keyword + " already exists!");
+                        continue;
+                    }
+
+                    if (keyword.equals("code")) {
+                        _data.LanguageCode = words[1];
+                    }
+
                     _data.Config.put(keyword, words[1]);
                     break;
                 case "setting":
@@ -960,7 +989,7 @@ public class LanguageDataParser {
             }
         }
 
-        if (languageName.isEmpty()) {
+        if (_data.LanguageName.isEmpty()) {
             logError("Language name is not set");
         }
 
@@ -1149,16 +1178,17 @@ public class LanguageDataParser {
                         repository.Name = words[1];
                         break;
                     case "language":
-                        if (words.length != 4) {
-                            logError("Expected format: language <name> <directory> <image>");
+                        if (words.length != 5) {
+                            logError("Expected format: language <name> <code> <directory> <image>");
                             continue;
                         }
 
                         Language language = new Language();
 
                         language.Name = words[1];
-                        language.Location = words[2];
-                        language.Image = words[3];
+                        language.Code = words[2];
+                        language.Location = words[3];
+                        language.Image = words[4];
 
                         if (!language.Location.startsWith(location)) {
                             language.Location = location + "/" + language.Location;
@@ -1180,77 +1210,6 @@ public class LanguageDataParser {
         return repository;
     }
 
-    @Deprecated
-    public List<Repository> ParseRepositories(List<String> repositories) {
-        List<Repository> result = new ArrayList<>();
-
-        for (String repository : repositories) {
-
-            Repository languageRepository = new Repository();
-
-            languageRepository.Location = repository;
-
-            try {
-
-                InputStream languageFileStream = getFile(repository + "/Languages.txt");
-                LineNumberReader r = new LineNumberReader(
-                        new BufferedReader(new InputStreamReader(languageFileStream)));
-
-                String line;
-                while ((line = r.readLine()) != null) {
-                    _line = r.getLineNumber();
-                    String[] words = getWords(line, r);
-
-                    if (words.length == 0) continue;
-
-                    String keyword = words[0].trim().toLowerCase();
-
-                    if (keyword.equals("stop") && words.length == 1) break;
-
-                    switch (keyword) {
-                        case "name":
-                            if (words.length != 2) {
-                                logError("Expected format: name <name>");
-                                continue;
-                            }
-
-                            languageRepository.Name = words[1];
-                            break;
-                        case "language":
-                            if (words.length != 4) {
-                                logError("Expected format: language <name> <directory> <image>");
-                                continue;
-                            }
-
-                            Language language = new Language();
-
-                            language.Name = words[1];
-                            language.Location = words[2];
-                            language.Image = words[3];
-
-                            if (!language.Location.startsWith(repository)) {
-                                language.Location = repository + "/" + language.Location;
-                            }
-                            if (!language.Image.startsWith(repository)) {
-                                language.Image = repository + "/" + language.Image;
-                            }
-
-                            languageRepository.Languages.add(language);
-                            break;
-                        default:
-                            logError("Unrecognised keyword in repository file: " + keyword);
-                    }
-                }
-            } catch (Exception e) {
-                languageRepository.Error = e.getLocalizedMessage();
-            }
-
-            result.add(languageRepository);
-        }
-
-        return result;
-    }
-
     public interface ParserInterface {
         InputStream GetFile(String filename) throws Exception;
 
@@ -1264,12 +1223,17 @@ public class LanguageDataParser {
     }
 
     public static class ParserData {
+        public String LanguageName = "";
+        public String LanguageCode = "";
+        public String LanguageVersion = "";
+        public String LanguageUrl = "";
+
         public Map<String, Setting> Settings = new HashMap<>();
         public Map<String, Training> Trainings = new HashMap<>();
         public Map<String, Lesson> Lessons = new HashMap<>();
         public Map<String, Theory> Theory = new HashMap<>();
         public List<License> Licences = new ArrayList<>();
-        public String LanguageVersion = "";
+
         public Map<String, String> Config = new HashMap<>();
         public List<TrainingCategory> TrainingCategories = new ArrayList<>();
     }

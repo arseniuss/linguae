@@ -18,7 +18,7 @@ public abstract class AbstractTaskViewModel extends AndroidViewModel {
     protected final SharedPreferences _sharedPreferences =
             PreferenceManager.getDefaultSharedPreferences(getApplication().getBaseContext());
     protected final String _language =
-            _sharedPreferences.getString(Constants.PreferenceLanguageKey, "");
+            _sharedPreferences.getString(Constants.PreferenceLanguageCodeKey, "");
     protected final Boolean _noKeyboard =
             _sharedPreferences.getBoolean(Constants.PreferenceNoKeyboardKey, false);
     protected SessionTaskData _taskResult;

@@ -56,7 +56,7 @@ public class PreferencesActivity extends AppCompatActivity {
 
         SharedPreferences sharedPreferences =
                 PreferenceManager.getDefaultSharedPreferences(getBaseContext());
-        String language = sharedPreferences.getString(Constants.PreferenceLanguageKey, "");
+        String language = sharedPreferences.getString(Constants.PreferenceLanguageCodeKey, "");
 
         _mainDataAccess =
                 LanguageDatabase.GetInstance(getBaseContext(), language).GetMainDataAccess();
@@ -217,7 +217,7 @@ public class PreferencesActivity extends AppCompatActivity {
             Preference preference =
                     findPreference(getString(R.string.PreferenceRepositoryLanguageKey));
             String repository = _sharedPreferences.getString(Constants.PreferenceRepositoryKey, "");
-            String language = _sharedPreferences.getString(Constants.PreferenceLanguageKey, "");
+            String language = _sharedPreferences.getString(Constants.PreferenceLanguageNameKey, "");
 
             assert preference != null;
 

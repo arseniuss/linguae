@@ -26,7 +26,7 @@ public class TheoryViewModel extends AndroidViewModel {
     private final SharedPreferences _sharedPreferences =
             PreferenceManager.getDefaultSharedPreferences(getApplication().getBaseContext());
     private final String _language =
-            _sharedPreferences.getString(Constants.PreferenceLanguageKey, "");
+            _sharedPreferences.getString(Constants.PreferenceLanguageCodeKey, "");
     private final TheoryDataAccess _theoryDataAccess =
             LanguageDatabase.GetInstance(getApplication(), _language).GetTheoryDataAccess();
     private final MutableLiveData<List<ChapterViewModel>> _chapters =

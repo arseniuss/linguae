@@ -2,6 +2,7 @@ package lv.id.arseniuss.linguae.app;
 
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.database.Cursor;
@@ -30,9 +31,11 @@ import java.net.URI;
 import java.net.URL;
 import java.net.URLConnection;
 import java.text.Normalizer;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 import java.util.Stack;
 import java.util.stream.Collectors;
 
@@ -43,12 +46,10 @@ public class Utilities {
     private static final Stack<Integer> _recycle = new Stack<>();
 
     static {
-        _recycle.addAll(
-                Arrays.asList(0xfff44336, 0xffe91e63, 0xff9c27b0, 0xff673ab7, 0xff3f51b5,
-                        0xff2196f3, 0xff03a9f4,
-                        0xff00bcd4, 0xff009688, 0xff4caf50, 0xff8bc34a, 0xffcddc39, 0xffffeb3b,
-                        0xffffc107, 0xffff9800,
-                        0xffff5722, 0xff795548, 0xff9e9e9e, 0xff607d8b, 0xff333333));
+        _recycle.addAll(Arrays.asList(0xfff44336, 0xffe91e63, 0xff9c27b0, 0xff673ab7, 0xff3f51b5,
+                0xff2196f3, 0xff03a9f4, 0xff00bcd4, 0xff009688, 0xff4caf50, 0xff8bc34a, 0xffcddc39,
+                0xffffeb3b, 0xffffc107, 0xffff9800, 0xffff5722, 0xff795548, 0xff9e9e9e, 0xff607d8b,
+                0xff333333));
     }
 
     public static String StripAccents(String s) {
@@ -164,10 +165,8 @@ public class Utilities {
 
                 URLConnection connection;
 
-                if (scheme.equals("http"))
-                    connection = url.openConnection();
-                else
-                    connection = url.openConnection();
+                if (scheme.equals("http")) connection = url.openConnection();
+                else connection = url.openConnection();
 
                 connection.setConnectTimeout(timeout);
 
@@ -200,11 +199,10 @@ public class Utilities {
         for (int i = start; i < pathSegments.size(); i++) {
             String pathSegment = pathSegments.get(i);
 
-            Cursor cursor = resolver.query(result, new String[]{
-                    DocumentsContract.Document.COLUMN_DOCUMENT_ID,
-                    DocumentsContract.Document.COLUMN_DISPLAY_NAME,
-                    DocumentsContract.Document.COLUMN_MIME_TYPE
-            }, null, null, null);
+            Cursor cursor = resolver.query(result,
+                    new String[]{DocumentsContract.Document.COLUMN_DOCUMENT_ID,
+                            DocumentsContract.Document.COLUMN_DISPLAY_NAME,
+                            DocumentsContract.Document.COLUMN_MIME_TYPE}, null, null, null);
 
             if (cursor != null) {
                 while (cursor.moveToNext()) {
@@ -275,5 +273,25 @@ public class Utilities {
         Type listType = TypeToken.getParameterized(List.class, itemClass).getType();
 
         return gson.fromJson(json, listType);
+    }
+
+    public static String[] GetLanguageCodes(SharedPreferences sharedPreferences) {
+        List<String> codes = new ArrayList<>();
+        String locale = sharedPreferences.getString(Constants.PreferenceLocaleCodeKey, "");
+        String defaultLocale = Constants.PreferenceDefaultLocaleCode;
+
+        if (!locale.isEmpty()) codes.add(locale);
+        if (!defaultLocale.isEmpty()) codes.add(defaultLocale);
+
+        return codes.stream().distinct().toArray(String[]::new);
+    }
+
+    public static void SetLocale(Context context, String displayLanguage) {
+        Locale locale = new Locale(displayLanguage);
+        Locale.setDefault(locale);
+        android.content.res.Configuration configuration = new android.content.res.Configuration();
+        configuration.setLocale(locale);
+
+        context.getResources().updateConfiguration(configuration, context.getResources().getDisplayMetrics());
     }
 }

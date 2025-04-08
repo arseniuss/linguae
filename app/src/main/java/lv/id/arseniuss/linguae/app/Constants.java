@@ -5,9 +5,12 @@ import android.content.Context;
 public class Constants {
     public static String PreferenceLocaleCodeKey;
     public static String PreferenceLocaleNameKey;
+    public static String PreferenceDefaultLocaleCode;
 
 
-    public static String PreferenceLanguageKey;
+    public static String PreferenceLanguageCodeKey;
+    public static String PreferenceLanguageNameKey;
+
     public static String PreferenceRepositoriesKey;
     public static String PreferenceRepositoryKey;
     public static String PreferenceLanguageUrlKey;
@@ -20,8 +23,11 @@ public class Constants {
     public static void Init(Context context) {
         PreferenceLocaleCodeKey = context.getString(R.string.PreferenceLocaleCodeKey);
         PreferenceLocaleNameKey = context.getString(R.string.PreferenceLocaleNameKey);
+        PreferenceDefaultLocaleCode = context.getString(R.string.PreferenceDefaultLocaleCodeKey);
 
-        PreferenceLanguageKey = context.getString(R.string.PreferenceLanguageKey);
+        PreferenceLanguageCodeKey = context.getString(R.string.PreferenceLanguageCodeKey);
+        PreferenceLanguageNameKey = context.getString(R.string.PreferenceLanguageNameKey);
+
         PreferenceRepositoriesKey = context.getString(R.string.PreferenceRepositoriesKey);
         PreferenceRepositoryKey = context.getString(R.string.PreferenceRepositoryKey);
         PreferenceLanguageUrlKey = context.getString(R.string.PreferenceLanguageUrlKey);
