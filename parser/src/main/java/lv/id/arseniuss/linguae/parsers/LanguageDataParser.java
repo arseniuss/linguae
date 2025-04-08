@@ -25,22 +25,24 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import lv.id.arseniuss.linguae.generators.LanguageGenerator;
-import lv.id.arseniuss.linguae.types.SettingType;
-import lv.id.arseniuss.linguae.tasks.Task;
-import lv.id.arseniuss.linguae.types.TaskType;
 import lv.id.arseniuss.linguae.entities.Chapter;
+import lv.id.arseniuss.linguae.entities.Language;
 import lv.id.arseniuss.linguae.entities.Lesson;
 import lv.id.arseniuss.linguae.entities.License;
+import lv.id.arseniuss.linguae.entities.Repository;
 import lv.id.arseniuss.linguae.entities.Setting;
 import lv.id.arseniuss.linguae.entities.Theory;
 import lv.id.arseniuss.linguae.entities.Training;
 import lv.id.arseniuss.linguae.entities.TrainingCategory;
+import lv.id.arseniuss.linguae.generators.LanguageGenerator;
 import lv.id.arseniuss.linguae.tasks.ChooseTask;
 import lv.id.arseniuss.linguae.tasks.ConjugateTask;
 import lv.id.arseniuss.linguae.tasks.DeclineTask;
 import lv.id.arseniuss.linguae.tasks.SelectTask;
+import lv.id.arseniuss.linguae.tasks.Task;
 import lv.id.arseniuss.linguae.tasks.TranslateTask;
+import lv.id.arseniuss.linguae.types.SettingType;
+import lv.id.arseniuss.linguae.types.TaskType;
 
 public class LanguageDataParser {
     final String _gen_prefix = "@gen:";
@@ -1116,12 +1118,75 @@ public class LanguageDataParser {
         return _data;
     }
 
-    public List<LanguageRepository> ParseRepositories(List<String> repositories) {
-        List<LanguageRepository> result = new ArrayList<>();
+    public Repository ParseRepository(String location) {
+        Repository repository = new Repository();
+
+        repository.Location = location;
+
+        try {
+            InputStream languageFileStream = getFile(location + "/Languages.txt");
+            LineNumberReader r = new LineNumberReader(
+                    new BufferedReader(new InputStreamReader(languageFileStream)));
+
+            String line;
+            while ((line = r.readLine()) != null) {
+                _line = r.getLineNumber();
+                String[] words = getWords(line, r);
+
+                if (words.length == 0) continue;
+
+                String keyword = words[0].trim().toLowerCase();
+
+                if (keyword.equals("stop") && words.length == 1) break;
+
+                switch (keyword) {
+                    case "name":
+                        if (words.length != 2) {
+                            logError("Expected format: name <name>");
+                            continue;
+                        }
+
+                        repository.Name = words[1];
+                        break;
+                    case "language":
+                        if (words.length != 4) {
+                            logError("Expected format: language <name> <directory> <image>");
+                            continue;
+                        }
+
+                        Language language = new Language();
+
+                        language.Name = words[1];
+                        language.Location = words[2];
+                        language.Image = words[3];
+
+                        if (!language.Location.startsWith(location)) {
+                            language.Location = location + "/" + language.Location;
+                        }
+                        if (!language.Image.startsWith(location)) {
+                            language.Image = location + "/" + language.Image;
+                        }
+
+                        repository.Languages.add(language);
+                        break;
+                    default:
+                        logError("Unrecognised keyword in repository file: " + keyword);
+                }
+            }
+        } catch (Exception e) {
+            repository.Error = e.getLocalizedMessage();
+        }
+
+        return repository;
+    }
+
+    @Deprecated
+    public List<Repository> ParseRepositories(List<String> repositories) {
+        List<Repository> result = new ArrayList<>();
 
         for (String repository : repositories) {
 
-            LanguageRepository languageRepository = new LanguageRepository();
+            Repository languageRepository = new Repository();
 
             languageRepository.Location = repository;
 
@@ -1207,27 +1272,5 @@ public class LanguageDataParser {
         public String LanguageVersion = "";
         public Map<String, String> Config = new HashMap<>();
         public List<TrainingCategory> TrainingCategories = new ArrayList<>();
-    }
-
-    public static class LanguageRepository {
-        public String Name = "";
-        public String Location = "";
-        public List<Language> Languages = new ArrayList<>();
-        public String Error = "";
-
-        public LanguageRepository() {
-
-        }
-
-        public LanguageRepository(String name, String location) {
-            Name = name;
-            Location = location;
-        }
-    }
-
-    public static class Language {
-        public String Name = "";
-        public String Location = "";
-        public String Image = "";
     }
 }

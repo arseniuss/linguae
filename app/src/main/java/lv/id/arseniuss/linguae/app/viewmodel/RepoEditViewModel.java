@@ -17,14 +17,12 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+import lv.id.arseniuss.linguae.app.Utilities;
 import lv.id.arseniuss.linguae.app.entities.ItemLanguageRepo;
 
 public class RepoEditViewModel extends AndroidViewModel {
 
     private final Gson _gson = new Gson();
-    private final Type _listType =
-            new TypeToken<List<ItemLanguageRepo>>() {
-            }.getType();
 
     private final MutableLiveData<List<EditRepoViewModel>> _repos =
             new MutableLiveData<>(new ArrayList<>());
@@ -52,7 +50,7 @@ public class RepoEditViewModel extends AndroidViewModel {
     }
 
     public void SetData(String json, Integer selectedIndex) {
-        List<ItemLanguageRepo> data = _gson.fromJson(json, _listType);
+        List<ItemLanguageRepo> data = Utilities.UnpackList(json, ItemLanguageRepo.class);
         Boolean canSelect = selectedIndex != null;
 
         if (data == null) data = new ArrayList<>();

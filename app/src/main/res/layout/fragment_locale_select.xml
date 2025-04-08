@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <data>
+
+        <variable
+            name="presenter"
+            type="lv.id.arseniuss.linguae.app.ui.fragments.LocaleSelectFragment" />
+    </data>
+
+    <LinearLayout
+        style="@style/MyAppTheme.Layout.HorizontalSquash"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <TextView
+            style="@style/MyAppTheme.TextView.Header.1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="@string/TitleSelectLanguage" />
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:onClick="@{() -> presenter.OnEnglishSelected()}"
+            android:text="@string/TextEnglishLanguage" />
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:onClick="@{() -> presenter.OnLatvianSelected()}"
+            android:text="@string/TextLatvianLanguage" />
+    </LinearLayout>
+</layout>

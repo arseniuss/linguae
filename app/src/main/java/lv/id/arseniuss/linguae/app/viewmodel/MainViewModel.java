@@ -25,22 +25,29 @@ public class MainViewModel extends AndroidViewModel {
             PreferenceManager.getDefaultSharedPreferences(getApplication().getBaseContext());
     private final String _language =
             _sharedPreferences.getString(Constants.PreferenceLanguageKey, "");
-    private final MainDataAccess _mainDataAccess =
-            LanguageDatabase.GetInstance(getApplication(), _language).GetMainDataAccess();
+    private final MainDataAccess _mainDataAccess;
     private OnStartedListener _onStartedListener;
 
     public MainViewModel(@NonNull Application application) {
         super(application);
 
+        if (!_language.isEmpty()) {
+            _mainDataAccess =
+                    LanguageDatabase.GetInstance(getApplication(), _language).GetMainDataAccess();
+        } else {
+            _mainDataAccess = null;
+        }
     }
 
     public void Start(OnStartedListener onStartedListener) {
         _onStartedListener = onStartedListener;
 
-        Disposable d = _mainDataAccess.GetSettings()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(this::gotSettings, this::handleError);
+        if (_mainDataAccess != null) {
+            Disposable d = _mainDataAccess.GetSettings()
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(this::gotSettings, this::handleError);
+        }
     }
 
     private void handleError(Throwable error) {

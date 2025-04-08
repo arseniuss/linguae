@@ -3,8 +3,13 @@ package lv.id.arseniuss.linguae.app;
 import android.content.Context;
 
 public class Constants {
+    public static String PreferenceLocaleCodeKey;
+    public static String PreferenceLocaleNameKey;
+
+
     public static String PreferenceLanguageKey;
     public static String PreferenceRepositoriesKey;
+    public static String PreferenceRepositoryKey;
     public static String PreferenceLanguageUrlKey;
     public static String PreferenceNoKeyboardKey;
     public static String PreferenceTaskCountKey;
@@ -13,8 +18,12 @@ public class Constants {
     public static String ChooseOptionCountKey;
 
     public static void Init(Context context) {
+        PreferenceLocaleCodeKey = context.getString(R.string.PreferenceLocaleCodeKey);
+        PreferenceLocaleNameKey = context.getString(R.string.PreferenceLocaleNameKey);
+
         PreferenceLanguageKey = context.getString(R.string.PreferenceLanguageKey);
         PreferenceRepositoriesKey = context.getString(R.string.PreferenceRepositoriesKey);
+        PreferenceRepositoryKey = context.getString(R.string.PreferenceRepositoryKey);
         PreferenceLanguageUrlKey = context.getString(R.string.PreferenceLanguageUrlKey);
         PreferenceNoKeyboardKey = context.getString(R.string.PreferenceNoKeyboardKey);
         PreferenceTaskCountKey = context.getString(R.string.PreferenceTaskCountKey);

@@ -8,6 +8,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.preference.Preference;
@@ -15,6 +16,8 @@ import androidx.preference.PreferenceCategory;
 import androidx.preference.PreferenceFragmentCompat;
 import androidx.preference.PreferenceManager;
 import androidx.preference.SwitchPreference;
+
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import java.util.List;
 
@@ -28,6 +31,7 @@ import lv.id.arseniuss.linguae.app.Utilities;
 import lv.id.arseniuss.linguae.app.db.LanguageDatabase;
 import lv.id.arseniuss.linguae.app.db.dataaccess.MainDataAccess;
 import lv.id.arseniuss.linguae.app.db.entities.SettingEntity;
+import lv.id.arseniuss.linguae.app.entities.ItemLanguageRepo;
 
 public class PreferencesActivity extends AppCompatActivity {
     private MainDataAccess _mainDataAccess;
@@ -77,11 +81,24 @@ public class PreferencesActivity extends AppCompatActivity {
 
             return true;
         } else if (R.id.item_clear_settings == item.getItemId()) {
-            SharedPreferences preferences =
-                    PreferenceManager.getDefaultSharedPreferences(getBaseContext());
+            new MaterialAlertDialogBuilder(this).setMessage(R.string.MessageClearSettings)
+                    .setPositiveButton(R.string.yes, (dialog, which) -> {
+                        SharedPreferences preferences =
+                                PreferenceManager.getDefaultSharedPreferences(getBaseContext());
 
-            preferences.edit().clear().apply();
-            this.finish();
+                        preferences.edit().clear().apply();
+
+                        Intent i = new Intent(this, InitialActivity.class);
+
+                        i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+
+                        startActivity(i);
+                        finish();
+                    })
+                    .setNegativeButton(R.string.no, (dialog, which) -> {
+                    })
+                    .show();
+
             return true;
         }
 
@@ -89,6 +106,7 @@ public class PreferencesActivity extends AppCompatActivity {
     }
 
     public static class SettingsFragment extends PreferenceFragmentCompat {
+        private static final int REPO_EDIT = 624;
         private final SharedPreferences _sharedPreferences;
 
         private String _rootKey;
@@ -147,19 +165,91 @@ public class PreferencesActivity extends AppCompatActivity {
         }
 
         private void setup() {
-            String language = _sharedPreferences.getString(Constants.PreferenceLanguageKey, "");
-            Preference langPreference = findPreference(Constants.PreferenceLanguageKey);
+            setupLocalePreference();
+            setupRepositoriesPreference();
+            setupRepositoryLanguagePreference();
+        }
 
-            assert langPreference != null;
+        private void setupRepositoriesPreference() {
+            Preference preference = findPreference(getString(R.string.PreferenceRepositoriesKey));
+            String repositories =
+                    _sharedPreferences.getString(Constants.PreferenceRepositoriesKey, "");
 
-            if (!language.isEmpty()) {
-                langPreference.setSummary(language);
+            assert preference != null;
+
+            if (!repositories.isEmpty()) {
+                List<ItemLanguageRepo> repos =
+                        Utilities.UnpackList(repositories, ItemLanguageRepo.class);
+
+                preference.setSummary(
+                        getResources().getQuantityString(R.plurals.RepositoryCount, repos.size(),
+                                repos.size()));
             }
 
-            langPreference.setOnPreferenceClickListener(preference -> {
-                Intent i = new Intent(getContext(), StartActivity.class);
+            preference.setOnPreferenceClickListener(pref -> {
+                Intent i = new Intent(getContext(), RepoEditActivity.class);
+                String json = _sharedPreferences.getString(Constants.PreferenceRepositoriesKey, "");
 
-                i.putExtra(StartActivity.RESTART, true);
+                i.putExtra(RepoEditActivity.DATA_ARRAY_JSON, json);
+
+                startActivityForResult(i, REPO_EDIT);
+                return false;
+            });
+        }
+
+        @Override
+        public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+            super.onActivityResult(requestCode, resultCode, data);
+
+            if (requestCode == REPO_EDIT && resultCode == RESULT_OK) {
+                assert data != null;
+                String result = data.getStringExtra(RepoEditActivity.DATA_ARRAY_JSON);
+
+                _sharedPreferences.edit()
+                        .putString(Constants.PreferenceRepositoriesKey, result)
+                        .apply();
+
+                setupRepositoriesPreference();
+            }
+        }
+
+        private void setupRepositoryLanguagePreference() {
+            Preference preference =
+                    findPreference(getString(R.string.PreferenceRepositoryLanguageKey));
+            String repository = _sharedPreferences.getString(Constants.PreferenceRepositoryKey, "");
+            String language = _sharedPreferences.getString(Constants.PreferenceLanguageKey, "");
+
+            assert preference != null;
+
+            if (!repository.isEmpty() && !language.isEmpty()) {
+                preference.setSummary(repository + "/" + language);
+            }
+
+            preference.setOnPreferenceClickListener(pref -> {
+                Intent i = new Intent(getContext(), InitialActivity.class);
+
+                i.putExtra(InitialActivity.ACTION, InitialActivity.CHANGE_REPOSITORY);
+
+                startActivity(i);
+
+                return false;
+            });
+        }
+
+        private void setupLocalePreference() {
+            String locale = _sharedPreferences.getString(Constants.PreferenceLocaleNameKey, "");
+            Preference localePreference = findPreference(Constants.PreferenceLocaleCodeKey);
+
+            assert localePreference != null;
+
+            if (!locale.isEmpty()) {
+                localePreference.setSummary(locale);
+            }
+
+            localePreference.setOnPreferenceClickListener(preference -> {
+                Intent i = new Intent(getContext(), InitialActivity.class);
+
+                i.putExtra(InitialActivity.ACTION, InitialActivity.CHANGE_DISPLAY_LANGUAGE);
 
                 startActivity(i);
                 return false;

@@ -102,7 +102,7 @@ public class TranslateViewModel extends AbstractTaskViewModel {
 
             assert answer != null;
 
-            if (answer.charAt(answer.length() - 1) == '.')
+            if (!answer.isEmpty() && answer.charAt(answer.length() - 1) == '.')
                 answer = answer.substring(0, answer.length() - 1);
 
             String[] writtenResponses = answer.split(" ");

@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="PreferenceLocaleCodeKey" translatable="false">PREF_LOCALE</string>
+    <string name="PreferenceLocaleNameKey" translatable="false">PREF_LOCALE_NAME</string>
+
     <string name="PreferenceLanguageKey" translatable="false">PREF_LANG</string>
+    <string name="PreferenceRepositoryKey" translatable="false">PREF_REPO</string>
+    <string name="PreferenceRepositoryLanguageKey" translatable="false">PREF_REPO_LANG</string>
+
     <string name="PreferenceRepositoriesKey" translatable="false">PREF_REPOS</string>
     <string name="PreferenceLanguageUrlKey" translatable="false">PREF_LANGLOC</string>
     <string name="PreferenceNoKeyboardKey" translatable="false">PREF_KEYBOARD</string>

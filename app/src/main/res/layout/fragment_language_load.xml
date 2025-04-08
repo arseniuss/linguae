@@ -4,12 +4,12 @@
     <data>
 
         <variable
-            name="viewmodel"
-            type="lv.id.arseniuss.linguae.app.viewmodel.StartViewModel" />
+            name="presenter"
+            type="lv.id.arseniuss.linguae.app.ui.fragments.LanguageLoadFragment" />
 
         <variable
-            name="presenter"
-            type="lv.id.arseniuss.linguae.app.ui.activities.StartActivity" />
+            name="viewmodel"
+            type="lv.id.arseniuss.linguae.app.viewmodel.RepositoryLoadViewModel" />
     </data>
 
     <LinearLayout
@@ -18,6 +18,7 @@
         android:orientation="vertical">
 
         <ScrollView
+            android:id="@+id/scrollView"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_margin="10dp"

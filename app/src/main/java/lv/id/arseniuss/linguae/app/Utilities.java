@@ -13,8 +13,10 @@ import android.util.Base64;
 import android.util.TypedValue;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
+import com.google.gson.reflect.TypeToken;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
@@ -22,6 +24,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.lang.reflect.Type;
 import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URL;
@@ -131,7 +134,7 @@ public class Utilities {
     }
 
     public static InputStream GetInputStream(Context context, String filename) throws Exception {
-        return GetInputStream(context, filename, 5000);
+        return GetInputStream(context, filename, 1000);
     }
 
     public static InputStream GetInputStream(Context context, String filename, int timeout) throws
@@ -265,5 +268,12 @@ public class Utilities {
                 connection.disconnect();
             }
         });
+    }
+
+    public static <T> List<T> UnpackList(String json, Class<?> itemClass) {
+        Gson gson = new Gson();
+        Type listType = TypeToken.getParameterized(List.class, itemClass).getType();
+
+        return gson.fromJson(json, listType);
     }
 }

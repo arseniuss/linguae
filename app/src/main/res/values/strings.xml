@@ -15,6 +15,7 @@
     <string name="TitleSummary">Summary</string>
     <string name="WarningNoLanguageSelected">Warning: no language is selected!</string>
     <string name="TextClearSettings">Clear settings</string>
+    <string name="MessageClearSettings">Do you really want to clear all settings?</string>
     <string name="TextLoading">Loading…</string>
     <string name="PreferenceLanguageTitle">Language</string>
     <string name="PreferenceLanguageNotSelected">Language not selected</string>
@@ -80,4 +81,24 @@
     <string name="ok">OK</string>
     <string name="TitleVocabulary">Vocabulary</string>
     <string name="TitleSentences">Sentences</string>
+    <string name="DescriptionAppLogo">Logo</string>
+    <string name="TextEnglishLanguage">English</string>
+    <string name="TextLatvianLanguage">latviešu</string>
+    <string name="TitleSelectLanguage">Select display language</string>
+    <string name="RepositoryNotSelected">Repository not selected</string>
+    <string name="PreferenceRepositoryTitle">Repository</string>
+    <string name="TitleSystemPreferences">General preferences</string>
+    <string name="PreferenceRepositoriesTitle">Repositories</string>
+    <string name="TitleDisplayLanguage">Display language</string>
+
+    <string name="LatvianLocaleName" translatable="false">latviešu</string>
+    <string name="EnglishLocaleName" translatable="false">English</string>
+    <string name="PreferenceRepositoryLanguageNotSelected">Repository and language is not selected</string>
+    <string name="PreferenceRepositoryLanguageTitle">Repository and language</string>
+    <string name="TextSkip">Skip</string>
+    <plurals name="RepositoryCount">
+        <item quantity="one">%d repository</item>
+        <item quantity="zero">no repositories</item>
+        <item quantity="other">%d repositories</item>
+    </plurals>
 </resources>

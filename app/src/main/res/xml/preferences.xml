@@ -1,16 +1,24 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-    <PreferenceCategory
-        android:key="@string/PreferencesLanguageKey"
-        android:title="@string/TitleLanguagePreferences">
+    <PreferenceCategory android:title="@string/TitleSystemPreferences">
+        <Preference
+            android:key="@string/PreferenceLocaleCodeKey"
+            android:title="@string/TitleDisplayLanguage" />
         <Preference
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:defaultValue="@string/PreferenceLanguageNotSelected"
-            android:key="@string/PreferenceLanguageKey"
-            android:summary="@string/PreferenceLanguageNotSelected"
-            android:title="@string/PreferenceLanguageTitle" />
-        <!-- Other preferences are defined in language file -->
+            android:key="@string/PreferenceRepositoriesKey"
+            android:title="@string/PreferenceRepositoriesTitle" />
+        <Preference
+            android:defaultValue="@string/PreferenceRepositoryLanguageNotSelected"
+            android:key="@string/PreferenceRepositoryLanguageKey"
+            android:summary="@string/PreferenceRepositoryLanguageNotSelected"
+            android:title="@string/PreferenceRepositoryLanguageTitle" />
+    </PreferenceCategory>
+    <PreferenceCategory
+        android:key="@string/PreferencesLanguageKey"
+        android:title="@string/TitleLanguagePreferences">
+        <!-- Preferences are defined in language file -->
     </PreferenceCategory>
     <PreferenceCategory
         android:layout_width="wrap_content"
@@ -45,7 +53,7 @@
             android:layout_height="wrap_content"
             android:defaultValue="6"
             android:key="@string/ChooseOptionCountKey"
-            android:title="Answer option count in choose taskEntities"
+            android:title="Answer option count in choose task"
             app:useSimpleSummaryProvider="true" />
     </PreferenceCategory>
 </PreferenceScreen>

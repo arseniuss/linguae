@@ -30,8 +30,7 @@ public class SummaryViewModel extends AndroidViewModel {
     private final String _language =
             _sharedPreferences.getString(Constants.PreferenceLanguageKey, "");
 
-    private final SummaryDataAccess _summaryDataAccess =
-            LanguageDatabase.GetInstance(getApplication(), _language).GetSummaryDataAccess();
+    private final SummaryDataAccess _summaryDataAccess;
 
     private final MutableLiveData<Bitmap> _image = new MutableLiveData<>(null);
     private final MutableLiveData<String> _version = new MutableLiveData<>("");
@@ -42,6 +41,13 @@ public class SummaryViewModel extends AndroidViewModel {
 
     public SummaryViewModel(Application app) {
         super(app);
+
+        if (!_language.isEmpty())
+            _summaryDataAccess =
+                    LanguageDatabase.GetInstance(getApplication(), _language)
+                            .GetSummaryDataAccess();
+        else
+            _summaryDataAccess = null;
     }
 
     public MutableLiveData<Bitmap> Image() {
@@ -67,14 +73,16 @@ public class SummaryViewModel extends AndroidViewModel {
     public void Load() {
         Configuration.AddConfigChangeLister(this::onConfigChanged);
 
-        Disposable d = _summaryDataAccess.GetBestLessons()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(bestLessons -> {
-                    _lessons.setValue(
-                            bestLessons.stream().map(BestLessonViewModel::new).collect(
-                                    Collectors.toList()));
-                });
+        if (_summaryDataAccess != null) {
+            Disposable d = _summaryDataAccess.GetBestLessons()
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(bestLessons -> {
+                        _lessons.setValue(
+                                bestLessons.stream().map(BestLessonViewModel::new).collect(
+                                        Collectors.toList()));
+                    });
+        }
     }
 
     private void onConfigChanged() {

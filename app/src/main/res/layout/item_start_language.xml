@@ -8,7 +8,7 @@
 
         <variable
             name="viewmodel"
-            type="lv.id.arseniuss.linguae.app.viewmodel.StartViewModel.LanguageViewModel" />
+            type="lv.id.arseniuss.linguae.app.viewmodel.RepositorySelectViewModel.LanguageViewModel" />
     </data>
 
     <LinearLayout
