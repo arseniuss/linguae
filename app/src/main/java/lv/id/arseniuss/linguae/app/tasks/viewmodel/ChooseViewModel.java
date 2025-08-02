@@ -125,7 +125,7 @@ public class ChooseViewModel extends AbstractTaskViewModel {
 
         int[] indexes = new SecureRandom().ints(0, strings.size())
                 .distinct()
-                .limit(_chooseOptionCount - 1)
+                .limit(Math.min(strings.size(), _chooseOptionCount - 1))
                 .toArray();
 
         List<String> collected1 =
