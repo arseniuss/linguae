@@ -1,6 +1,6 @@
 package lv.id.arseniuss.linguae.tasks;
 
-import lv.id.arseniuss.linguae.types.TaskType;
+import lv.id.arseniuss.linguae.enumerators.TaskType;
 
 public class ConjugateTask extends Task.ITaskData {
     public String Verb;

@@ -1,4 +1,4 @@
-package lv.id.arseniuss.linguae.types;
+package lv.id.arseniuss.linguae.enumerators;
 
 import java.util.Comparator;
 import java.util.Map;

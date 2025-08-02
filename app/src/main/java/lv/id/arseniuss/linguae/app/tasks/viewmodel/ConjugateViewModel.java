@@ -23,7 +23,7 @@ import lv.id.arseniuss.linguae.app.tasks.AbstractTaskAnswerViewModel;
 import lv.id.arseniuss.linguae.app.tasks.AbstractTaskViewModel;
 import lv.id.arseniuss.linguae.app.tasks.entities.SessionTaskData;
 import lv.id.arseniuss.linguae.tasks.ConjugateTask;
-import lv.id.arseniuss.linguae.types.TaskType;
+import lv.id.arseniuss.linguae.enumerators.TaskType;
 
 public class ConjugateViewModel extends AbstractTaskViewModel {
 

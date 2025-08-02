@@ -4,7 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.annotations.SerializedName;
 
-import lv.id.arseniuss.linguae.types.TaskType;
+import lv.id.arseniuss.linguae.enumerators.TaskType;
 
 public class Task {
     public String Id = "";
@@ -27,24 +27,6 @@ public class Task {
         Id = id;
     }
 
-    public static ITaskData deserialize(JsonObject jsonObject) {
-        String str = jsonObject.toString();
-
-        switch (TaskType.ValueOf(jsonObject.get("type").getAsString())) {
-            case SelectTask:
-                return new Gson().fromJson(str, SelectTask.class);
-            case ChooseTask:
-                return new Gson().fromJson(str, ChooseTask.class);
-            case ConjugateTask:
-                return new Gson().fromJson(str, ConjugateTask.class);
-            case TranslateTask:
-                return new Gson().fromJson(str, TranslateTask.class);
-            case DeclineTask:
-                return new Gson().fromJson(str, DeclineTask.class);
-            default:
-                return null;
-        }
-    }
 
     public abstract static class ITaskData {
         @SerializedName("type")

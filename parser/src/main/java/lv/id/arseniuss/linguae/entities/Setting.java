@@ -1,6 +1,6 @@
 package lv.id.arseniuss.linguae.entities;
 
-import lv.id.arseniuss.linguae.types.SettingType;
+import lv.id.arseniuss.linguae.enumerators.SettingType;
 
 public class Setting {
     public String Key = "";

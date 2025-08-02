@@ -34,6 +34,8 @@ import lv.id.arseniuss.linguae.entities.Setting;
 import lv.id.arseniuss.linguae.entities.Theory;
 import lv.id.arseniuss.linguae.entities.Training;
 import lv.id.arseniuss.linguae.entities.TrainingCategory;
+import lv.id.arseniuss.linguae.enumerators.SettingType;
+import lv.id.arseniuss.linguae.enumerators.TaskType;
 import lv.id.arseniuss.linguae.generators.LanguageGenerator;
 import lv.id.arseniuss.linguae.tasks.ChooseTask;
 import lv.id.arseniuss.linguae.tasks.ConjugateTask;
@@ -41,8 +43,6 @@ import lv.id.arseniuss.linguae.tasks.DeclineTask;
 import lv.id.arseniuss.linguae.tasks.SelectTask;
 import lv.id.arseniuss.linguae.tasks.Task;
 import lv.id.arseniuss.linguae.tasks.TranslateTask;
-import lv.id.arseniuss.linguae.types.SettingType;
-import lv.id.arseniuss.linguae.types.TaskType;
 
 public class LanguageDataParser {
     final String _gen_prefix = "@gen:";
@@ -517,7 +517,7 @@ public class LanguageDataParser {
 
                     TrainingCategory trainingCategory = new TrainingCategory();
 
-                    if ((trainingCategory.Task = TaskType.ValueOf(words[1])) == null) {
+                    if ((trainingCategory.Task = TaskType.FromName(words[1])) == null) {
                         logError("Unrecognized training category: " + words[1]);
                         continue;
                     }
@@ -550,7 +550,7 @@ public class LanguageDataParser {
 
         LanguageGenerator.Description description = new LanguageGenerator.Description();
 
-        if ((description.TaskType = TaskType.ValueOf(words[1])) == null) {
+        if ((description.TaskType = TaskType.FromName(words[1])) == null) {
             logError("Generator task type is not set");
             return false;
         }
@@ -579,10 +579,8 @@ public class LanguageDataParser {
         return true;
     }
 
-    private void parseInclude(String base, String includeFile, Map<String, Task> tasks,
-                              Map<String, String> references) throws Exception {
-        _filename = includeFile;
-
+    private void parseIncludeInLessonFile(String base, String includeFile, Map<String, Task> tasks,
+                                          Map<String, String> references) throws Exception {
         log(Log.INFO, "Parsing include file: " + includeFile);
 
         InputStream lessonFileStream = getFile(base + "/" + includeFile);
@@ -692,6 +690,19 @@ public class LanguageDataParser {
 
                     l.Name = resolveReferences(words[1], references);
                     break;
+                case "section":
+                    if (words.length != 2) {
+                        logError("Expected format: section <name>");
+                        continue;
+                    }
+
+                    if (!l.Section.isEmpty()) {
+                        logError("Lesson's section is already set");
+                        continue;
+                    }
+
+                    l.Section = resolveReferences(words[1], references);
+                    break;
                 case "description":
                     if (!l.Description.isEmpty()) {
                         logError("Lesson description is already set");
@@ -713,18 +724,17 @@ public class LanguageDataParser {
                     lessonTasks.put(task.Id, task);
                     break;
                 case "chapter":
-                    if (words.length != 4) {
-                        logError("Expected format: chapter <id> <translation> <explanation>");
+                    if (words.length != 3) {
+                        logError("Expected format: chapter <id> <text>");
                         continue;
                     }
 
                     Chapter chapter = new Chapter();
 
-                    chapter.Id = words[1];
-                    chapter.Explanation = resolveReferences(words[2], references);
-                    chapter.Translation = resolveReferences(words[3], references);
+                    chapter.Id = _filename + "#" + words[1];
+                    chapter.Text = resolveReferences(words[2], references);
 
-                    l.Chapters.add(chapter);
+                    l.Chapters.put(chapter.Id, chapter);
                     break;
                 case "task-ref":
                     if (words.length != 2) {
@@ -744,7 +754,7 @@ public class LanguageDataParser {
                         continue;
                     }
 
-                    parseInclude(base, words[1], lessonTasks, references);
+                    parseIncludeInLessonFile(base, words[1], lessonTasks, references);
                     break;
                 default:
                     logError("Unrecognised keyword in lesson file: " + keyword);
@@ -771,21 +781,10 @@ public class LanguageDataParser {
         return ret;
     }
 
-    private void parseLanguageFile(String base) throws Exception {
-        _filename = "/Language.txt";
-
-        log(Log.INFO, "Parsing language file: " + base + _filename);
-
-        _data.LanguageUrl = base;
-
-        InputStream languageFileStream = getFile(base + "/Language.txt");
-        LineNumberReader r =
-                new LineNumberReader(new BufferedReader(new InputStreamReader(languageFileStream)));
-
-        int lessonIndex = 0;
-        int trainingIndex = 0;
-
+    private void parseIncludeInLanguageFile(String base, LineNumberReader r, int recursion) throws
+            Exception {
         String line;
+
         while ((line = r.readLine()) != null) {
             _line = r.getLineNumber();
             String[] words = getWords(line, r);
@@ -797,6 +796,25 @@ public class LanguageDataParser {
             if (keyword.equals("stop") && words.length == 1) break;
 
             switch (keyword) {
+                case "include":
+                    if (words.length != 2) {
+                        logError("Expecting format: include <filename>");
+                        continue;
+                    }
+
+                    if (recursion > 5) {
+                        logError("Too deep recursion");
+                        continue;
+                    }
+
+                    String filename = words[1];
+                    InputStream languageFileStream = getFile(base + "/" + filename);
+                    LineNumberReader r1 =
+                            new LineNumberReader(
+                                    new BufferedReader(new InputStreamReader(languageFileStream)));
+
+                    parseIncludeInLanguageFile(base, r1, recursion + 1);
+                    break;
                 case "gen":
                     if (!parseGeneratorDecl(words, _references)) continue;
                     break;
@@ -881,7 +899,7 @@ public class LanguageDataParser {
                     Lesson l = new Lesson();
 
                     l.Id = words[1];
-                    l.Index = lessonIndex++;
+                    l.Index = _data.Lessons.size();
 
                     _data.Lessons.put(words[1], l);
                     break;
@@ -907,7 +925,7 @@ public class LanguageDataParser {
                     Training t = new Training();
 
                     t.Id = words[1];
-                    t.Index = trainingIndex++;
+                    t.Index = _data.Trainings.size();
 
                     t.Filename = words[1];
 
@@ -930,6 +948,7 @@ public class LanguageDataParser {
                 case "author":
                 case "code":
                 case "translation":
+                case "bugs":
                     if (words.length != 2) {
                         logError("Expecting format: " + keyword + " <text>");
                         continue;
@@ -988,6 +1007,20 @@ public class LanguageDataParser {
                     break;
             }
         }
+    }
+
+    private void parseLanguageFile(String base) throws Exception {
+        _filename = "/Language.txt";
+
+        log(Log.INFO, "Parsing language file: " + base + _filename);
+
+        _data.LanguageUrl = base;
+
+        InputStream languageFileStream = getFile(base + "/Language.txt");
+        LineNumberReader r =
+                new LineNumberReader(new BufferedReader(new InputStreamReader(languageFileStream)));
+
+        parseIncludeInLanguageFile(base, r, 0);
 
         if (_data.LanguageName.isEmpty()) {
             logError("Language name is not set");
@@ -1119,16 +1152,15 @@ public class LanguageDataParser {
                     theory.Title = resolveReferences(words[1], references);
                     break;
                 case "chapter":
-                    if (words.length != 4) {
-                        logError("Expected format: chapter <id> <explanation> <translation>");
+                    if (words.length != 3) {
+                        logError("Expected format: chapter <id> <text>");
                         continue;
                     }
 
                     Chapter chapter = new Chapter();
 
                     chapter.Id = words[1];
-                    chapter.Explanation = resolveReferences(words[2], references);
-                    chapter.Translation = resolveReferences(words[3], references);
+                    chapter.Text = resolveReferences(words[2], references);
 
                     theoryChapters.put(chapter.Id, chapter);
                     break;

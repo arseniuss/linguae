@@ -22,8 +22,6 @@ import lv.id.arseniuss.linguae.app.entities.ItemLanguageRepo;
 
 public class RepoEditViewModel extends AndroidViewModel {
 
-    private final Gson _gson = new Gson();
-
     private final MutableLiveData<List<EditRepoViewModel>> _repos =
             new MutableLiveData<>(new ArrayList<>());
     private final MutableLiveData<Integer> _selected = new MutableLiveData<>(-1);
@@ -66,7 +64,7 @@ public class RepoEditViewModel extends AndroidViewModel {
                 .map(r -> new ItemLanguageRepo(r.Name().getValue(), r.Location().getValue()))
                 .collect(Collectors.toList());
 
-        return _gson.toJson(data);
+        return Utilities.GetGson().toJson(data);
     }
 
     public static class EditRepoViewModel extends BaseObservable {

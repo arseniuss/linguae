@@ -17,7 +17,7 @@ import lv.id.arseniuss.linguae.app.tasks.AbstractTaskFragment;
 import lv.id.arseniuss.linguae.app.tasks.AbstractTaskViewModel;
 import lv.id.arseniuss.linguae.app.tasks.entities.SessionTaskData;
 import lv.id.arseniuss.linguae.tasks.SelectTask;
-import lv.id.arseniuss.linguae.types.TaskType;
+import lv.id.arseniuss.linguae.enumerators.TaskType;
 
 public class SelectViewModel extends AbstractTaskViewModel {
 

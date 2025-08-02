@@ -11,7 +11,7 @@ import androidx.room.PrimaryKey;
 import java.util.Objects;
 
 import lv.id.arseniuss.linguae.entities.TrainingCategory;
-import lv.id.arseniuss.linguae.types.TaskType;
+import lv.id.arseniuss.linguae.enumerators.TaskType;
 
 @Entity(tableName = "training_category", indices = {@Index(value = "training_id")},
         foreignKeys = @ForeignKey(entity = TrainingEntity.class, parentColumns = "id",

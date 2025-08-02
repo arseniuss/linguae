@@ -17,6 +17,7 @@ import com.google.gson.Gson;
 import java.util.List;
 
 import lv.id.arseniuss.linguae.app.R;
+import lv.id.arseniuss.linguae.app.Utilities;
 import lv.id.arseniuss.linguae.app.databinding.ActivityTrainingSetupBinding;
 import lv.id.arseniuss.linguae.app.databinding.ItemTrainingCategoryBinding;
 import lv.id.arseniuss.linguae.app.databinding.ItemTrainingTaskBinding;
@@ -60,7 +61,7 @@ public class TrainingSetupActivity extends AppCompatActivity {
         String trainingId = i.getStringExtra(TRAINING);
         Intent ni = new Intent(this, SessionActivity.class);
 
-        String json = new Gson().toJson(_model.GetTrainingCategories());
+        String json = Utilities.GetGson().toJson(_model.GetTrainingCategories());
 
         ni.putExtra(SessionActivity.TrainingExtraTag, trainingId);
         ni.putExtra(SessionActivity.TrainingCategoriesExtraTag, json);

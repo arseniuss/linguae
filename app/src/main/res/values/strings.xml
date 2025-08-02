@@ -63,6 +63,7 @@
     <string name="no">No</string>
     <string name="cancel">Cancel</string>
     <string name="ok">OK</string>
+    <string name="save">Save</string>
     <string name="TitleVocabulary">Vocabulary</string>
     <string name="TitleSentences">Sentences</string>
     <string name="DescriptionAppLogo">Logo</string>
@@ -81,9 +82,22 @@
     <string name="TitleChooseTaskOptions">Answer option count in choose task</string>
     <string name="NotEnoughTrainingTasksMessage">Not enough tasks in the training (got: %d, needs: %d)</string>
     <string name="NotEnoughLessonTasksMessage">Not enough tasks in the lesson (got: %d, needs: %d)</string>
+    <string name="TextBugInApplication">In application</string>
+    <string name="TextBugInContent">In content</string>
+    <string name="TextBugDescribe">Describe the bug:</string>
+    <string name="TitleConnectedInformation">Collected data</string>
+    <string name="DescriptionScreenshot">Screenshot</string>
+    <string name="TextBugReportSaved">Bug report saved</string>
     <plurals name="RepositoryCount">
         <item quantity="one">%d repository</item>
         <item quantity="zero">%d repositories</item>
         <item quantity="other">%d repositories</item>
     </plurals>
+    <string name="EnumTaskTypeUnknownTask">Unknown task</string>
+    <string name="EnumTaskTypeSelectTask">Select task</string>
+    <string name="EnumTaskTypeChooseTask">Choose task</string>
+    <string name="EnumTaskTypeConjugateTask">Conjugate task</string>
+    <string name="EnumTaskTypeDeclineTask">Decline task</string>
+    <string name="EnumTaskTypeTranslateTask">Translate task</string>
+    <string name="TextErrors">Errors</string>
 </resources>

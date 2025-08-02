@@ -95,9 +95,6 @@ public class TheoryActivity extends AppCompatActivity {
         if (item.getItemId() == android.R.id.home) {
             onBackPressed();
             return true;
-        } else if (item.getItemId() == R.id.item_language) {
-            _model.SwitchLanguage();
-            return true;
         }
 
         return super.onOptionsItemSelected(item);

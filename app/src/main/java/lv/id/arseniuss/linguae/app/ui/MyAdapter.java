@@ -118,6 +118,10 @@ public class MyAdapter<TItem extends BaseObservable> extends BaseAdapter {
             _context = viewDataBinding.getRoot().getContext();
         }
 
+        public Context GetContext() {
+            return _context;
+        }
+
         public void Bind(int position, TItem item) {
             _position = position;
             _item = item;

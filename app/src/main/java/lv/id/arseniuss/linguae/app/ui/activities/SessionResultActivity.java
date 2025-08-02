@@ -15,7 +15,6 @@ import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
 import com.github.mikephil.charting.formatter.DefaultValueFormatter;
 import com.google.android.material.R.attr;
-import com.google.gson.Gson;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -43,8 +42,8 @@ public class SessionResultActivity extends AppCompatActivity {
         }
 
         String result = i.getStringExtra(ResultTag);
-        SessionResultWithTaskResults sessionResult = new Gson().fromJson(result,
-                SessionResultWithTaskResults.class);
+        SessionResultWithTaskResults sessionResult =
+                Utilities.GetGson().fromJson(result, SessionResultWithTaskResults.class);
 
         _binding = DataBindingUtil.setContentView(this, R.layout.activity_session_result);
         _model = new ViewModelProvider(this).get(SessionResultViewModel.class);
@@ -55,15 +54,15 @@ public class SessionResultActivity extends AppCompatActivity {
         _binding.setLifecycleOwner(this);
 
         _binding.pieChart.setDrawCenterText(true);
-        _binding.pieChart.setCenterTextColor(Utilities.GetThemeColor(getTheme(),
-                attr.colorOnBackground));
-        _binding.pieChart.setCenterTextSize(Utilities.GetDimension(getBaseContext(),
-                android.R.attr.textSize));
+        _binding.pieChart.setCenterTextColor(
+                Utilities.GetThemeColor(getTheme(), attr.colorOnBackground));
+        _binding.pieChart.setCenterTextSize(
+                Utilities.GetDimension(getBaseContext(), android.R.attr.textSize));
 
         _binding.pieChart.setDrawHoleEnabled(true);
         _binding.pieChart.setDrawRoundedSlices(true);
-        _binding.pieChart.setHoleColor(Utilities.GetThemeColor(getTheme(),
-                android.R.attr.colorBackground));
+        _binding.pieChart.setHoleColor(
+                Utilities.GetThemeColor(getTheme(), android.R.attr.colorBackground));
         _binding.pieChart.setDrawEntryLabels(false);
 
         Legend pieChartLegend = _binding.pieChart.getLegend();
@@ -88,10 +87,11 @@ public class SessionResultActivity extends AppCompatActivity {
                 .stream()
                 .map(taskResults -> new PieEntry(
                         (float) taskResults.stream().map(t -> t.Points).reduce(0, Integer::sum),
-                        taskResults.get(0).Type.GetName(), taskResults))
+                        Utilities.GetTranslatedString(this, taskResults.get(0).Type), taskResults))
                 .collect(Collectors.toList());
 
-        pieEntryList.add(new PieEntry(_model.GetAmount() - _model.GetPoints(), "Errors"));
+        pieEntryList.add(new PieEntry(_model.GetAmount() - _model.GetPoints(),
+                getString(R.string.TextErrors)));
 
         PieDataSet dataSet = new PieDataSet(pieEntryList, null);
         List<Integer> colors = pieEntryList.stream()

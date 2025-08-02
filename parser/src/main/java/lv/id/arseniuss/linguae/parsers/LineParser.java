@@ -30,7 +30,8 @@ public class LineParser {
                         words.add(line.substring(quotes, i));
                         quotes = -1;
                         while (i < line.length()) {
-                            if (line.charAt(i) == ' ') break;
+                            char c = line.charAt(i);
+                            if (c == ' ' || c == '\t') break;
                             i++;
 
                         }

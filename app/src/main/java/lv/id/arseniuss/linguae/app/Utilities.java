@@ -8,13 +8,17 @@ import android.content.res.TypedArray;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
 import android.net.Uri;
 import android.provider.DocumentsContract;
 import android.util.Base64;
+import android.util.Log;
 import android.util.TypedValue;
+import android.view.View;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import com.google.gson.reflect.TypeToken;
@@ -39,7 +43,12 @@ import java.util.Locale;
 import java.util.Stack;
 import java.util.stream.Collectors;
 
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.core.Single;
+import io.reactivex.rxjava3.schedulers.Schedulers;
+import lv.id.arseniuss.linguae.app.data.IntValueEnumTypeAdapterFactory;
+import lv.id.arseniuss.linguae.app.db.ITaskDataTypeAdapter;
+import lv.id.arseniuss.linguae.tasks.Task;
 
 public class Utilities {
     private static final Stack<Integer> _colors = new Stack<>();
@@ -128,6 +137,12 @@ public class Utilities {
         byte[] bytes = stream.toByteArray();
 
         return Base64.encodeToString(bytes, Base64.DEFAULT);
+    }
+
+    public static Bitmap Base64ToBitmap(String text) {
+        byte[] bytes = Base64.decode(text, Base64.DEFAULT);
+
+        return BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
     }
 
     public static void PrintToastError(Context context, Throwable error) {
@@ -235,6 +250,28 @@ public class Utilities {
         });
     }
 
+    public static Single<Bitmap> CaptureScreenshot(View rootView) {
+        return Single.fromCallable(() -> CreateScreenshotBitmap(rootView))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    public static Bitmap CreateScreenshotBitmap(View view) {
+        if (view.getWidth() == 0 || view.getHeight() == 0) {
+            view.measure(View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
+                    View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED));
+            view.layout(0, 0, view.getMeasuredWidth(), view.getMeasuredHeight());
+        }
+
+        Bitmap bitmap =
+                Bitmap.createBitmap(view.getWidth(), view.getHeight(), Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(bitmap);
+
+        view.draw(canvas);
+
+        return bitmap;
+    }
+
     public static Single<JsonElement> FetchJson(String jsonUrl) {
         return Single.fromCallable(() -> {
             URL url = new URL(jsonUrl);
@@ -269,10 +306,35 @@ public class Utilities {
     }
 
     public static <T> List<T> UnpackList(String json, Class<?> itemClass) {
-        Gson gson = new Gson();
         Type listType = TypeToken.getParameterized(List.class, itemClass).getType();
 
-        return gson.fromJson(json, listType);
+        return Utilities.GetGson().fromJson(json, listType);
+    }
+
+    public static Gson GetGson() {
+        return GetGsonBuilder().create();
+    }
+
+    public static GsonBuilder GetGsonBuilder() {
+        Gson innerGson = new Gson();
+
+        return new GsonBuilder().serializeSpecialFloatingPointValues()
+                .registerTypeAdapterFactory(new IntValueEnumTypeAdapterFactory())
+                .registerTypeAdapter(Task.ITaskData.class, new ITaskDataTypeAdapter(innerGson));
+    }
+
+    public static String GetTranslatedString(Context context, Enum<?> enumValue) {
+        String name = "Enum" + enumValue.getClass().getSimpleName() + enumValue.name();
+        try {
+            int resId =
+                    context.getResources().getIdentifier(name, "string", context.getPackageName());
+
+            return context.getString(resId);
+        } catch (Exception e) {
+            Log.e("DEBUG", "Translation for " + name + " do not exist");
+
+            return "Untranslated" + name;
+        }
     }
 
     public static String[] GetLanguageCodes(SharedPreferences sharedPreferences) {
@@ -292,6 +354,9 @@ public class Utilities {
         android.content.res.Configuration configuration = new android.content.res.Configuration();
         configuration.setLocale(locale);
 
-        context.getResources().updateConfiguration(configuration, context.getResources().getDisplayMetrics());
+        context.getResources()
+                .updateConfiguration(configuration, context.getResources().getDisplayMetrics());
     }
+
+
 }

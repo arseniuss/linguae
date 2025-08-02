@@ -21,6 +21,8 @@ import androidx.lifecycle.LifecycleOwner;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.tabs.TabLayout;
+
 import java.util.List;
 
 import io.noties.markwon.Markwon;
@@ -37,8 +39,8 @@ public class BindingAdapters {
 
 
     @BindingAdapter("items")
-    public static <T extends BaseObservable>
-    void SetAdapterLinearLayoutObservableItems(AdapterLinearLayout container, List<T> entries) {
+    public static <T extends BaseObservable> void SetAdapterLinearLayoutObservableItems(
+            AdapterLinearLayout container, List<T> entries) {
         if (entries == null || container.getItemLayoutResId() == 0) return;
 
         Adapter adapter = container.getAdapter();
@@ -65,9 +67,8 @@ public class BindingAdapters {
     }
 
     @BindingAdapter("items")
-    public static <T extends BaseObservable>
-    void SetAdapterFlexboxLayoutObservableItems(AdapterFlexboxLayout container,
-                                                List<T> entries) {
+    public static <T extends BaseObservable> void SetAdapterFlexboxLayoutObservableItems(
+            AdapterFlexboxLayout container, List<T> entries) {
         if (entries == null) return;
 
         Adapter adapter = container.getAdapter();
@@ -90,6 +91,18 @@ public class BindingAdapters {
         myAdapter.clear();
         myAdapter.addAll(entries);
         myAdapter.notifyDataSetChanged();
+    }
+
+    @BindingAdapter("items")
+    public static <T extends TabViewModel> void SetTabLayoutItems(TabLayout tabLayout,
+                                                                    List<T> entries) {
+        if (entries == null) return;
+
+        tabLayout.removeAllTabs();
+
+        for (TabViewModel tab : entries) {
+            tabLayout.addTab(tabLayout.newTab().setText(tab.TabName()));
+        }
     }
 
     @BindingAdapter("items")
@@ -225,6 +238,13 @@ public class BindingAdapters {
         }
     }
 
+    @BindingAdapter("image")
+    public static void SetImageViewImage(ImageView imageView, String text) {
+        Bitmap bitmap = Utilities.Base64ToBitmap(text);
+
+        imageView.setImageBitmap(bitmap);
+    }
+
     @BindingAdapter("markdown.nolinks")
     public static void SetMarkdownNoLinks(TextView textView, String text) {
         if (_markwonNoLinks == null) {
@@ -267,5 +287,9 @@ public class BindingAdapters {
         decoration.setDrawable(divider);
 
         recyclerView.addItemDecoration(decoration);
+    }
+
+    public interface TabViewModel {
+        String TabName();
     }
 }

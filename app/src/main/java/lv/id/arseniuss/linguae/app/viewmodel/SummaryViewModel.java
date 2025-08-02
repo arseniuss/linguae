@@ -27,7 +27,9 @@ public class SummaryViewModel extends AndroidViewModel {
     private final SharedPreferences _sharedPreferences =
             PreferenceManager.getDefaultSharedPreferences(getApplication().getBaseContext());
 
-    private final String _language =
+    private final String _languageCode =
+            _sharedPreferences.getString(Constants.PreferenceLanguageCodeKey, "");
+    private final String _languageName =
             _sharedPreferences.getString(Constants.PreferenceLanguageNameKey, "");
 
     private final SummaryDataAccess _summaryDataAccess;
@@ -42,9 +44,9 @@ public class SummaryViewModel extends AndroidViewModel {
     public SummaryViewModel(Application app) {
         super(app);
 
-        if (!_language.isEmpty())
+        if (!_languageCode.isEmpty())
             _summaryDataAccess =
-                    LanguageDatabase.GetInstance(getApplication(), _language)
+                    LanguageDatabase.GetInstance(getApplication(), _languageCode)
                             .GetSummaryDataAccess();
         else
             _summaryDataAccess = null;
@@ -63,7 +65,7 @@ public class SummaryViewModel extends AndroidViewModel {
     }
 
     public String LanguageName() {
-        return _language;
+        return _languageName;
     }
 
     public MutableLiveData<List<BestLessonViewModel>> Lessons() {

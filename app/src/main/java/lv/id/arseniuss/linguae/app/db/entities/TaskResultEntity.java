@@ -9,7 +9,7 @@ import androidx.room.PrimaryKey;
 import java.util.ArrayList;
 import java.util.List;
 
-import lv.id.arseniuss.linguae.types.TaskType;
+import lv.id.arseniuss.linguae.enumerators.TaskType;
 
 @Entity(tableName = "task_result") public class TaskResultEntity {
     @PrimaryKey(autoGenerate = true)

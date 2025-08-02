@@ -1,6 +1,6 @@
 package lv.id.arseniuss.linguae.app.db.entities;
 
-import lv.id.arseniuss.linguae.types.TaskType;
+import lv.id.arseniuss.linguae.enumerators.TaskType;
 
 public class TaskError {
 

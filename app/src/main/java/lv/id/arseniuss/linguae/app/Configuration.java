@@ -17,6 +17,7 @@ public class Configuration {
     public static final String IMAGE_KEY = "image";
     public static final String AUTHOR_KEY = "author";
     public static final String CODE_KEY = "code";
+    public static final String BUGS_KEY = "bugs";
 
     private static final List<OnConfigChangedListener> _listeners = new ArrayList<>();
     private static Map<String, String> _configs;
@@ -29,6 +30,11 @@ public class Configuration {
 
     public static String GetLanguageVersion() {
         if (_configs.containsKey(VERSION_KEY)) return _configs.get(VERSION_KEY);
+        return null;
+    }
+
+    public static String GetBugReportLocation() {
+        if (_configs.containsKey(BUGS_KEY)) return _configs.get(BUGS_KEY);
         return null;
     }
 

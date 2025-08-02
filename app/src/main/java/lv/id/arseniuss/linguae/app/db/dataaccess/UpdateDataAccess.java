@@ -25,9 +25,10 @@ import lv.id.arseniuss.linguae.app.db.entities.TheoryEntity;
 import lv.id.arseniuss.linguae.app.db.entities.TrainingCategoryEntity;
 import lv.id.arseniuss.linguae.app.db.entities.TrainingEntity;
 import lv.id.arseniuss.linguae.app.db.entities.TrainingTaskCrossref;
-import lv.id.arseniuss.linguae.types.TaskType;
+import lv.id.arseniuss.linguae.enumerators.TaskType;
 
-@Dao public abstract class UpdateDataAccess {
+@Dao
+public abstract class UpdateDataAccess {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     protected abstract Completable InsertSettings(Collection<SettingEntity> settingEntities);
 
@@ -144,7 +145,7 @@ import lv.id.arseniuss.linguae.types.TaskType;
                         .collect(Collectors.toList())))
                 .andThen(InsertChapters(data.Lessons.values()
                         .stream()
-                        .flatMap(t -> t.Chapters.stream().map(ChapterEntity::new))
+                        .flatMap(t -> t.Chapters.values().stream().map(ChapterEntity::new))
                         .collect(Collectors.toList())))
                 .andThen(InsertTheory(data.Theory.values()
                         .stream()
@@ -188,7 +189,7 @@ import lv.id.arseniuss.linguae.types.TaskType;
                         .collect(Collectors.toList())))
                 .andThen(InsertLessonChapterCrossref(data.Lessons.values()
                         .stream()
-                        .flatMap(l -> l.Chapters.stream()
+                        .flatMap(l -> l.Chapters.values().stream()
                                 .map(c -> new LessonChapterCrossref(l.Id, c.Id))
                                 .collect(Collectors.toList())
                                 .stream())

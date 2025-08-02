@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:binding="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
@@ -30,6 +29,13 @@
                 app:popupTheme="@style/MyAppTheme"
                 app:title="@string/TitleLessons" />
 
+            <com.google.android.material.tabs.TabLayout
+                android:id="@+id/tabs"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:items="@{viewmodel.Sections()}"
+                app:tabMode="scrollable" />
+
         </com.google.android.material.appbar.AppBarLayout>
 
         <ViewSwitcher
@@ -40,11 +46,11 @@
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/lessons"
                 style="@style/MyAppTheme.Layout.VerticalPadding"
+                divider="@{@drawable/divider_1}"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                app:items="@{viewmodel.Data()}"
+                app:items="@{viewmodel.Lessons()}"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                divider="@{@drawable/divider_1}"
                 tools:itemCount="5"
                 tools:listitem="@layout/item_lesson" />
 

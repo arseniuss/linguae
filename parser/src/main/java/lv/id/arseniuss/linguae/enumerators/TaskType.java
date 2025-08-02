@@ -1,55 +1,43 @@
-package lv.id.arseniuss.linguae.types;
+package lv.id.arseniuss.linguae.enumerators;
 
-import java.util.Comparator;
-import java.util.Map;
-import java.util.TreeMap;
+import lv.id.arseniuss.linguae.interfaces.IntValueSerializable;
+import lv.id.arseniuss.linguae.interfaces.NameValueSerializable;
 
-public enum TaskType {
-    UnknownTask("Unknown task"),
+public enum TaskType implements IntValueSerializable, NameValueSerializable {
+    UnknownTask(0, "unknown"),
 
-    SelectTask("Select task"),
+    SelectTask(1, "select"),
 
-    ChooseTask("Choose task"),
+    ChooseTask(2, "choose"),
 
-    ConjugateTask("Conjugate task"),
+    ConjugateTask(3, "conjugate"),
 
-    DeclineTask("Decline task"),
+    DeclineTask(4, "decline"),
 
-    TranslateTask("Translate task");
+    TranslateTask(5, "translate");
 
-    private static final Map<String, TaskType> map = new TreeMap<>(new Comparator<String>() {
-        @Override
-        public int compare(String o1, String o2) {
-            String prefix1 = removeTaskSuffix(o1);
-            String prefix2 = removeTaskSuffix(o2);
-
-            return String.CASE_INSENSITIVE_ORDER.compare(prefix1, prefix2);
-        }
-
-        private String removeTaskSuffix(String str) {
-            if (str.toLowerCase().endsWith("task")) {
-                return str.substring(0, str.length() - 4);
-            }
-            return str;
-        }
-    });
-
-    static {
-        for (TaskType taskType : TaskType.values()) {
-            map.put(taskType.toString(), taskType);
-        }
-    }
-
+    private final int _value;
     private final String _name;
 
-    TaskType(String name) {
+    TaskType(int value, String name) {
+        _value = value;
         _name = name;
     }
 
-    public static TaskType ValueOf(String task) {
-        return map.get(task);
+    public static TaskType FromValue(int value) {
+        return IntValueSerializable.FromValue(TaskType.class, value);
     }
 
+    public static TaskType FromName(String name) {
+        return NameValueSerializable.FromName(TaskType.class, name);
+    }
+
+    @Override
+    public int GetValue() {
+        return _value;
+    }
+
+    @Override
     public String GetName() {
         return _name;
     }

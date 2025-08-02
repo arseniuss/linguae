@@ -1,6 +1,6 @@
 package lv.id.arseniuss.linguae.entities;
 
-import lv.id.arseniuss.linguae.types.TaskType;
+import lv.id.arseniuss.linguae.enumerators.TaskType;
 
 public class TrainingCategory {
     public int Id;

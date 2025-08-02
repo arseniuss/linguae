@@ -13,7 +13,7 @@ import io.reactivex.rxjava3.core.Maybe;
 import io.reactivex.rxjava3.core.Single;
 import lv.id.arseniuss.linguae.app.db.entities.SettingEntity;
 import lv.id.arseniuss.linguae.app.db.entities.TaskEntity;
-import lv.id.arseniuss.linguae.types.TaskType;
+import lv.id.arseniuss.linguae.enumerators.TaskType;
 
 @Dao public abstract class TaskDataAccess {
     @Query("SELECT task_id FROM lesson_task WHERE lesson_id = :lessonId")

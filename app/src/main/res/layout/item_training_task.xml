@@ -5,6 +5,7 @@
 
     <data>
 
+        <import type="lv.id.arseniuss.linguae.app.Utilities"/>
         <variable
             name="presenter"
             type="lv.id.arseniuss.linguae.app.ui.activities.TrainingSetupActivity" />
@@ -25,7 +26,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@{viewmodel.GetTaskName()}"
+            android:text="@{Utilities.GetTranslatedString(presenter, viewmodel.TaskType)}"
             android:textSize="18sp"
             tools:text="Task name" />
 

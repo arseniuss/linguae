@@ -73,20 +73,21 @@ public class InitialActivity extends AppCompatActivity {
             return;
         }
 
-        String displayLanguage =
+        String localeCode =
                 sharedPreferences.getString(Constants.PreferenceLocaleCodeKey, "").trim();
 
-        if (displayLanguage.isEmpty()) {
+        if (localeCode.isEmpty()) {
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.container, new LocaleSelectFragment(this::onLocaleSelected))
                     .commit();
             return;
-        }
-        else {
-            Utilities.SetLocale(this, displayLanguage);
+        } else {
+            Utilities.SetLocale(this, localeCode);
+            Utilities.SetLocale(getApplicationContext(), localeCode);
         }
 
-        String language = sharedPreferences.getString(Constants.PreferenceLanguageCodeKey, "").trim();
+        String language =
+                sharedPreferences.getString(Constants.PreferenceLanguageCodeKey, "").trim();
         String languageUrl =
                 sharedPreferences.getString(Constants.PreferenceLanguageUrlKey, "").trim();
 

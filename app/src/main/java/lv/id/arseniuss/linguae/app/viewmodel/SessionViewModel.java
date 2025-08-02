@@ -22,8 +22,10 @@ import java.util.stream.Collectors;
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.disposables.Disposable;
 import io.reactivex.rxjava3.schedulers.Schedulers;
+import lv.id.arseniuss.linguae.app.Configuration;
 import lv.id.arseniuss.linguae.app.Constants;
 import lv.id.arseniuss.linguae.app.R;
+import lv.id.arseniuss.linguae.app.Utilities;
 import lv.id.arseniuss.linguae.app.db.LanguageDatabase;
 import lv.id.arseniuss.linguae.app.db.dataaccess.TaskDataAccess;
 import lv.id.arseniuss.linguae.app.db.entities.SessionResultWithTaskResults;
@@ -66,6 +68,12 @@ public class SessionViewModel extends AndroidViewModel {
 
     public MutableLiveData<String> TaskProgress() {
         return _taskProgress;
+    }
+
+    public Boolean HasBugReporting() {
+        final String bugReportLocation = Configuration.GetBugReportLocation();
+
+        return bugReportLocation != null && !bugReportLocation.isEmpty();
     }
 
     public MutableLiveData<Boolean> CanCheck() {
@@ -158,7 +166,7 @@ public class SessionViewModel extends AndroidViewModel {
                 _tasks.stream().map(t -> t.Result.Amount).reduce(0, Integer::sum);
         _result.TaskResults = _tasks.stream().map(t -> t.Result).collect(Collectors.toList());
 
-        return new Gson().toJson(_result);
+        return Utilities.GetGson().toJson(_result);
     }
 
     public interface ILoaded {

@@ -23,7 +23,7 @@ import lv.id.arseniuss.linguae.app.db.LanguageDatabase;
 import lv.id.arseniuss.linguae.app.db.dataaccess.TaskDataAccess;
 import lv.id.arseniuss.linguae.app.db.dataaccess.TrainingDataAccess;
 import lv.id.arseniuss.linguae.app.db.entities.TrainingCategoryEntity;
-import lv.id.arseniuss.linguae.types.TaskType;
+import lv.id.arseniuss.linguae.enumerators.TaskType;
 
 public class TrainingSetupViewModel extends AndroidViewModel {
     private static String _trainingId = "";
@@ -99,10 +99,6 @@ public class TrainingSetupViewModel extends AndroidViewModel {
 
         public TrainingTaskViewModel(TaskType tt) {
             this.TaskType = tt;
-        }
-
-        public String GetTaskName() {
-            return this.TaskType.GetName();
         }
 
         public MutableLiveData<List<TrainingCategoryViewModel>> GetCategories() {

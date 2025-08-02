@@ -24,6 +24,7 @@ import lv.id.arseniuss.linguae.app.db.dataaccess.SessionDataAccess;
 import lv.id.arseniuss.linguae.app.db.entities.SessionResultWithTaskResults;
 import lv.id.arseniuss.linguae.app.db.entities.TaskError;
 import lv.id.arseniuss.linguae.app.db.entities.TaskResultEntity;
+import lv.id.arseniuss.linguae.enumerators.TaskType;
 
 public class SessionResultViewModel extends AndroidViewModel {
 
@@ -91,15 +92,17 @@ public class SessionResultViewModel extends AndroidViewModel {
 
         public TaskErrorViewModel(TaskError taskError) {
             _taskError = taskError;
+
         }
 
-        public String TaskName() {
-            return _taskError.Type.GetName();
+        public TaskType TaskType() {
+            return _taskError.Type;
         }
 
         public Spanned GetResult() {
-            return Html.fromHtml(_taskError.Title + " <strike>" + _taskError.IncorrectAnswer
-                    + "</strike>  " + _taskError.CorrectAnswer, Html.FROM_HTML_MODE_LEGACY);
+            return Html.fromHtml(
+                    _taskError.Title + " <strike>" + _taskError.IncorrectAnswer + "</strike>  " +
+                            _taskError.CorrectAnswer, Html.FROM_HTML_MODE_LEGACY);
         }
     }
 }

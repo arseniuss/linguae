@@ -13,11 +13,8 @@ import lv.id.arseniuss.linguae.entities.Chapter;
     @NonNull
     public String Id = "";
 
-    @ColumnInfo(name = "explanation")
-    public String Explanation;
-
-    @ColumnInfo(name = "translation")
-    public String Translation;
+    @ColumnInfo(name = "text")
+    public String Text;
 
     public ChapterEntity() {
 
@@ -25,7 +22,6 @@ import lv.id.arseniuss.linguae.entities.Chapter;
 
     public ChapterEntity(Chapter c) {
         Id = c.Id;
-        Explanation = c.Explanation;
-        Translation = c.Translation;
+        Text = c.Text;
     }
 }

@@ -1,6 +1,6 @@
 package lv.id.arseniuss.linguae.tasks;
 
-import lv.id.arseniuss.linguae.types.TaskType;
+import lv.id.arseniuss.linguae.enumerators.TaskType;
 
 public class DeclineTask extends Task.ITaskData {
     public String Word;

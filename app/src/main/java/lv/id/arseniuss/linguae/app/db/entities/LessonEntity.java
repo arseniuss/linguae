@@ -20,6 +20,10 @@ import lv.id.arseniuss.linguae.entities.Lesson;
     @NonNull
     public String Name = "";
 
+    @ColumnInfo(name = "section")
+    @NonNull
+    public String Section = "";
+
     @ColumnInfo(name = "description")
     @NonNull
     public String Description = "";
@@ -33,6 +37,7 @@ import lv.id.arseniuss.linguae.entities.Lesson;
         Id = l.Id;
         Index = l.Index;
         Name = l.Name;
+        Section = l.Section;
         Description = l.Description;
     }
 }

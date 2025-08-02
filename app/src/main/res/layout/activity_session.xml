@@ -53,6 +53,7 @@
                 android:contentDescription="@string/DescriptionReportABug"
                 android:onClick="@{() -> presenter.OnReportBug()}"
                 android:padding="3dp"
+                android:visibility="@{viewmodel.HasBugReporting()}"
                 app:srcCompat="@drawable/baseline_bug_report_24" />
 
         </LinearLayout>

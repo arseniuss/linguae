@@ -1,6 +1,6 @@
 package lv.id.arseniuss.linguae.app.db.entities;
 
-import static lv.id.arseniuss.linguae.tasks.Task.deserialize;
+import android.util.Base64;
 
 import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
@@ -9,41 +9,50 @@ import androidx.room.PrimaryKey;
 import androidx.room.TypeConverter;
 import androidx.room.TypeConverters;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonDeserializationContext;
-import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParseException;
 import com.google.gson.JsonParser;
+import com.google.gson.annotations.SerializedName;
 
-import java.util.Objects;
+import java.nio.charset.StandardCharsets;
 
+import lv.id.arseniuss.linguae.app.Utilities;
+import lv.id.arseniuss.linguae.enumerators.TaskType;
+import lv.id.arseniuss.linguae.tasks.ChooseTask;
+import lv.id.arseniuss.linguae.tasks.ConjugateTask;
+import lv.id.arseniuss.linguae.tasks.DeclineTask;
+import lv.id.arseniuss.linguae.tasks.SelectTask;
 import lv.id.arseniuss.linguae.tasks.Task;
-import lv.id.arseniuss.linguae.types.TaskType;
+import lv.id.arseniuss.linguae.tasks.TranslateTask;
 
-@Entity(tableName = "task") public class TaskEntity {
+@Entity(tableName = "task")
+public class TaskEntity {
     @PrimaryKey
     @ColumnInfo(name = "id")
+    @SerializedName("id")
     @NonNull
     public String Id = "";
 
     @ColumnInfo(name = "type")
+    @SerializedName("type")
     @NonNull
     public TaskType Type = TaskType.UnknownTask;
 
     /* category of noun (declination) or verb (conjugation) */
     @ColumnInfo(name = "category")
+    @SerializedName("category")
     public String Category;
 
     @ColumnInfo(name = "description")
+    @SerializedName("description")
     public String Description;
 
     @ColumnInfo(name = "amount")
+    @SerializedName("amount")
     public long Amount;
 
     @ColumnInfo(name = "data")
+    @SerializedName("data")
     @TypeConverters({TaskEntity.class})
     public Task.ITaskData Data;
 
@@ -65,39 +74,42 @@ import lv.id.arseniuss.linguae.types.TaskType;
 
     @TypeConverter
     public static String TaskToString(Task.ITaskData task) {
-        Gson gson = new Gson();
+        if (task == null) return null;
 
-        if (Objects.requireNonNull(task.Type) == TaskType.SelectTask ||
-                task.Type == TaskType.TranslateTask || task.Type == TaskType.DeclineTask ||
-                task.Type == TaskType.ConjugateTask || task.Type == TaskType.ChooseTask) {
-            return gson.toJson(task);
-        }
-        return null;
+        String json = Utilities.GetGson().toJson(task);
+
+        return Base64.encodeToString(json.getBytes(StandardCharsets.UTF_8), Base64.NO_WRAP);
     }
 
     @TypeConverter
     public static Task.ITaskData StringToTask(String str) {
-        JsonElement jelement = JsonParser.parseString(str);
+        if (str == null) return null;
+
+        byte[] decodedBytes = Base64.decode(str, Base64.NO_WRAP);
+        String json = new String(decodedBytes, StandardCharsets.UTF_8);
+
+        JsonElement jelement = JsonParser.parseString(json);
         JsonObject jobject = jelement.getAsJsonObject();
 
         return deserialize(jobject);
     }
 
+    public static Task.ITaskData deserialize(JsonObject jsonObject) {
+        String str = jsonObject.toString();
 
-    public static Gson GetGson() {
-        return new GsonBuilder().registerTypeAdapter(Task.ITaskData.class,
-                new TaskDataTypeAdapter()).create();
-    }
-
-    public static class TaskDataTypeAdapter implements JsonDeserializer<Task.ITaskData> {
-
-        @Override
-        public Task.ITaskData deserialize(JsonElement json, java.lang.reflect.Type typeOfT,
-                                          JsonDeserializationContext context) throws
-                JsonParseException {
-            return Task.deserialize(json.getAsJsonObject());
+        switch (TaskType.FromValue(jsonObject.get("type").getAsInt())) {
+            case SelectTask:
+                return Utilities.GetGson().fromJson(str, SelectTask.class);
+            case ChooseTask:
+                return Utilities.GetGson().fromJson(str, ChooseTask.class);
+            case ConjugateTask:
+                return Utilities.GetGson().fromJson(str, ConjugateTask.class);
+            case TranslateTask:
+                return Utilities.GetGson().fromJson(str, TranslateTask.class);
+            case DeclineTask:
+                return Utilities.GetGson().fromJson(str, DeclineTask.class);
+            default:
+                return null;
         }
     }
-
-
 }

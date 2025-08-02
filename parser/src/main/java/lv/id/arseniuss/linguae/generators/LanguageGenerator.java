@@ -15,23 +15,20 @@ import lv.id.arseniuss.linguae.tasks.Task;
 public class LanguageGenerator {
 
     public static String[] Generate(Description description, Task task, String base,
-                                    String[] options)
-            throws GeneratorException {
+                                    String[] options) throws GeneratorException {
         List<String> result = new ArrayList<>();
 
         Matcher match = description.Pattern.matcher(base);
 
         if (!match.find()) {
-            throw new GeneratorException(
-                    "The base " + base + " does not match pattern " +
-                            description.Pattern.pattern());
+            throw new GeneratorException("The base " + base + " does not match pattern " +
+                    description.Pattern.pattern());
         }
 
         if (match.groupCount() != description.Groups) {
             throw new GeneratorException(
                     "The pattern " + description.Pattern.pattern() + " did not generate " +
-                            description.Groups +
-                            " groups: " +
+                            description.Groups + " groups: " +
                             IntStream.range(0, match.groupCount())
                                     .mapToObj(match::group)
                                     .collect(Collectors.joining(", ")));
@@ -53,10 +50,8 @@ public class LanguageGenerator {
             }
 
             if (!optionalInt.isPresent()) {
-                throw new GeneratorException(
-                        task.Type.GetName() + " " + description.Category + " " +
-                                description.Description +
-                                " generator cannot generate for " + option);
+                throw new GeneratorException(task.Type.name() + " " + description.Category + " " +
+                        description.Description + " generator cannot generate for " + option);
             }
 
             String rule = description.Rules[optionalInt.getAsInt()];
@@ -101,7 +96,7 @@ public class LanguageGenerator {
     }
 
     public static class Description {
-        public lv.id.arseniuss.linguae.types.TaskType TaskType;
+        public lv.id.arseniuss.linguae.enumerators.TaskType TaskType;
         public String Category;
         public String Description;
         public Pattern Pattern;

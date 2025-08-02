@@ -1,5 +1,9 @@
 package lv.id.arseniuss.linguae.app.ui.fragments;
 
+import static android.app.Activity.RESULT_OK;
+
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Pair;
 import android.view.LayoutInflater;
@@ -14,19 +18,24 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.BindingAdapter;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.preference.PreferenceManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
+import lv.id.arseniuss.linguae.app.Constants;
 import lv.id.arseniuss.linguae.app.R;
 import lv.id.arseniuss.linguae.app.databinding.FragmentRepositorySelectBinding;
 import lv.id.arseniuss.linguae.app.databinding.ItemStartLanguageBinding;
 import lv.id.arseniuss.linguae.app.ui.MyRecyclerViewAdapter;
+import lv.id.arseniuss.linguae.app.ui.activities.InitialActivity;
+import lv.id.arseniuss.linguae.app.ui.activities.RepoEditActivity;
 import lv.id.arseniuss.linguae.app.viewmodel.RepositorySelectViewModel;
 import lv.id.arseniuss.linguae.entities.Repository;
 
 public class RepositorySelectFragment extends Fragment {
+    private static final int REPO_EDIT = 627;
 
     private final RepositorySelectViewModel _model;
     private final RepositorySelectListener _listener;
@@ -85,6 +94,45 @@ public class RepositorySelectFragment extends Fragment {
                 _listener.RepositorySelected();
             }
         });
+    }
+
+    public void OnEditReposClick() {
+        Intent i = new Intent(getContext(), RepoEditActivity.class);
+
+        final SharedPreferences sharedPreferences =
+                PreferenceManager.getDefaultSharedPreferences(
+                        requireActivity().getApplication().getBaseContext());
+
+        String json = sharedPreferences.getString(Constants.PreferenceRepositoriesKey, "");
+
+        i.putExtra(RepoEditActivity.DATA_ARRAY_JSON, json);
+
+        startActivityForResult(i, REPO_EDIT);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == REPO_EDIT && resultCode == RESULT_OK) {
+            assert data != null;
+            String result = data.getStringExtra(RepoEditActivity.DATA_ARRAY_JSON);
+
+            final SharedPreferences sharedPreferences =
+                    PreferenceManager.getDefaultSharedPreferences(
+                            requireActivity().getApplication().getBaseContext());
+
+            sharedPreferences.edit()
+                    .putString(Constants.PreferenceRepositoriesKey, result)
+                    .apply();
+
+            Intent i = new Intent(getContext(), InitialActivity.class);
+
+            i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+            i.putExtra(InitialActivity.ACTION, InitialActivity.CHANGE_REPOSITORY);
+
+            startActivity(i);
+        }
     }
 
     @Nullable

@@ -55,44 +55,23 @@ public class TheoryViewModel extends AndroidViewModel {
                 .subscribe(this::setChapters);
     }
 
-    public void SwitchLanguage() {
-        _showTranslation = !_showTranslation;
-
-        List<ChapterViewModel> chapterViewModels = _chapters.getValue();
-
-        assert chapterViewModels != null;
-
-        for (ChapterViewModel chapterViewModel : chapterViewModels) {
-            chapterViewModel.onChanged(_showTranslation);
-        }
-    }
-
     private void setChapters(List<ChapterEntity> chapters) {
         _chapters.setValue(chapters.stream()
                 .map(ChapterViewModel::new)
                 .collect(Collectors.toList()));
     }
 
-    public static class ChapterViewModel extends BaseObservable implements Observer<Boolean> {
+    public static class ChapterViewModel extends BaseObservable {
         private final ChapterEntity _chapterEntity;
         private final MutableLiveData<String> _text = new MutableLiveData<>();
 
         public ChapterViewModel(ChapterEntity c) {
             _chapterEntity = c;
-            _text.setValue(c.Explanation);
+            _text.setValue(c.Text);
         }
 
         public MutableLiveData<String> Text() {
             return _text;
-        }
-
-        @Override
-        public void onChanged(Boolean showTranslation) {
-            if (showTranslation) {
-                _text.setValue(_chapterEntity.Translation);
-            } else {
-                _text.setValue(_chapterEntity.Explanation);
-            }
         }
     }
 }

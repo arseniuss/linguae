@@ -4,6 +4,8 @@
 
     <data>
 
+        <import type="lv.id.arseniuss.linguae.app.Utilities" />
+
         <variable
             name="viewmodel"
             type="lv.id.arseniuss.linguae.app.viewmodel.SessionResultViewModel.TaskErrorViewModel" />
@@ -12,17 +14,18 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/button_error"
         android:layout_marginTop="5dp"
+        android:background="@drawable/button_error"
         android:padding="10dp">
 
         <TextView
+            android:id="@+id/textView"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_gravity="left"
             android:layout_weight="1"
-            tools:text="Task name"
-            android:text="@{viewmodel.TaskName()}" />
+            android:text="@{Utilities.GetTranslatedString(textView.getContext(), viewmodel.TaskType)}"
+            tools:text="Task name" />
 
         <TextView
             android:layout_width="0dp"

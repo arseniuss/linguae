@@ -1,7 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
+        <import type="lv.id.arseniuss.linguae.app.ui.UIHelper" />
+
+        <variable
+            name="viewmodel"
+            type="lv.id.arseniuss.linguae.app.viewmodel.BugReportViewModel" />
 
         <variable
             name="presenter"
@@ -19,19 +27,92 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:text="Bug location" />
+            android:text="@string/TitleReportABug" />
 
-        <Button
+        <com.google.android.material.button.MaterialButtonToggleGroup
+            android:id="@+id/locationToggleGroup"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:onClick="@{() -> presenter.OnApplicationBugClick()}"
-            android:text="In application" />
+            android:orientation="horizontal"
+            app:selectionRequired="true"
+            app:singleSelection="true">
 
-        <Button
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnApplication"
+                style="@style/Widget.Material3.Button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:backgroundTint="@color/button_tint"
+                android:text="@string/TextBugInApplication" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnContext"
+                style="@style/Widget.Material3.Button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:backgroundTint="@color/button_tint"
+                android:text="@string/TextBugInContent" />
+        </com.google.android.material.button.MaterialButtonToggleGroup>
+
+        <lv.id.arseniuss.linguae.app.ui.FoldableView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:onClick="@{() -> presenter.OnContentBugClick()}"
-            android:text="In content" />
+            android:layout_marginTop="@dimen/margin_2"
+            android:background="@drawable/corners2"
+            app:expanded="false"
+            app:header="@string/TitleConnectedInformation">
+
+            <ScrollView
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:scrollbars="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="top"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@{viewmodel.Data()}" />
+
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:contentDescription="@string/DescriptionScreenshot"
+                        android:onClick="@{view -> UIHelper.ShowFullscreen(view)}"
+                        app:image="@{viewmodel.Screenshot()}" />
+
+
+                </LinearLayout>
+            </ScrollView>
+
+
+        </lv.id.arseniuss.linguae.app.ui.FoldableView>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_2"
+            android:layout_marginBottom="@dimen/margin_1"
+            android:text="@string/TextBugDescribe" />
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/corners2"
+            android:gravity="top"
+            android:lines="10"
+            android:padding="@dimen/margin_2"
+            android:scrollbars="vertical"
+            android:text="@={viewmodel.Text()}"
+            tools:text="Bug report" />
 
     </LinearLayout>
 </layout>

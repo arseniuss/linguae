@@ -2,8 +2,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="ACTION_OPEN_DOCUMENT" />
 
@@ -14,7 +16,7 @@
         android:fullBackupContent="@xml/backup_rules"
         android:icon="@mipmap/ic_launcher_round"
         android:label="@string/ApplicationName"
-        android:networkSecurityConfig="@xml/security_config"
+        android:networkSecurityConfig="${networkSecurityConfig}"
         android:supportsRtl="false"
         android:theme="@style/MyAppTheme"
         tools:targetApi="31">
@@ -66,11 +68,6 @@
         <activity
             android:name=".ui.activities.LessonSummaryActivity"
             android:exported="false"
-            android:theme="@style/MyAppTheme" />
-        <activity
-            android:name=".ui.activities.BugReportActivity"
-            android:exported="false"
-            android:label="@string/TitleReportABug"
             android:theme="@style/MyAppTheme" />
     </application>
 

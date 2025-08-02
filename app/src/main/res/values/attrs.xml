@@ -2,4 +2,8 @@
     <declare-styleable name="AdapterLinearLayout">
         <attr name="itemLayout" format="reference" />
     </declare-styleable>
+    <declare-styleable name="FoldableView">
+        <attr name="header" format="string" />
+        <attr name="expanded" format="boolean" />
+    </declare-styleable>
 </resources>

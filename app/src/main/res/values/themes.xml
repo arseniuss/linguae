@@ -72,6 +72,11 @@
         <item name="android:textStyle">bold</item>
     </style>
 
+    <style name="MyAppTheme.Material.Button" parent="Widget.Material3.Button">
+        <item name="strokeColor">@color/md_theme_background</item>
+        <item name="strokeWidth">@dimen/m3_comp_outlined_button_outline_width</item>
+    </style>
+
     <style name="MyAppTheme.RawButton" parent="MyAppTheme.Rounded">
         <item name="android:clickable">true</item>
         <item name="android:focusable">true</item>

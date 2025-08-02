@@ -32,7 +32,6 @@ public class RepositoryLoader implements LanguageDataParser.ParserInterface {
     private final Context _context;
     private final SharedPreferences _sharedPreferences;
     private final LanguageDataParser _dataParser;
-    private final Gson _gson = new Gson();
     private final String _defaultLanguageRepositories;
 
     private final List<Pair<String, Repository>> _repositories = new ArrayList<>();
@@ -108,7 +107,7 @@ public class RepositoryLoader implements LanguageDataParser.ParserInterface {
     }
 
     private void saveRepositories(List<ItemLanguageRepo> repos) {
-        String jsonRepositories = _gson.toJson(repos);
+        String jsonRepositories = Utilities.GetGson().toJson(repos);
 
         _sharedPreferences.edit()
                 .putString(Constants.PreferenceRepositoriesKey, jsonRepositories)

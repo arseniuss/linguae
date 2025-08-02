@@ -51,9 +51,9 @@
     <string name="SaveRepositoriesTitle">Vai jūs vēlaties saglabāt krātuvju sarakstu?</string>
     <string name="TextSummaryPoints">Punkti</string>
     <string name="DescriptionLanguageLogo">Valodas logo</string>
-    <string name="TextLanguageTitle">Valoda: </string>
-    <string name="TextLanguageVersionTitle">Versija: </string>
-    <string name="TextLanguageAuthorTitle">Autors: </string>
+    <string name="TextLanguageTitle">"Valoda: "</string>
+    <string name="TextLanguageVersionTitle">"Versija: "</string>
+    <string name="TextLanguageAuthorTitle">"Autors: "</string>
     <string name="TitleNextLesson">Nākamā nodarbība</string>
     <string name="TitleNextTraining">Nākamais treniņš</string>
     <string name="TitleNextTheory">Nākamā teorija</string>
@@ -64,6 +64,7 @@
     <string name="no">Nē</string>
     <string name="cancel">Atcelt</string>
     <string name="ok">Labi</string>
+    <string name="save">Saglabāt</string>
     <string name="TitleVocabulary">Vārdu krājums</string>
     <string name="TitleSentences">Teikumi</string>
     <string name="DescriptionAppLogo">Logo</string>
@@ -79,6 +80,17 @@
         <item quantity="zero">%d krātuves</item>
         <item quantity="other">%d krātuves</item>
     </plurals>
+    <string name="EnumTaskTypeUnknownTask">Nezināms</string>
+    <string name="EnumTaskTypeSelectTask">Atzīme</string>
+    <string name="EnumTaskTypeChooseTask">Izvēle</string>
+    <string name="EnumTaskTypeConjugateTask">Konjugēšana</string>
+    <string name="EnumTaskTypeDeclineTask">Deklinēšana</string>
+    <string name="EnumTaskTypeTranslateTask">Tulkošana</string>
     <string name="NotEnoughTrainingTasksMessage">Nav pietiekošu daudz uzdevumu treniņā (atrada: %d, nepieciešams: %d)</string>
     <string name="NotEnoughLessonTasksMessage">Nav pietiekoši daudz uzdevumu nodarbībā (atrada: %d, vajag: %d)</string>
+    <string name="TextBugInApplication">kļūda ir lietotnē</string>
+    <string name="TextBugInContent">kļūda ir saturā</string>
+    <string name="TextBugDescribe">Aprakstiet kļūdu:</string>
+    <string name="TitleConnectedInformation">Savāktie dati</string>
+    <string name="DescriptionScreenshot">Ekrānattēls</string>
 </resources>

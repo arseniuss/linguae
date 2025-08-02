@@ -12,7 +12,11 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.preference.PreferenceManager;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
@@ -23,6 +27,7 @@ import lv.id.arseniuss.linguae.app.Settings;
 import lv.id.arseniuss.linguae.app.Utilities;
 import lv.id.arseniuss.linguae.app.db.LanguageDatabase;
 import lv.id.arseniuss.linguae.app.db.dataaccess.LessonDataAccess;
+import lv.id.arseniuss.linguae.app.ui.BindingAdapters;
 
 public class LessonsViewModel extends AndroidViewModel {
 
@@ -33,6 +38,8 @@ public class LessonsViewModel extends AndroidViewModel {
     private final LessonDataAccess _lessonDataAccess =
             LanguageDatabase.GetInstance(getApplication(), _language).GetLessonsDataAccess();
 
+    private final MutableLiveData<List<SectionViewModel>> _sections =
+            new MutableLiveData<>(new ArrayList<>());
     private final MutableLiveData<List<EntryViewModel>> _lessons;
     private final MutableLiveData<Boolean> _hasError = new MutableLiveData<>(false);
     private final MutableLiveData<String> _error = new MutableLiveData<>("");
@@ -53,7 +60,11 @@ public class LessonsViewModel extends AndroidViewModel {
         return _error;
     }
 
-    public LiveData<List<EntryViewModel>> Data() {
+    public LiveData<List<SectionViewModel>> Sections() {
+        return _sections;
+    }
+
+    public LiveData<List<EntryViewModel>> Lessons() {
         return _lessons;
     }
 
@@ -61,11 +72,7 @@ public class LessonsViewModel extends AndroidViewModel {
         Disposable d = _lessonDataAccess.GetLessons()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(lessons -> {
-                    _lessons.setValue(
-                            lessons.stream().map(EntryViewModel::new).collect(Collectors.toList()));
-                }, this::handleError);
-
+                .subscribe(this::acceptLessons, this::handleError);
     }
 
     private void handleError(Throwable throwable) {
@@ -85,6 +92,58 @@ public class LessonsViewModel extends AndroidViewModel {
         }
 
         return res;
+    }
+
+    private void acceptLessons(List<LessonDataAccess.LessonWithCount> lessons) {
+        Map<String, List<LessonDataAccess.LessonWithCount>> sections =
+                lessons.stream().collect(Collectors.groupingBy(l -> l.Lesson.Section));
+
+        _sections.setValue(sections.entrySet()
+                .stream()
+                .map(s -> new SectionViewModel(s.getKey(), s.getValue()
+                        .stream()
+                        .map(EntryViewModel::new)
+                        .collect(Collectors.toList())))
+                .sorted(Comparator.comparing(e -> e.Index()))
+                .collect(Collectors.toList()));
+    }
+
+    public void SetSelectedSection(String tabName) {
+        Optional<SectionViewModel> section = Objects.requireNonNull(_sections.getValue())
+                .stream().filter(s -> Objects.equals(s.TabName(), tabName)).findAny();
+
+        section.ifPresent(sectionViewModel -> _lessons.setValue(
+                sectionViewModel.Lessons()));
+    }
+
+    public static class SectionViewModel extends BaseObservable
+            implements BindingAdapters.TabViewModel {
+        private final String _name;
+        private final List<EntryViewModel> _lessons;
+
+        private int _index;
+
+        public SectionViewModel(String name, List<EntryViewModel> lessons) {
+            _name = name;
+            _lessons = lessons;
+
+            lessons.stream()
+                    .min(Comparator.comparing(l -> l._lesson.Lesson.Index))
+                    .ifPresent(l -> _index = l._lesson.Lesson.Index);
+        }
+
+        @Override
+        public String TabName() {
+            return _name;
+        }
+
+        public int Index() {
+            return _index;
+        }
+
+        public List<EntryViewModel> Lessons() {
+            return _lessons;
+        }
     }
 
     public static class EntryViewModel extends BaseObservable {

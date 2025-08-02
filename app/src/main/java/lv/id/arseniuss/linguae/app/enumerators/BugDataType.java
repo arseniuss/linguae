@@ -1,7 +1,7 @@
 package lv.id.arseniuss.linguae.app.enumerators;
 
-public enum BugData {
+public enum BugDataType {
     NO_DATA,
 
-    SCREENSHOT
+    TASK, SYSTEM, SCREENSHOT
 }

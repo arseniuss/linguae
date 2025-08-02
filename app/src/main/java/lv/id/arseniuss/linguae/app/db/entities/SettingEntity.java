@@ -19,7 +19,7 @@ import lv.id.arseniuss.linguae.entities.Setting;
 
     @NonNull
     @ColumnInfo(name = "type")
-    public lv.id.arseniuss.linguae.types.SettingType Type;
+    public lv.id.arseniuss.linguae.enumerators.SettingType Type;
 
     @ColumnInfo(name = "value")
     public String Value;

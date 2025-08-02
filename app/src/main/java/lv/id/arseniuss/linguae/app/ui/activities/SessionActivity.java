@@ -1,9 +1,7 @@
 package lv.id.arseniuss.linguae.app.ui.activities;
 
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.view.View;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AppCompatActivity;
@@ -22,6 +20,7 @@ import lv.id.arseniuss.linguae.app.R;
 import lv.id.arseniuss.linguae.app.Utilities;
 import lv.id.arseniuss.linguae.app.databinding.ActivitySessionBinding;
 import lv.id.arseniuss.linguae.app.db.dataaccess.TaskDataAccess;
+import lv.id.arseniuss.linguae.app.enumerators.BugDataType;
 import lv.id.arseniuss.linguae.app.tasks.AbstractTaskFragment;
 import lv.id.arseniuss.linguae.app.tasks.entities.SessionTaskData;
 import lv.id.arseniuss.linguae.app.tasks.ui.ChooseFragment;
@@ -71,7 +70,7 @@ public class SessionActivity extends AppCompatActivity
 
             if (i.hasExtra(TrainingCategoriesExtraTag)) {
                 categories =
-                        new Gson().fromJson(i.getStringExtra(TrainingCategoriesExtraTag), listType);
+                        Utilities.GetGson().fromJson(i.getStringExtra(TrainingCategoriesExtraTag), listType);
             }
 
             _model.LoadTraining(i.getStringExtra(TrainingExtraTag), categories, this::loaded);
@@ -104,11 +103,17 @@ public class SessionActivity extends AppCompatActivity
     }
 
     public void OnReportBug() {
-        BugReportDialogFragment bugReportDialogFragment = new BugReportDialogFragment();
-
         _model.SetCounterRunning(false);
 
+        SessionTaskData data = _model.GetTask(_model.CurrentTaskIndex);
+        BugReportDialogFragment bugReportDialogFragment =
+                new BugReportDialogFragment(this, _binding.getRoot());
+
         bugReportDialogFragment.show(getSupportFragmentManager(), "fragment-report-bug");
+
+        Gson gson = Utilities.GetGsonBuilder().setPrettyPrinting().create();
+
+        bugReportDialogFragment.AddData(BugDataType.TASK, gson.toJson(data.Task));
     }
 
     public void OnCheckClicked() {
@@ -174,37 +179,7 @@ public class SessionActivity extends AppCompatActivity
     }
 
     @Override
-    public void OnCancelBugReport() {
+    public void OnBugReportDismissed() {
         _model.SetCounterRunning(true);
-    }
-
-    @Override
-    public void OnApplicationBug() {
-        Intent i = new Intent(this, BugReportActivity.class);
-        View rootView = getWindow().getDecorView().getRootView();
-        SessionTaskData sessionTaskData = _model.GetTask(_model.CurrentTaskIndex);
-        String taskData = new Gson().toJson(sessionTaskData.Task);
-
-        rootView.setDrawingCacheEnabled(true);
-
-        Bitmap bitmap = Bitmap.createBitmap(rootView.getDrawingCache());
-
-        rootView.setDrawingCacheEnabled(false);
-
-        i.putExtra(BugReportActivity.TASK_KEY, taskData);
-        i.putExtra(BugReportActivity.IMAGE_KEY, Utilities.BitmapToBase64(bitmap));
-
-        startActivity(i);
-    }
-
-    @Override
-    public void OnContentBug() {
-        Intent i = new Intent(this, BugReportActivity.class);
-        SessionTaskData sessionTaskData = _model.GetTask(_model.CurrentTaskIndex);
-        String taskData = new Gson().toJson(sessionTaskData.Task);
-
-        i.putExtra(BugReportActivity.TASK_KEY, taskData);
-
-        startActivity(i);
     }
 }
