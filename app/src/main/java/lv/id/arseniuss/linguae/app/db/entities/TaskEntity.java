@@ -16,6 +16,7 @@ import com.google.gson.annotations.SerializedName;
 
 import java.nio.charset.StandardCharsets;
 
+import lv.id.arseniuss.linguae.app.BuildConfig;
 import lv.id.arseniuss.linguae.app.Utilities;
 import lv.id.arseniuss.linguae.enumerators.TaskType;
 import lv.id.arseniuss.linguae.tasks.ChooseTask;
@@ -78,15 +79,25 @@ public class TaskEntity {
 
         String json = Utilities.GetGson().toJson(task);
 
-        return Base64.encodeToString(json.getBytes(StandardCharsets.UTF_8), Base64.NO_WRAP);
+        if (!BuildConfig.DEBUG) {
+            return Base64.encodeToString(json.getBytes(StandardCharsets.UTF_8), Base64.NO_WRAP);
+        } else {
+            return json;
+        }
     }
 
     @TypeConverter
     public static Task.ITaskData StringToTask(String str) {
         if (str == null) return null;
 
-        byte[] decodedBytes = Base64.decode(str, Base64.NO_WRAP);
-        String json = new String(decodedBytes, StandardCharsets.UTF_8);
+        String json;
+
+        if (BuildConfig.DEBUG) {
+            json = str;
+        } else {
+            byte[] decodedBytes = Base64.decode(str, Base64.NO_WRAP);
+            json = new String(decodedBytes, StandardCharsets.UTF_8);
+        }
 
         JsonElement jelement = JsonParser.parseString(json);
         JsonObject jobject = jelement.getAsJsonObject();
