@@ -16,22 +16,24 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import lv.id.arseniuss.linguae.app.R;
+import lv.id.arseniuss.linguae.app.Utilities;
 import lv.id.arseniuss.linguae.app.db.entities.TaskError;
 import lv.id.arseniuss.linguae.app.tasks.AbstractTaskAnswerViewModel;
 import lv.id.arseniuss.linguae.app.tasks.AbstractTaskViewModel;
 import lv.id.arseniuss.linguae.app.tasks.entities.SessionTaskData;
-import lv.id.arseniuss.linguae.tasks.ChooseTask;
 import lv.id.arseniuss.linguae.enumerators.TaskType;
+import lv.id.arseniuss.linguae.tasks.ChooseTask;
 
 public class ChooseViewModel extends AbstractTaskViewModel {
     private final SharedPreferences _sharedPreferences =
             PreferenceManager.getDefaultSharedPreferences(getApplication().getBaseContext());
 
-    private final int _chooseOptionCount = _sharedPreferences.getInt(
-            getApplication().getString(R.string.ChooseOptionCountKey), 6);
+    private final int _chooseOptionCount =
+            _sharedPreferences.getInt(getApplication().getString(R.string.ChooseOptionCountKey), 6);
 
     private final MutableLiveData<List<OptionViewModel>> _options = new MutableLiveData<>();
     private int _selected = -1;
+    private String _word = "";
 
     public ChooseViewModel(@NonNull Application application) {
         super(application);
@@ -46,7 +48,7 @@ public class ChooseViewModel extends AbstractTaskViewModel {
     }
 
     public String Word() {
-        return StripAccents(chooseTask().Word);
+        return _word;
     }
 
     public String Answer() {
@@ -84,8 +86,9 @@ public class ChooseViewModel extends AbstractTaskViewModel {
             isValid = false;
             correctViewModel.IsValid().setValue(true);
 
-            _taskResult.Result.Errors.add(new TaskError(TaskType.ChooseTask,
-                    selectedViewModel.Option, correctViewModel.Option));
+            _taskResult.Result.Errors.add(
+                    new TaskError(TaskType.ChooseTask, selectedViewModel.Option,
+                            correctViewModel.Option));
         }
 
         // Make everything stay
@@ -111,6 +114,9 @@ public class ChooseViewModel extends AbstractTaskViewModel {
     public void Load(SessionTaskData task) {
         super.Load(task);
 
+        _word = Utilities.ExtractLinkTitles(chooseTask().Word);
+        _word = StripAccents(_word);
+
         List<String> strings = Arrays.stream(chooseTask().Additionals.split(","))
                 .map(String::trim)
                 .collect(Collectors.toList());
@@ -118,10 +124,12 @@ public class ChooseViewModel extends AbstractTaskViewModel {
         strings.removeIf(s -> Objects.equals(s, chooseTask().Answer));
 
         int[] indexes = new SecureRandom().ints(0, strings.size())
-                .distinct().limit(_chooseOptionCount - 1).toArray();
+                .distinct()
+                .limit(_chooseOptionCount - 1)
+                .toArray();
 
-        List<String> collected1 = Arrays.stream(indexes).mapToObj(strings::get)
-                .collect(Collectors.toList());
+        List<String> collected1 =
+                Arrays.stream(indexes).mapToObj(strings::get).collect(Collectors.toList());
 
         List<OptionViewModel> collected2 = collected1.stream()
                 .map(o -> new OptionViewModel(StripAccents(o)))
