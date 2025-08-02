@@ -41,6 +41,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.Stack;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
@@ -59,6 +61,18 @@ public class Utilities {
                 0xff2196f3, 0xff03a9f4, 0xff00bcd4, 0xff009688, 0xff4caf50, 0xff8bc34a, 0xffcddc39,
                 0xffffeb3b, 0xffffc107, 0xffff9800, 0xffff5722, 0xff795548, 0xff9e9e9e, 0xff607d8b,
                 0xff333333));
+    }
+
+    public static String ExtractLinkTitles(String markdown) {
+        List<String> titles = new ArrayList<>();
+        Pattern pattern = Pattern.compile("\\[([^\\]]+)]\\(([^)]+)\\)");
+        Matcher matcher = pattern.matcher(markdown);
+
+        while (matcher.find()) {
+            return matcher.group(1);
+        }
+
+        return markdown;
     }
 
     public static String StripAccents(String s) {

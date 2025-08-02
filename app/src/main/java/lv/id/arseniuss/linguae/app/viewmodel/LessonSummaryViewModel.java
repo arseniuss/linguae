@@ -13,12 +13,14 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.disposables.Disposable;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 import lv.id.arseniuss.linguae.app.Configuration;
 import lv.id.arseniuss.linguae.app.Constants;
+import lv.id.arseniuss.linguae.app.Utilities;
 import lv.id.arseniuss.linguae.app.db.LanguageDatabase;
 import lv.id.arseniuss.linguae.app.db.dataaccess.TaskDataAccess;
 import lv.id.arseniuss.linguae.app.db.entities.TaskEntity;
@@ -111,11 +113,18 @@ public class LessonSummaryViewModel extends AndroidViewModel {
                     }
 
                     if (word != null) {
-                        final String markdown = word;
+                        final String extracted = Utilities.ExtractLinkTitles(word);
 
-                        if (vocabulary.stream()
-                                .noneMatch(w -> Objects.equals(w.Markdown, markdown)))
-                            vocabulary.add(new ItemMarkdownViewModel(markdown));
+                        Optional<ItemMarkdownViewModel> item = vocabulary.stream()
+                                .filter(w -> Objects.equals(w.Word, extracted))
+                                .findAny();
+
+                        if (item.isPresent()) {
+                            if (!Objects.equals(extracted, word))
+                                item.get().Markdown = word;
+                        } else {
+                            vocabulary.add(new ItemMarkdownViewModel(word));
+                        }
                     }
                     if (sentence != null && !sentences.contains(sentence)) {
                         sentences.add(sentence);
@@ -125,7 +134,7 @@ public class LessonSummaryViewModel extends AndroidViewModel {
 
             if (!vocabulary.isEmpty()) {
                 _hasVocabulary.setValue(true);
-                vocabulary.sort(Comparator.comparing(o -> o.Markdown));
+                vocabulary.sort(Comparator.comparing(o -> o.Word));
                 _vocabulary.setValue(vocabulary);
             }
 
