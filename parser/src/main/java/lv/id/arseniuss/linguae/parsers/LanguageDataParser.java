@@ -45,7 +45,7 @@ import lv.id.arseniuss.linguae.tasks.Task;
 import lv.id.arseniuss.linguae.tasks.TranslateTask;
 
 public class LanguageDataParser {
-    final String _gen_prefix = "@gen:";
+    final String _gen_prefix = "@gen";
     final String _eol_prefix = "EOL";
 
     private final ParserData _data = new ParserData();
@@ -57,7 +57,7 @@ public class LanguageDataParser {
     private boolean _saveImages = false;
     private boolean _throwError = false;
     private int _line = 0;
-    private String _filename = "";
+    private List<String> _filenames = new ArrayList<>();
     private boolean _hasError = false;
     private boolean _languageFileParsed = false;
 
@@ -93,25 +93,77 @@ public class LanguageDataParser {
     }
 
     private void logError(String error) throws ParserException {
+        String filename = _filenames.get(_filenames.size() - 1);
+
         error = "[E] " + error;
 
         if (_throwError) {
-            throw new ParserException(_filename, _line, error);
+            throw new ParserException(filename, _line, error);
         } else {
-            log(Log.ERROR, _filename + ":" + _line + ": " + error);
+            log(Log.ERROR, filename + ":" + _line + ": " + error);
             _hasError = true;
         }
     }
 
+    private String[] performGeneration(String baseText, String generatorText, String[] options,
+                                       Task task,
+                                       List<LanguageGenerator.Description> generators) throws
+            ParserException {
+        List<LanguageGenerator.Description> descriptions = generators.stream()
+                .filter(d -> d.TaskType == task.Type && Objects.equals(d.Category, task.Category) &&
+                        (Objects.equals(d.Description, task.Description) ||
+                                d.Description.isEmpty()))
+                .collect(Collectors.toList());
+
+        if (descriptions.isEmpty()) {
+            descriptions = _generators.stream()
+                    .filter(d -> d.TaskType == task.Type &&
+                            Objects.equals(d.Category, task.Category) &&
+                            Objects.equals(d.Description, task.Description))
+                    .collect(Collectors.toList());
+        }
+
+        if (descriptions.isEmpty()) {
+            logError(
+                    "There is no generator for " + task.Type.GetName() + " " + task.Category + " " +
+                            task.Description);
+            return null;
+        }
+
+        String[] generated = null;
+        String error = "";
+
+        if (generatorText.contains(":")) {
+            baseText = generatorText.substring(_gen_prefix.length() + 1); // +1 for ':'
+        }
+
+        for (LanguageGenerator.Description description : descriptions) {
+            try {
+                generated = LanguageGenerator.Generate(description, task, baseText, options);
+                break;
+            } catch (LanguageGenerator.GeneratorException e) {
+                error = e.getMessage();
+            }
+        }
+
+        if (generated == null) {
+            logError("Could not generate answers for " + baseText + ": " + error);
+        }
+
+        return generated;
+    }
+
     private boolean parseTask(Task task, String line, String[] words,
-                              Map<String, String> references) throws ParserException {
+                              Map<String, String> references,
+                              List<LanguageGenerator.Description> generators) throws
+            ParserException {
         if (words.length < 3) {
             logError("Expecting format: task <id> <task-type> <task-data>");
             logError("Got: " + line);
             return false;
         }
 
-        task.Id = _filename + "-" + words[1]; // filename.txt-1
+        task.Id = _filenames.get(0) + "-" + words[1]; // filename.txt-1
 
         String taskType = words[2].trim().toLowerCase();
 
@@ -192,36 +244,11 @@ public class LanguageDataParser {
                 declineTask.Cases = references1.split(",", -1);
 
                 if (references2.startsWith(_gen_prefix)) {
-                    List<LanguageGenerator.Description> descriptions = _generators.stream()
-                            .filter(d -> d.TaskType == task.Type &&
-                                    Objects.equals(d.Category, task.Category) &&
-                                    Objects.equals(d.Description, task.Description))
-                            .collect(Collectors.toList());
+                    String[] generated =
+                            performGeneration(declineTask.Word, references2, declineTask.Cases,
+                                    task, generators);
 
-                    if (descriptions.isEmpty()) {
-                        logError("There is no generator for " + task.Type.GetName() + " " +
-                                task.Category + " " + task.Description);
-                        return false;
-                    }
-
-                    String[] generated = null;
-                    String base = references2.substring(_gen_prefix.length());
-                    String error = "";
-
-                    for (LanguageGenerator.Description description : descriptions) {
-                        try {
-                            generated = LanguageGenerator.Generate(description, task, base,
-                                    declineTask.Cases);
-                            break;
-                        } catch (LanguageGenerator.GeneratorException e) {
-                            error = e.getMessage();
-                        }
-                    }
-
-                    if (generated == null) {
-                        logError("Could not generate answers for " + base + ": " + error);
-                        return false;
-                    }
+                    if (generated == null) return false;
 
                     declineTask.Answers = generated;
                 } else {
@@ -437,16 +464,15 @@ public class LanguageDataParser {
     }
 
     private List<Task> parseTrainingFile(String base, Training t) throws Exception {
-        _filename = t.Filename;
+        log(Log.INFO, "Parsing training file: " + t.Id);
 
-        log(Log.INFO, "Parsing training file: " + t.Filename);
-
-        InputStream trainingFileStream = getFile(base + "/" + t.Filename);
+        InputStream trainingFileStream = getFile(base + "/" + t.Id);
         LineNumberReader r =
                 new LineNumberReader(new BufferedReader(new InputStreamReader(trainingFileStream)));
 
         Map<String, Task> tasks = new HashMap<>();
         Map<String, String> references = new HashMap<>();
+        List<LanguageGenerator.Description> generators = new ArrayList<>();
 
         String line;
 
@@ -500,7 +526,7 @@ public class LanguageDataParser {
                 case "task":
                     Task task = new Task();
 
-                    if (!parseTask(task, line, words, references)) continue;
+                    if (!parseTask(task, line, words, references, generators)) continue;
 
                     if (tasks.containsKey(task.Id)) {
                         logError("Task " + task.Id + " already exists!");
@@ -529,17 +555,18 @@ public class LanguageDataParser {
                     _data.TrainingCategories.add(trainingCategory);
                     break;
                 default:
-                    logError("Unrecognized keyword in " + t.Filename + ": " + keyword);
+                    logError("Unrecognized keyword in " + t.Id + ": " + keyword);
                     break;
             }
         }
 
-        log(Log.INFO, "Training file " + t.Filename + " parsed");
+        log(Log.INFO, "Training file " + t.Id + " parsed");
 
         return new ArrayList<>(tasks.values());
     }
 
-    private boolean parseGeneratorDecl(String[] words, Map<String, String> references) throws
+    private boolean parseGeneratorDecl(String[] words, Map<String, String> references,
+                                       List<LanguageGenerator.Description> generators) throws
             Exception {
         if (words.length != 7) {
             logError(
@@ -574,13 +601,15 @@ public class LanguageDataParser {
         description.Pattern = Pattern.compile("^" + regex + "$");
         description.Groups = pattern.length;
 
-        _generators.add(description);
+        generators.add(description);
 
         return true;
     }
 
     private void parseIncludeInLessonFile(String base, String includeFile, Map<String, Task> tasks,
-                                          Map<String, String> references) throws Exception {
+                                          Map<String, String> references,
+                                          List<LanguageGenerator.Description> generators) throws
+            Exception {
         log(Log.INFO, "Parsing include file: " + includeFile);
 
         InputStream lessonFileStream = getFile(base + "/" + includeFile);
@@ -601,7 +630,7 @@ public class LanguageDataParser {
 
             switch (keyword) {
                 case "gen":
-                    if (!parseGeneratorDecl(words, references)) continue;
+                    if (!parseGeneratorDecl(words, references, generators)) continue;
                     break;
                 case "ref":
                     if (words.length != 3) {
@@ -616,7 +645,7 @@ public class LanguageDataParser {
                 case "task":
                     Task task = new Task();
 
-                    if (!parseTask(task, line, words, references)) continue;
+                    if (!parseTask(task, line, words, references, generators)) continue;
 
                     if (tasks.containsKey(task.Id)) {
                         logError("Task " + task.Id + " already exists!");
@@ -632,8 +661,6 @@ public class LanguageDataParser {
     }
 
     private Collection<Task> parseLessonFile(String base, Lesson l) throws Exception {
-        _filename = l.Id;
-
         log(Log.INFO, "Parsing lesson file " + l.Id);
 
         InputStream lessonFileStream = getFile(base + "/" + l.Id);
@@ -641,6 +668,7 @@ public class LanguageDataParser {
                 new LineNumberReader(new BufferedReader(new InputStreamReader(lessonFileStream)));
         Map<String, Task> lessonTasks = new HashMap<>();
         Map<String, String> references = new HashMap<>();
+        List<LanguageGenerator.Description> generators = new ArrayList<>();
 
         String line;
 
@@ -714,7 +742,7 @@ public class LanguageDataParser {
                 case "task":
                     Task task = new Task();
 
-                    if (!parseTask(task, line, words, references)) continue;
+                    if (!parseTask(task, line, words, references, generators)) continue;
 
                     if (lessonTasks.containsKey(task.Id)) {
                         logError("Task " + task.Id + " already exists!");
@@ -731,7 +759,7 @@ public class LanguageDataParser {
 
                     Chapter chapter = new Chapter();
 
-                    chapter.Id = _filename + "#" + words[1];
+                    chapter.Id = _filenames.get(0) + "#" + words[1];
                     chapter.Text = resolveReferences(words[2], references);
 
                     l.Chapters.put(chapter.Id, chapter);
@@ -754,7 +782,12 @@ public class LanguageDataParser {
                         continue;
                     }
 
-                    parseIncludeInLessonFile(base, words[1], lessonTasks, references);
+                    _filenames.add(words[1]);
+                    parseIncludeInLessonFile(base, words[1], lessonTasks, references, generators);
+                    _filenames.remove(_filenames.size() - 1);
+                    break;
+                case "gen":
+                    if (!parseGeneratorDecl(words, references, generators)) continue;
                     break;
                 default:
                     logError("Unrecognised keyword in lesson file: " + keyword);
@@ -781,8 +814,10 @@ public class LanguageDataParser {
         return ret;
     }
 
-    private void parseIncludeInLanguageFile(String base, LineNumberReader r, int recursion) throws
-            Exception {
+    private void parseIncludeInLanguageFile(String base, LineNumberReader r,
+                                            Map<String, String> references,
+                                            List<LanguageGenerator.Description> generators,
+                                            int recursion) throws Exception {
         String line;
 
         while ((line = r.readLine()) != null) {
@@ -809,14 +844,15 @@ public class LanguageDataParser {
 
                     String filename = words[1];
                     InputStream languageFileStream = getFile(base + "/" + filename);
-                    LineNumberReader r1 =
-                            new LineNumberReader(
-                                    new BufferedReader(new InputStreamReader(languageFileStream)));
+                    LineNumberReader r1 = new LineNumberReader(
+                            new BufferedReader(new InputStreamReader(languageFileStream)));
 
-                    parseIncludeInLanguageFile(base, r1, recursion + 1);
+                    _filenames.add(filename);
+                    parseIncludeInLanguageFile(base, r1, references, generators, recursion + 1);
+                    _filenames.remove(_filenames.size() - 1);
                     break;
                 case "gen":
-                    if (!parseGeneratorDecl(words, _references)) continue;
+                    if (!parseGeneratorDecl(words, references, generators)) continue;
                     break;
                 case "ref":
                     if (words.length != 3) {
@@ -824,9 +860,9 @@ public class LanguageDataParser {
                         continue;
                     }
 
-                    String resolved = resolveReferences(words[2], _references);
+                    String resolved = resolveReferences(words[2], references);
 
-                    _references.put(words[1], resolved);
+                    references.put(words[1], resolved);
                     break;
                 case "name":
                     if (!_data.LanguageName.isEmpty()) {
@@ -927,8 +963,6 @@ public class LanguageDataParser {
                     t.Id = words[1];
                     t.Index = _data.Trainings.size();
 
-                    t.Filename = words[1];
-
                     _data.Trainings.put(words[1], t);
                     break;
                 case "version":
@@ -1010,17 +1044,19 @@ public class LanguageDataParser {
     }
 
     private void parseLanguageFile(String base) throws Exception {
-        _filename = "/Language.txt";
+        final String LanguageFile = "Language.txt";
 
-        log(Log.INFO, "Parsing language file: " + base + _filename);
+        _filenames.add(LanguageFile);
+
+        log(Log.INFO, "Parsing language file: " + base + "/" + LanguageFile);
 
         _data.LanguageUrl = base;
 
-        InputStream languageFileStream = getFile(base + "/Language.txt");
+        InputStream languageFileStream = getFile(base + "/" + LanguageFile);
         LineNumberReader r =
                 new LineNumberReader(new BufferedReader(new InputStreamReader(languageFileStream)));
 
-        parseIncludeInLanguageFile(base, r, 0);
+        parseIncludeInLanguageFile(base, r, _references, _generators, 0);
 
         if (_data.LanguageName.isEmpty()) {
             logError("Language name is not set");
@@ -1028,6 +1064,7 @@ public class LanguageDataParser {
 
         log(Log.INFO, "Language file parsed");
 
+        _filenames.remove(_filenames.size() - 1);
         _languageFileParsed = true;
     }
 
@@ -1039,12 +1076,14 @@ public class LanguageDataParser {
 
             return _throwError || !_hasError;
         } catch (FileNotFoundException e) {
-            log(Log.INFO, _filename + ":" + _line + "file not found: " + e.getMessage());
+            log(Log.INFO, _filenames.get(_filenames.size() - 1) + ":" + _line + "file not found: " +
+                    e.getMessage());
         } catch (ParserException e) {
-            log(Log.INFO, _filename + ":" + _line + "parsing error: " + e.getMessage());
+            log(Log.INFO, _filenames.get(_filenames.size() - 1) + ":" + _line + "parsing error: " +
+                    e.getMessage());
         } catch (Exception e) {
             Log.e("TAG", "Error", e);
-            log(Log.INFO, _filename + ":" + _line + ": error:" + e);
+            log(Log.INFO, _filenames.get(_filenames.size() - 1) + ":" + _line + ": error:" + e);
         }
 
         return false;
@@ -1057,15 +1096,25 @@ public class LanguageDataParser {
             if (!_languageFileParsed) parseLanguageFile(base);
 
             for (Theory t : _data.Theory.values()) {
-                if (!t.Id.isEmpty()) t.Chapters.addAll(parseTheoryFile(base, t));
+                if (!t.Id.isEmpty()) {
+                    _filenames.add(t.Id);
+                    t.Chapters.addAll(parseTheoryFile(base, t));
+                    _filenames.remove(_filenames.size() - 1);
+                }
             }
 
             for (Training t : _data.Trainings.values()) {
-                if (!t.Id.isEmpty()) t.Tasks.addAll(parseTrainingFile(base, t));
+                if (!t.Id.isEmpty()) {
+                    _filenames.add(t.Id);
+                    t.Tasks.addAll(parseTrainingFile(base, t));
+                    _filenames.remove(_filenames.size() - 1);
+                }
             }
 
             for (Lesson l : _data.Lessons.values()) {
+                _filenames.add(l.Id);
                 l.Tasks.addAll(parseLessonFile(base, l));
+                _filenames.remove(_filenames.size() - 1);
 
                 for (Task task : l.Tasks) {
 
@@ -1091,16 +1140,14 @@ public class LanguageDataParser {
             log(Log.INFO, "Parsing error: " + e.getMessage());
         } catch (Exception e) {
             Log.e("TAG", "Error", e);
-            log(Log.INFO, _filename + ":" + _line + ": error:" + e);
+            log(Log.INFO, _filenames.get(_filenames.size() - 1) + ":" + _line + ": error:" + e);
         }
 
         return false;
     }
 
     private Collection<Chapter> parseTheoryFile(String base, Theory theory) throws Exception {
-        _filename = theory.Id;
-
-        log(Log.INFO, "Parsing theory file: " + _filename);
+        log(Log.INFO, "Parsing theory file: " + theory.Id);
 
         InputStream languageFileStream = getFile(base + "/" + theory.Id);
         LineNumberReader r =

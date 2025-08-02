@@ -14,7 +14,5 @@ public class Training {
 
     public String Description = "";
 
-    public String Filename = "";
-
     public List<Task> Tasks = new ArrayList<>();
 }

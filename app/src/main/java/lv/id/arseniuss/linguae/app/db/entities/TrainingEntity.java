@@ -24,10 +24,6 @@ import lv.id.arseniuss.linguae.entities.Training;
     @NonNull
     public String Description = "";
 
-    @ColumnInfo(name = "filename")
-    @NonNull
-    public String Filename = "";
-
     public TrainingEntity() {
 
     }
@@ -37,6 +33,5 @@ import lv.id.arseniuss.linguae.entities.Training;
         Index = t.Index;
         Name = t.Name;
         Description = t.Description;
-        Filename = t.Filename;
     }
 }
