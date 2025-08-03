@@ -100,7 +100,7 @@ public class LessonSummaryViewModel extends AndroidViewModel {
                         case TranslateTask:
                             TranslateTask translateTask = (TranslateTask) task.Data;
 
-                            sentence = translateTask.Text;
+                            sentence = String.join(" ", translateTask.Answer);
                             break;
                         case SelectTask:
                             SelectTask selectTask = (SelectTask) task.Data;
