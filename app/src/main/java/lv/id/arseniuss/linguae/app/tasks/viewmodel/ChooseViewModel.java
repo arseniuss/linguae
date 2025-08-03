@@ -16,7 +16,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import lv.id.arseniuss.linguae.app.R;
-import lv.id.arseniuss.linguae.app.Utilities;
+import lv.id.arseniuss.linguae.Utilities;
 import lv.id.arseniuss.linguae.app.db.entities.TaskError;
 import lv.id.arseniuss.linguae.app.tasks.AbstractTaskAnswerViewModel;
 import lv.id.arseniuss.linguae.app.tasks.AbstractTaskViewModel;

@@ -25,6 +25,7 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import lv.id.arseniuss.linguae.Utilities;
 import lv.id.arseniuss.linguae.entities.Chapter;
 import lv.id.arseniuss.linguae.entities.Language;
 import lv.id.arseniuss.linguae.entities.Lesson;
@@ -135,6 +136,8 @@ public class LanguageDataParser {
 
         if (generatorText.contains(":")) {
             baseText = generatorText.substring(_gen_prefix.length() + 1); // +1 for ':'
+        } else {
+            baseText = Utilities.ExtractLinkTitles(baseText);
         }
 
         for (LanguageGenerator.Description description : descriptions) {
@@ -287,28 +290,13 @@ public class LanguageDataParser {
                 conjugateTask.Persons = references3.split(",", -1);
 
                 if (references4.startsWith(_gen_prefix)) {
-                    Optional<LanguageGenerator.Description> description = _generators.stream()
-                            .filter(d -> d.TaskType == task.Type &&
-                                    Objects.equals(d.Category, task.Category) &&
-                                    Objects.equals(d.Description, task.Description))
-                            .findAny();
+                    String[] generated = performGeneration(conjugateTask.Verb, references4,
+                            conjugateTask.Persons, task, generators);
 
-                    if (!description.isPresent()) {
-                        logError("There is no generator for " + task.Type.GetName() + " " +
-                                task.Category + " " + task.Description);
+                    if (generated == null)
                         return false;
-                    }
 
-                    try {
-                        String base = references4.substring(_gen_prefix.length());
-
-                        conjugateTask.Answers =
-                                LanguageGenerator.Generate(description.get(), task, base,
-                                        conjugateTask.Persons);
-                    } catch (LanguageGenerator.GeneratorException ex) {
-                        logError(ex.getMessage());
-                        return false;
-                    }
+                    conjugateTask.Answers = generated;
                 } else {
                     conjugateTask.Answers = references4.split(",", -1);
                 }
@@ -358,7 +346,11 @@ public class LanguageDataParser {
                 task.Description = null;
 
                 translateTask.Text = resolveReferences(words[3], references);
-                translateTask.Answer = resolveReferences(words[4], references).split(",");
+
+                translateTask.Answer =
+                        Arrays.stream(resolveReferences(words[4], references).split(" "))
+                                .map(a -> a.replaceAll("[,.]", ""))
+                                .toArray(String[]::new);
                 translateTask.Additional = resolveReferences(words[5], references);
 
                 task.Amount = translateTask.Answer.length;

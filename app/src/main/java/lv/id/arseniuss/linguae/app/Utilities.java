@@ -63,18 +63,6 @@ public class Utilities {
                 0xff333333));
     }
 
-    public static String ExtractLinkTitles(String markdown) {
-        List<String> titles = new ArrayList<>();
-        Pattern pattern = Pattern.compile("\\[([^\\]]+)]\\(([^)]+)\\)");
-        Matcher matcher = pattern.matcher(markdown);
-
-        while (matcher.find()) {
-            return matcher.group(1);
-        }
-
-        return markdown;
-    }
-
     public static String StripAccents(String s) {
         s = Normalizer.normalize(s, Normalizer.Form.NFD);
         s = s.replaceAll("[\\p{InCombiningDiacriticalMarks}]", "");

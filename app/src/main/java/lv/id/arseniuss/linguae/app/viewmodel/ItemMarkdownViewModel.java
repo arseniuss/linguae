@@ -2,7 +2,7 @@ package lv.id.arseniuss.linguae.app.viewmodel;
 
 import androidx.databinding.BaseObservable;
 
-import lv.id.arseniuss.linguae.app.Utilities;
+import lv.id.arseniuss.linguae.Utilities;
 
 public class ItemMarkdownViewModel extends BaseObservable {
 

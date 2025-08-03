@@ -1,6 +1,8 @@
 package lv.id.arseniuss.linguae;
 
 import java.text.Normalizer;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 public class Utilities {
@@ -8,6 +10,17 @@ public class Utilities {
         s = Normalizer.normalize(s, Normalizer.Form.NFD);
         s = s.replaceAll("[\\p{InCombiningDiacriticalMarks}]", "");
         return s;
+    }
+
+    public static String ExtractLinkTitles(String markdown) {
+        Pattern pattern = Pattern.compile("\\[([^\\]]+)]\\(([^)]+)\\)");
+        Matcher matcher = pattern.matcher(markdown);
+
+        if (matcher.find()) {
+            return matcher.group(1);
+        }
+
+        return markdown;
     }
 
     public static String AddAccents(String s) {
