@@ -477,6 +477,7 @@ public class LanguageDataParser {
             String keyword = words[0].trim().toLowerCase();
 
             if (keyword.equals("stop") && words.length == 1) break;
+            if (keyword.equals("skip")) continue;
 
             switch (keyword) {
                 case "name":
@@ -619,6 +620,7 @@ public class LanguageDataParser {
             String keyword = words[0].trim().toLowerCase();
 
             if (keyword.equals("stop") && words.length == 1) break;
+            if (keyword.equals("skip")) continue;
 
             switch (keyword) {
                 case "gen":
@@ -673,6 +675,7 @@ public class LanguageDataParser {
             String keyword = words[0].trim().toLowerCase();
 
             if (keyword.equals("stop") && words.length == 1) break;
+            if (keyword.equals("skip")) continue;
 
             switch (keyword) {
                 case "theory":
@@ -821,6 +824,7 @@ public class LanguageDataParser {
             String keyword = words[0].trim().toLowerCase();
 
             if (keyword.equals("stop") && words.length == 1) break;
+            if (keyword.equals("skip")) continue;
 
             switch (keyword) {
                 case "include":
@@ -1157,6 +1161,7 @@ public class LanguageDataParser {
             String keyword = words[0].trim().toLowerCase();
 
             if (keyword.equals("stop") && words.length == 1) break;
+            if (keyword.equals("skip")) continue;
 
             switch (keyword) {
                 case "ref":
@@ -1238,6 +1243,7 @@ public class LanguageDataParser {
                 String keyword = words[0].trim().toLowerCase();
 
                 if (keyword.equals("stop") && words.length == 1) break;
+                if (keyword.equals("skip")) continue;
 
                 switch (keyword) {
                     case "name":
