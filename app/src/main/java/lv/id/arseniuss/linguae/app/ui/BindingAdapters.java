@@ -3,6 +3,8 @@ package lv.id.arseniuss.linguae.app.ui;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
+import android.text.Html;
+import android.text.Spanned;
 import android.view.View;
 import android.widget.Adapter;
 import android.widget.AdapterView;
@@ -259,6 +261,13 @@ public class BindingAdapters {
         } else {
             textView.setText("");
         }
+    }
+
+    @BindingAdapter("text.html")
+    public static void SetTextHtml(TextView textView, String text) {
+        Spanned spanned = Html.fromHtml(text, Html.FROM_HTML_MODE_LEGACY);
+
+        textView.setText(spanned);
     }
 
     @BindingAdapter("markdown")

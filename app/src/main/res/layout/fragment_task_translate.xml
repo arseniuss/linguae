@@ -34,7 +34,7 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:padding="10dp"
-            android:text="@{viewmodel.Sentence()}"
+            text.html="@{viewmodel.Sentence()}"
             android:textAlignment="center"
             android:textSize="20sp"
             tools:text="The quick brown fox jumps over the lazy dog." />
