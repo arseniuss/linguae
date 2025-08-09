@@ -8,8 +8,6 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.MutableLiveData;
 import androidx.preference.PreferenceManager;
 
-import com.google.gson.Gson;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -39,6 +37,9 @@ public class SessionViewModel extends AndroidViewModel {
             _sharedPreferences.getString(Constants.PreferenceLanguageCodeKey, "");
     private final TaskDataAccess _taskDataAccess =
             LanguageDatabase.GetInstance(getApplication(), _language).GetTaskDataAccess();
+    private final boolean _strictTaskCount =
+            _sharedPreferences.getBoolean(
+                    getApplication().getString(R.string.PreferenceStrictTaskCount), true);
     private final MutableLiveData<String> _counterString = new MutableLiveData<>("0");
     private final MutableLiveData<String> _taskProgress = new MutableLiveData<>("");
     private final MutableLiveData<Boolean> _canCheck = new MutableLiveData<>(false);
@@ -116,7 +117,8 @@ public class SessionViewModel extends AndroidViewModel {
                              ILoaded loaded) {
         int taskCount = _sharedPreferences.getInt(Constants.PreferenceTaskCountKey, 10);
 
-        Disposable d = _taskDataAccess.SelectTrainingTasks(training, taskCount, categories)
+        Disposable d = _taskDataAccess.SelectTrainingTasks(training, taskCount, !_strictTaskCount,
+                        categories)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe((tasks) -> {

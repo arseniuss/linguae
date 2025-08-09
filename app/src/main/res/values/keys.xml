@@ -19,4 +19,5 @@
 
     <string name="IgnoreMacronsKey" translatable="false">ignore-macrons</string>
     <string name="ChooseOptionCountKey" translatable="false">choose-option-count</string>
+    <string name="PreferenceStrictTaskCount" translatable="false">strict-task-count</string>
 </resources>

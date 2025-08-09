@@ -155,6 +155,7 @@ public class PreferencesActivity extends AppCompatActivity {
                         }
 
                         if (preference != null) {
+                            preference.setIconSpaceReserved(false);
                             preference.setKey(settingKey);
                             preference.setTitle(setting.Description);
                             preferenceCategory.addPreference(preference);

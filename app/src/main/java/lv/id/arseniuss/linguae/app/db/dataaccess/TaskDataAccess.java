@@ -15,7 +15,8 @@ import lv.id.arseniuss.linguae.app.db.entities.SettingEntity;
 import lv.id.arseniuss.linguae.app.db.entities.TaskEntity;
 import lv.id.arseniuss.linguae.enumerators.TaskType;
 
-@Dao public abstract class TaskDataAccess {
+@Dao
+public abstract class TaskDataAccess {
     @Query("SELECT task_id FROM lesson_task WHERE lesson_id = :lessonId")
     protected abstract List<String> GetLessonTasks(String lessonId);
 
@@ -62,6 +63,7 @@ import lv.id.arseniuss.linguae.enumerators.TaskType;
     }
 
     public Single<List<TaskEntity>> SelectTrainingTasks(String trainingId, int count,
+                                                        boolean countOptional,
                                                         List<TrainingCategory> categories) {
         return Single.fromCallable(() -> {
             List<String> taskIds;
@@ -77,12 +79,13 @@ import lv.id.arseniuss.linguae.enumerators.TaskType;
                 }
             }
 
-            if (taskIds.size() < count) {
+            if (!countOptional && taskIds.size() < count) {
                 throw new NotEnoughTrainingTasksException(taskIds.size(), count);
             }
 
+            int limit = Math.min(count, taskIds.size());
             int[] indexes =
-                    new SecureRandom().ints(0, taskIds.size()).distinct().limit(count).toArray();
+                    new SecureRandom().ints(0, taskIds.size()).distinct().limit(limit).toArray();
 
             List<String> selectedIds =
                     Arrays.stream(indexes).mapToObj(taskIds::get).collect(Collectors.toList());

@@ -100,4 +100,5 @@
     <string name="EnumTaskTypeDeclineTask">Decline task</string>
     <string name="EnumTaskTypeTranslateTask">Translate task</string>
     <string name="TextErrors">Errors</string>
+    <string name="TitleStrictTaskCount">Do not allow less tasks in session than task count</string>
 </resources>

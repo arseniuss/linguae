@@ -1,59 +1,81 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-    <PreferenceCategory android:title="@string/TitleSystemPreferences">
+    <PreferenceCategory
+        android:title="@string/TitleSystemPreferences"
+        app:iconSpaceReserved="false">
         <Preference
             android:key="@string/PreferenceLocaleCodeKey"
-            android:title="@string/TitleDisplayLanguage" />
+            android:title="@string/TitleDisplayLanguage"
+            app:iconSpaceReserved="false" />
         <Preference
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:key="@string/PreferenceRepositoriesKey"
-            android:title="@string/PreferenceRepositoriesTitle" />
+            android:title="@string/PreferenceRepositoriesTitle"
+            app:iconSpaceReserved="false" />
         <Preference
             android:defaultValue="@string/PreferenceRepositoryLanguageNotSelected"
             android:key="@string/PreferenceRepositoryLanguageKey"
             android:summary="@string/PreferenceRepositoryLanguageNotSelected"
-            android:title="@string/PreferenceRepositoryLanguageTitle" />
+            android:title="@string/PreferenceRepositoryLanguageTitle"
+            app:iconSpaceReserved="false" />
     </PreferenceCategory>
     <PreferenceCategory
         android:key="@string/PreferencesLanguageKey"
-        android:title="@string/TitleLanguagePreferences">
+        android:title="@string/TitleLanguagePreferences"
+        app:iconSpaceReserved="false">
         <!-- Preferences are defined in language file -->
     </PreferenceCategory>
     <PreferenceCategory
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:title="@string/TitleDatabasePreferences">
+        android:title="@string/TitleDatabasePreferences"
+        app:iconSpaceReserved="false">
         <SwitchPreference
             android:key="@string/PreferenceSaveImageKey"
-            android:title="@string/TitleSaveImages" />
+            android:title="@string/TitleSaveImages"
+            app:iconSpaceReserved="false" />
     </PreferenceCategory>
     <PreferenceCategory
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:title="@string/TitleSessionPreferences">
+        android:title="@string/TitleSessionPreferences"
+        app:iconSpaceReserved="false">
         <lv.id.arseniuss.linguae.app.ui.preference.EditIntegerPreference
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:defaultValue="10"
             android:key="@string/PreferenceTaskCountKey"
             android:title="@string/TitleTaskCountPerSession"
+            app:iconSpaceReserved="false"
             app:useSimpleSummaryProvider="true" />
+        <CheckBoxPreference
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:defaultValue="true"
+            android:key="@string/PreferenceStrictTaskCount"
+            android:title="@string/TitleStrictTaskCount"
+            app:iconSpaceReserved="false"
+            app:singleLineTitle="false" />
         <CheckBoxPreference
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:defaultValue="false"
             android:key="@string/PreferenceNoKeyboardKey"
             android:title="@string/TitleNoKeyboard"
+            app:iconSpaceReserved="false"
             app:singleLineTitle="false" />
     </PreferenceCategory>
-    <PreferenceCategory android:title="@string/TitleTaskPreferences">
+    <PreferenceCategory
+        android:title="@string/TitleTaskPreferences"
+        app:iconSpaceReserved="false">
         <lv.id.arseniuss.linguae.app.ui.preference.EditIntegerPreference
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:defaultValue="6"
             android:key="@string/ChooseOptionCountKey"
             android:title="@string/TitleChooseTaskOptions"
+            app:iconSpaceReserved="false"
             app:useSimpleSummaryProvider="true" />
     </PreferenceCategory>
 </PreferenceScreen>

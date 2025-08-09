@@ -20,6 +20,8 @@ public class Constants {
     public static String PreferenceSaveImagesKey;
     public static String ChooseOptionCountKey;
 
+    public static String PreferenceStrictTaskCount;
+
     public static void Init(Context context) {
         PreferenceLocaleCodeKey = context.getString(R.string.PreferenceLocaleCodeKey);
         PreferenceLocaleNameKey = context.getString(R.string.PreferenceLocaleNameKey);
@@ -37,5 +39,6 @@ public class Constants {
 
         IgnoreMacronsKey = context.getString(R.string.IgnoreMacronsKey);
         ChooseOptionCountKey = context.getString(R.string.ChooseOptionCountKey);
+        PreferenceStrictTaskCount = context.getString(R.string.PreferenceStrictTaskCount);
     }
 }
