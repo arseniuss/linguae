@@ -7,7 +7,9 @@ import java.util.TreeMap;
 public enum SettingType {
     Unknown("Unknown setting type"),
 
-    Boolean("Boolean setting type");
+    Boolean("Boolean setting type"),
+
+    Text("Text setting type");
 
     private static final Map<String, SettingType> _map = new TreeMap<>(new Comparator<String>() {
         @Override

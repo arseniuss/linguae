@@ -8,6 +8,9 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.MutableLiveData;
 import androidx.preference.PreferenceManager;
 
+import java.text.Collator;
+import java.text.ParseException;
+import java.text.RuleBasedCollator;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -21,6 +24,7 @@ import io.reactivex.rxjava3.schedulers.Schedulers;
 import lv.id.arseniuss.linguae.Utilities;
 import lv.id.arseniuss.linguae.app.Configuration;
 import lv.id.arseniuss.linguae.app.Constants;
+import lv.id.arseniuss.linguae.app.Settings;
 import lv.id.arseniuss.linguae.app.db.LanguageDatabase;
 import lv.id.arseniuss.linguae.app.db.dataaccess.TaskDataAccess;
 import lv.id.arseniuss.linguae.app.db.entities.TaskEntity;
@@ -30,7 +34,7 @@ import lv.id.arseniuss.linguae.tasks.DeclineTask;
 import lv.id.arseniuss.linguae.tasks.SelectTask;
 import lv.id.arseniuss.linguae.tasks.TranslateTask;
 
-public class LessonSummaryViewModel extends AndroidViewModel {
+public class ContentSummaryViewModel extends AndroidViewModel {
     private final SharedPreferences _sharedPreferences =
             PreferenceManager.getDefaultSharedPreferences(getApplication().getBaseContext());
     private final String _language =
@@ -45,7 +49,7 @@ public class LessonSummaryViewModel extends AndroidViewModel {
             new MutableLiveData<>(new ArrayList<>());
     private final MutableLiveData<Boolean> _hasSentences = new MutableLiveData<>(false);
 
-    public LessonSummaryViewModel(@NonNull Application application) {
+    public ContentSummaryViewModel(@NonNull Application application) {
         super(application);
     }
 
@@ -120,8 +124,7 @@ public class LessonSummaryViewModel extends AndroidViewModel {
                                 .findAny();
 
                         if (item.isPresent()) {
-                            if (!Objects.equals(extracted, word))
-                                item.get().Markdown = word;
+                            if (!Objects.equals(extracted, word)) item.get().Markdown = word;
                         } else {
                             vocabulary.add(new ItemMarkdownViewModel(word));
                         }
@@ -132,15 +135,25 @@ public class LessonSummaryViewModel extends AndroidViewModel {
                 }
             }
 
+            Collator collator = Collator.getInstance();
+
+            if (!Settings.AlphabetOrder.isEmpty()) {
+                try {
+                    collator = new RuleBasedCollator(Settings.AlphabetOrder);
+                } catch (ParseException ignored) {
+
+                }
+            }
+
             if (!vocabulary.isEmpty()) {
                 _hasVocabulary.setValue(true);
-                vocabulary.sort(Comparator.comparing(o -> o.Word));
+                vocabulary.sort(Comparator.comparing(o -> o.Word, collator));
                 _vocabulary.setValue(vocabulary);
             }
 
             if (!sentences.isEmpty()) {
                 _hasSentences.setValue(true);
-                sentences.sort(String::compareTo);
+                sentences.sort(collator);
                 _sentences.setValue(sentences);
             }
         }
@@ -148,6 +161,13 @@ public class LessonSummaryViewModel extends AndroidViewModel {
 
     public void LoadLesson(String lessonNo) {
         Disposable d = _taskDataAccess.GetTasksByLesson(lessonNo)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(this::parseResult);
+    }
+
+    public void LoadTraining(String trainingId) {
+        Disposable d = _taskDataAccess.GetTasksByTraining(trainingId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(this::parseResult);

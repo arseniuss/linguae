@@ -74,8 +74,8 @@
                 android:orientation="vertical">
 
                 <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
+                    android:layout_width="@dimen/icon_size"
+                    android:layout_height="@dimen/icon_size"
                     android:paddingLeft="10dp"
                     android:paddingTop="10dp"
                     android:paddingRight="10dp"
@@ -99,8 +99,8 @@
                 android:orientation="vertical">
 
                 <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
+                    android:layout_width="@dimen/icon_size"
+                    android:layout_height="@dimen/icon_size"
                     android:paddingLeft="10dp"
                     android:paddingTop="10dp"
                     android:paddingRight="10dp"

@@ -11,6 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.preference.EditTextPreference;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceCategory;
 import androidx.preference.PreferenceFragmentCompat;
@@ -139,6 +140,21 @@ public class PreferencesActivity extends AppCompatActivity {
                         String settingKey = "PREF_LANG_" + setting.Key;
 
                         switch (setting.Type) {
+                            case Text:
+                                preference = new EditTextPreference(getContext());
+
+                                _sharedPreferences.edit()
+                                        .putString(settingKey, setting.Value)
+                                        .apply();
+                                preference.setSummary(setting.Value);
+                                preference.setOnPreferenceChangeListener(
+                                        (preference1, newValue) -> {
+                                            setting.Value = newValue.toString();
+                                            preference1.setSummary(newValue.toString());
+
+                                            return true;
+                                        });
+                                break;
                             case Boolean:
                                 preference = new SwitchPreference(getContext());
 

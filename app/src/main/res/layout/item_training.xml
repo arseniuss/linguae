@@ -18,7 +18,7 @@
         style="@style/MyAppTheme.Layout.HorizontalSquash"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:divider="@drawable/divider_1"
+        android:divider="@drawable/divider_2"
         android:orientation="horizontal"
         android:showDividers="middle">
 
@@ -28,50 +28,86 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:orientation="horizontal">
-
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:orientation="vertical">
-
-
-                <TextView
-                    style="@style/MyAppTheme.TextView.Header.2"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@{viewmodel.Name}"
-                    tools:text="Name\nl" />
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@{viewmodel.Description}"
-                    tools:text="Description" />
-            </LinearLayout>
+            android:orientation="vertical">
 
             <TextView
+                style="@style/MyAppTheme.TextView.Header.2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@{viewmodel.Name}"
+                tools:text="Name\nl" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@{viewmodel.Description}"
+                tools:text="Description" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:divider="@drawable/divider_1"
+            android:orientation="horizontal"
+            android:showDividers="middle">
+
+            <LinearLayout
+                style="@style/MyAppTheme.RawButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:padding="@dimen/margin_2"
-                android:text="@{viewmodel.TaskCount}"
-                tools:text="120" />
+                android:onClick="@{() -> presenter.OnSummaryClick(viewmodel)}"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:layout_width="@dimen/icon_size"
+                    android:layout_height="@dimen/icon_size"
+                    android:paddingLeft="10dp"
+                    android:paddingTop="10dp"
+                    android:paddingRight="10dp"
+                    android:src="@drawable/baseline_article_24" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:padding="5dp"
+                    android:text="@{viewmodel.TaskCount}"
+                    tools:text="120" />
+            </LinearLayout>
+
+            <LinearLayout
+                style="@style/MyAppTheme.RawButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:onClick="@{() -> presenter.OnSettingsClicked(viewmodel)}"
+                android:orientation="vertical"
+                android:visibility="@{viewmodel.categoryCount > 0}">
+
+                <ImageView
+                    android:layout_width="@dimen/icon_size"
+                    android:layout_height="@dimen/icon_size"
+                    android:paddingLeft="10dp"
+                    android:paddingTop="10dp"
+                    android:paddingRight="10dp"
+                    android:contentDescription="@string/TrainingSettingsDescription"
+                    android:src="@drawable/baseline_cog_24" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:padding="5dp"
+                    android:text="@{String.valueOf(viewmodel.categoryCount)}"
+                    tools:text="120" />
+            </LinearLayout>
 
 
         </LinearLayout>
 
-        <ImageButton
-            style="@style/MyAppTheme.Button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="0"
-            android:contentDescription="@string/TrainingSettingsDescription"
-            android:onClick="@{() -> presenter.OnSettingsClicked(viewmodel)}"
-            android:padding="@dimen/margin_2"
-            android:visibility="@{viewmodel.categoryCount > 0}"
-            app:srcCompat="@drawable/baseline_settings_24" />
     </LinearLayout>
+
+
 </layout>

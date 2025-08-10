@@ -64,7 +64,7 @@
     <string name="cancel">Cancel</string>
     <string name="ok">OK</string>
     <string name="save">Save</string>
-    <string name="TitleVocabulary">Vocabulary</string>
+    <string name="TitleVocabulary">Vocabulary (%d)</string>
     <string name="TitleSentences">Sentences</string>
     <string name="DescriptionAppLogo">Logo</string>
     <string name="TextEnglishLanguage" translatable="false">English</string>

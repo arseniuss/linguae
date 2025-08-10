@@ -24,6 +24,7 @@ import lv.id.arseniuss.linguae.app.R;
 import lv.id.arseniuss.linguae.app.databinding.FragmentTrainingsBinding;
 import lv.id.arseniuss.linguae.app.databinding.ItemTrainingBinding;
 import lv.id.arseniuss.linguae.app.ui.MyRecyclerViewAdapter;
+import lv.id.arseniuss.linguae.app.ui.activities.ContentSummaryActivity;
 import lv.id.arseniuss.linguae.app.ui.activities.MainActivity;
 import lv.id.arseniuss.linguae.app.ui.activities.SessionActivity;
 import lv.id.arseniuss.linguae.app.ui.activities.TrainingSetupActivity;
@@ -51,6 +52,15 @@ public class TrainingsFragment extends Fragment {
         Intent i = new Intent(getContext(), TrainingSetupActivity.class);
 
         i.putExtra(TrainingSetupActivity.TRAINING, entryViewModel.getId());
+
+        startActivity(i);
+    }
+
+    public void OnSummaryClick(TrainingsViewModel.EntryViewModel entryViewModel) {
+        Intent i = new Intent(getContext(), ContentSummaryActivity.class);
+
+        i.putExtra(ContentSummaryActivity.TrainingExtraTag, entryViewModel.getId());
+        i.putExtra(ContentSummaryActivity.TrainingNameExtraTag, entryViewModel.getName());
 
         startActivity(i);
     }

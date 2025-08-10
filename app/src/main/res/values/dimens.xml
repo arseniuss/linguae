@@ -12,4 +12,5 @@
     <dimen name="text_size_header_2">20sp</dimen>
 
     <dimen name="image_size">80dp</dimen>
+    <dimen name="icon_size">42dp</dimen>
 </resources>

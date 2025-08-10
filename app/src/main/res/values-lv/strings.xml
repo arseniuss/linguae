@@ -65,7 +65,7 @@
     <string name="cancel">Atcelt</string>
     <string name="ok">Labi</string>
     <string name="save">Saglabāt</string>
-    <string name="TitleVocabulary">Vārdu krājums</string>
+    <string name="TitleVocabulary">Vārdu krājums (%d)</string>
     <string name="TitleSentences">Teikumi</string>
     <string name="DescriptionAppLogo">Logo</string>
     <string name="TitleSelectLanguage">Izvēlieties saskarnes valodu</string>

@@ -23,6 +23,9 @@ public abstract class TaskDataAccess {
     @Query("SELECT t.* FROM task t INNER JOIN lesson_task lt on lt.task_id = t.id WHERE lt.lesson_id = :lessonId")
     public abstract Single<List<TaskEntity>> GetTasksByLesson(String lessonId);
 
+    @Query("SELECT t.* FROM task t INNER JOIN training_task tt on tt.task_id = t.id WHERE tt.training_id = :trainingId")
+    public abstract Single<List<TaskEntity>> GetTasksByTraining(String trainingId);
+
     @Query("SELECT task_id FROM training_task WHERE training_id = :trainingId OR :trainingId = ''")
     protected abstract List<String> GetTrainingTasks(String trainingId);
 

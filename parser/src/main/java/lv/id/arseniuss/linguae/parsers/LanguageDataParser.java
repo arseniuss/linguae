@@ -167,8 +167,9 @@ public class LanguageDataParser {
             return false;
         }
 
-        task.Id = _filenames.get(0) + "#" + words[1];
-        if (!edit.isEmpty()) task.Id += "-" + edit;
+        task.Id = _filenames.get(0) + "#";
+        if (!edit.isEmpty()) task.Id += edit + "-";
+        task.Id += words[1];
 
         String taskType = words[2].trim().toLowerCase();
 

@@ -13,7 +13,7 @@ import lv.id.arseniuss.linguae.app.db.entities.TrainingEntity;
 
 @Dao
 public abstract class TrainingDataAccess {
-    @Query("SELECT t.*, COUNT(tt.training_id) AS task_count, COUNT(tc.training_id) AS category_count " +
+    @Query("SELECT t.*, COUNT(DISTINCT tt.task_id) AS task_count, COUNT(DISTINCT tc.id) AS category_count " +
             "FROM training t " +
             "LEFT JOIN training_task tt ON t.id = tt.training_id OR t.id IS NULL OR t.id = '' " +
             "LEFT JOIN training_category tc ON t.id = tc.training_id OR t.id IS NULL OR t.id = '' " +

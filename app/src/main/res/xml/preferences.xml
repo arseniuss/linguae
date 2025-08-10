@@ -53,7 +53,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:defaultValue="true"
-            android:key="@string/PreferenceStrictTaskCount"
+            android:key="@string/PreferenceStrictTaskCountKey"
             android:title="@string/TitleStrictTaskCount"
             app:iconSpaceReserved="false"
             app:singleLineTitle="false" />

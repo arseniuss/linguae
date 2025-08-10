@@ -6,11 +6,11 @@
 
         <variable
             name="viewmodel"
-            type="lv.id.arseniuss.linguae.app.viewmodel.LessonSummaryViewModel" />
+            type="lv.id.arseniuss.linguae.app.viewmodel.ContentSummaryViewModel" />
 
         <variable
             name="presenter"
-            type="lv.id.arseniuss.linguae.app.ui.activities.LessonSummaryActivity" />
+            type="lv.id.arseniuss.linguae.app.ui.activities.ContentSummaryActivity" />
     </data>
 
     <ScrollView
@@ -29,12 +29,13 @@
                 android:orientation="vertical"
                 android:visibility="@{viewmodel.HasVocabulary()}">
 
-                <TextView
+                <TextView xmlns:tools="http://schemas.android.com/tools"
                     style="@style/MyAppTheme.TextView.Header.1"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/margin_2"
-                    android:text="@string/TitleVocabulary" />
+                    android:text="@{String.format(@string/TitleVocabulary, viewmodel.Vocabulary().size())}"
+                    tools:text="@string/TitleVocabulary" />
 
                 <lv.id.arseniuss.linguae.app.ui.AdapterFlexboxLayout
                     items="@{viewmodel.Vocabulary()}"

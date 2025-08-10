@@ -12,17 +12,20 @@ import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.ViewModelProvider;
 
 import lv.id.arseniuss.linguae.app.R;
-import lv.id.arseniuss.linguae.app.databinding.ActivityLessonSummaryBinding;
-import lv.id.arseniuss.linguae.app.viewmodel.LessonSummaryViewModel;
+import lv.id.arseniuss.linguae.app.databinding.ActivityContentSummaryBinding;
+import lv.id.arseniuss.linguae.app.viewmodel.ContentSummaryViewModel;
 
-public class LessonSummaryActivity extends AppCompatActivity {
+public class ContentSummaryActivity extends AppCompatActivity {
     public static final String LessonExtraTag = "LESSON_NO";
     public static final String LessonNameExtraTag = "LESSON_NAME";
 
-    private final LessonSummaryActivity _this = this;
+    public static final String TrainingExtraTag = "TRAINING_NO";
+    public static final String TrainingNameExtraTag = "TRAINING_NAME";
 
-    private LessonSummaryViewModel _model;
-    private ActivityLessonSummaryBinding _binding;
+    private final ContentSummaryActivity _this = this;
+
+    private ContentSummaryViewModel _model;
+    private ActivityContentSummaryBinding _binding;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -30,15 +33,17 @@ public class LessonSummaryActivity extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
 
-        if (!i.hasExtra(LessonExtraTag)) {
+        if (!i.hasExtra(LessonExtraTag) && !i.hasExtra(TrainingExtraTag)) {
             finish();
         }
 
-        _binding = DataBindingUtil.setContentView(this, R.layout.activity_lesson_summary);
-        _model = new ViewModelProvider(this).get(LessonSummaryViewModel.class);
+        _binding = DataBindingUtil.setContentView(this, R.layout.activity_content_summary);
+        _model = new ViewModelProvider(this).get(ContentSummaryViewModel.class);
 
         if (i.hasExtra(LessonExtraTag)) {
             _model.LoadLesson(i.getStringExtra(LessonExtraTag));
+        } else if (i.hasExtra(TrainingExtraTag)) {
+            _model.LoadTraining(i.getStringExtra(TrainingExtraTag));
         }
 
         _binding.setViewmodel(_model);
@@ -53,6 +58,8 @@ public class LessonSummaryActivity extends AppCompatActivity {
 
             if (i.hasExtra(LessonNameExtraTag))
                 supportActionBar.setTitle(i.getStringExtra(LessonNameExtraTag));
+            else if (i.hasExtra(TrainingNameExtraTag))
+                supportActionBar.setTitle(i.getStringExtra(TrainingNameExtraTag));
         }
     }
 
