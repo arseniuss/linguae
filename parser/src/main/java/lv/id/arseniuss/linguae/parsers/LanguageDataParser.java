@@ -480,6 +480,9 @@ public class LanguageDataParser {
             if (keyword.equals("skip")) continue;
 
             switch (keyword) {
+                case "gen":
+                    if (!parseGeneratorDecl(words, references, generators)) continue;
+                    break;
                 case "ref":
                     if (words.length != 3) {
                         logError("Expected format: ref <name> <text>");
@@ -555,6 +558,9 @@ public class LanguageDataParser {
             if (keyword.equals("skip")) continue;
 
             switch (keyword) {
+                case "gen":
+                    if (!parseGeneratorDecl(words, references, generators)) continue;
+                    break;
                 case "name":
                     if (words.length != 2) {
                         logError("Expected format: name <name>");
