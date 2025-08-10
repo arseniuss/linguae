@@ -10,6 +10,8 @@ public class Training {
 
     public int Index;
 
+    public String Section = "";
+
     public String Name = "";
 
     public String Description = "";

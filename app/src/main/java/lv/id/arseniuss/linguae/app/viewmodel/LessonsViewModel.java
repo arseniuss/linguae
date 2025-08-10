@@ -104,7 +104,7 @@ public class LessonsViewModel extends AndroidViewModel {
                         .stream()
                         .map(EntryViewModel::new)
                         .collect(Collectors.toList())))
-                .sorted(Comparator.comparing(e -> e.Index()))
+                .sorted(Comparator.comparing(SectionViewModel::Index))
                 .collect(Collectors.toList()));
     }
 

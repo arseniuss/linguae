@@ -16,6 +16,8 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.tabs.TabLayout;
+
 import java.util.List;
 
 import lv.id.arseniuss.linguae.app.R;
@@ -81,6 +83,25 @@ public class TrainingsFragment extends Fragment {
             public boolean onMenuItemSelected(@NonNull MenuItem menuItem) {
 
                 return false;
+            }
+        });
+
+        _binding.tabs.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                String tabName = tab.getText().toString();
+
+                _model.SetSelectedSection(tabName);
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+
             }
         });
 

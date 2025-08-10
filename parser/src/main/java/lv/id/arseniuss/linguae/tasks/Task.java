@@ -1,7 +1,5 @@
 package lv.id.arseniuss.linguae.tasks;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
 import com.google.gson.annotations.SerializedName;
 
 import lv.id.arseniuss.linguae.enumerators.TaskType;
@@ -13,7 +11,7 @@ public class Task {
 
     public String Category;
 
-    public String Description;
+    public String Subcategory;
 
     public long Amount;
 
@@ -25,6 +23,19 @@ public class Task {
 
     public Task(String id) {
         Id = id;
+    }
+
+    public String GetPart(String part) {
+        switch (part) {
+            case "type":
+                return Type.GetName();
+            case "category":
+                return Category;
+            case "subcategory":
+                return Subcategory;
+        }
+
+        return null;
     }
 
 

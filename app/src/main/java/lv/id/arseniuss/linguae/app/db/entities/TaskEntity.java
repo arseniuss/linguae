@@ -68,7 +68,7 @@ public class TaskEntity {
         Id = t.Id;
         Type = t.Type;
         Category = t.Category;
-        Description = t.Description;
+        Description = t.Subcategory;
         Amount = t.Amount;
         Data = t.Data;
     }

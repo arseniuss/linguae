@@ -16,6 +16,10 @@ import lv.id.arseniuss.linguae.entities.Training;
     @ColumnInfo(name = "index")
     public int Index;
 
+    @ColumnInfo(name = "section")
+    @NonNull
+    public String Section = "";
+
     @ColumnInfo(name = "name")
     @NonNull
     public String Name = "";
@@ -31,6 +35,7 @@ import lv.id.arseniuss.linguae.entities.Training;
     public TrainingEntity(Training t) {
         Id = t.Id;
         Index = t.Index;
+        Section = t.Section;
         Name = t.Name;
         Description = t.Description;
     }

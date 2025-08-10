@@ -4,6 +4,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.Base64;
 import android.util.Log;
+import android.util.Pair;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
@@ -112,7 +113,7 @@ public class LanguageDataParser {
             ParserException {
         List<LanguageGenerator.Description> descriptions = generators.stream()
                 .filter(d -> d.TaskType == task.Type && Objects.equals(d.Category, task.Category) &&
-                        (Objects.equals(d.Description, task.Description) ||
+                        (Objects.equals(d.Description, task.Subcategory) ||
                                 d.Description.isEmpty()))
                 .collect(Collectors.toList());
 
@@ -120,14 +121,14 @@ public class LanguageDataParser {
             descriptions = _generators.stream()
                     .filter(d -> d.TaskType == task.Type &&
                             Objects.equals(d.Category, task.Category) &&
-                            Objects.equals(d.Description, task.Description))
+                            Objects.equals(d.Description, task.Subcategory))
                     .collect(Collectors.toList());
         }
 
         if (descriptions.isEmpty()) {
             logError(
                     "There is no generator for " + task.Type.GetName() + " " + task.Category + " " +
-                            task.Description);
+                            task.Subcategory);
             return null;
         }
 
@@ -158,8 +159,8 @@ public class LanguageDataParser {
 
     private boolean parseTask(Task task, String line, String[] words,
                               Map<String, String> references,
-                              List<LanguageGenerator.Description> generators, String edit) throws
-            ParserException {
+                              List<LanguageGenerator.Description> generators, String edit,
+                              Pair<String, String> filter) throws ParserException {
         if (words.length < 3) {
             logError("Expecting format: task <id> <task-type> <task-data>");
             logError("Got: " + line);
@@ -187,7 +188,7 @@ public class LanguageDataParser {
                 task.Type = TaskType.SelectTask;
 
                 task.Category = null;
-                task.Description = null;
+                task.Subcategory = null;
 
                 selectTask.Meaning = resolveReferences(words[3], references);
 
@@ -237,7 +238,12 @@ public class LanguageDataParser {
                 task.Type = TaskType.DeclineTask;
 
                 task.Category = resolveReferences(words[3], references);
-                task.Description = resolveReferences(words[4], references);
+                task.Subcategory = resolveReferences(words[4], references);
+
+                if (filter != null) {
+                    if (!Objects.equals(task.GetPart(filter.first), filter.second))
+                        return false;
+                }
 
                 declineTask.Word = resolveReferences(words[5], references);
                 declineTask.Meaning = resolveReferences(words[6], references);
@@ -280,7 +286,12 @@ public class LanguageDataParser {
 
                 task.Type = TaskType.ConjugateTask;
                 task.Category = resolveReferences(words[3], references);
-                task.Description = resolveReferences(words[4], references);
+                task.Subcategory = resolveReferences(words[4], references);
+
+                if (filter != null) {
+                    if (!Objects.equals(task.GetPart(filter.first), filter.second))
+                        return false;
+                }
 
                 conjugateTask.Verb = resolveReferences(words[5], references);
                 conjugateTask.Meaning = resolveReferences(words[6], references);
@@ -322,7 +333,12 @@ public class LanguageDataParser {
 
                 task.Type = TaskType.ChooseTask;
                 task.Category = resolveReferences(words[3], references);
-                task.Description = resolveReferences(words[4], references);
+                task.Subcategory = resolveReferences(words[4], references);
+
+                if (filter != null) {
+                    if (!Objects.equals(task.GetPart(filter.first), filter.second))
+                        return false;
+                }
 
                 chooseTask.Description = resolveReferences(words[5], references);
                 chooseTask.Word = resolveReferences(words[6], references);
@@ -343,7 +359,7 @@ public class LanguageDataParser {
 
                 task.Type = TaskType.TranslateTask;
                 task.Category = null;
-                task.Description = null;
+                task.Subcategory = null;
 
                 translateTask.Text = resolveReferences(words[3], references);
 
@@ -457,6 +473,7 @@ public class LanguageDataParser {
 
     private void parseIncludeInTrainingFile(int includes, String base, String includeFile,
                                             String trainingId, Map<String, Task> tasks,
+                                            Pair<String, String> filter,
                                             Map<String, String> references,
                                             List<LanguageGenerator.Description> generators) throws
             Exception {
@@ -496,8 +513,8 @@ public class LanguageDataParser {
                 case "task":
                     Task task = new Task();
 
-                    if (!parseTask(task, line, words, references, generators, "i" + includes))
-                        continue;
+                    if (!parseTask(task, line, words, references, generators, "i" + includes,
+                            filter)) continue;
 
                     if (tasks.containsKey(task.Id)) {
                         logError("Task " + task.Id + " already exists!");
@@ -561,6 +578,19 @@ public class LanguageDataParser {
                 case "gen":
                     if (!parseGeneratorDecl(words, references, generators)) continue;
                     break;
+                case "section":
+                    if (words.length != 2) {
+                        logError("Expected format: section <name>");
+                        continue;
+                    }
+
+                    if (!t.Section.isEmpty()) {
+                        logError("Lesson's section is already set");
+                        continue;
+                    }
+
+                    t.Section = resolveReferences(words[1], references);
+                    break;
                 case "name":
                     if (words.length != 2) {
                         logError("Expected format: name <name>");
@@ -600,7 +630,7 @@ public class LanguageDataParser {
                 case "task":
                     Task task = new Task();
 
-                    if (!parseTask(task, line, words, references, generators, "")) continue;
+                    if (!parseTask(task, line, words, references, generators, "", null)) continue;
 
                     if (tasks.containsKey(task.Id)) {
                         logError("Task " + task.Id + " already exists!");
@@ -629,16 +659,33 @@ public class LanguageDataParser {
                     _data.TrainingCategories.add(trainingCategory);
                     break;
                 case "include":
-                    if (words.length != 2) {
-                        logError("Expecting format: include <filename>");
+                    if (words.length == 2) {
+                        includes += 1;
+                        _filenames.add(words[1]);
+                        parseIncludeInTrainingFile(includes, base, words[1], t.Id, tasks, null,
+                                references, generators);
+                        _filenames.remove(_filenames.size() - 1);
+                    } else if (words.length == 4) {
+
+                        String part = words[1];
+                        String value = resolveReferences(words[2], references);
+
+                        includes += 1;
+                        _filenames.add(words[3]);
+                        parseIncludeInTrainingFile(includes, base, words[3], t.Id, tasks,
+                                new Pair<>(part, value), references, generators);
+                        _filenames.remove(_filenames.size() - 1);
+                    } else {
+                        logError("Expecting format: include [ <part> <value> ]? <filename>");
                         continue;
                     }
 
-                    includes += 1;
-                    _filenames.add(words[1]);
-                    parseIncludeInTrainingFile(includes, base, words[1], t.Id, tasks, references,
-                            generators);
-                    _filenames.remove(_filenames.size() - 1);
+
+                    if (words.length != 2) {
+
+                    }
+
+
                     break;
                 default:
                     logError("Unrecognized keyword in " + t.Id + ": " + keyword);
@@ -649,12 +696,11 @@ public class LanguageDataParser {
         for (TrainingCategory trainingCategory : _data.TrainingCategories) {
             boolean found = false;
 
-            if (!Objects.equals(trainingCategory.TrainingId, t.Id))
-                break;
+            if (!Objects.equals(trainingCategory.TrainingId, t.Id)) break;
 
             for (Task task : tasks.values()) {
                 if (Objects.equals(task.Category, trainingCategory.Category) &&
-                        Objects.equals(task.Description, trainingCategory.Description) &&
+                        Objects.equals(task.Subcategory, trainingCategory.Description) &&
                         task.Type == trainingCategory.Task) {
                     found = true;
                     break;
@@ -753,7 +799,7 @@ public class LanguageDataParser {
                 case "task":
                     Task task = new Task();
 
-                    if (!parseTask(task, line, words, references, generators, "")) continue;
+                    if (!parseTask(task, line, words, references, generators, "", null)) continue;
 
                     if (tasks.containsKey(task.Id)) {
                         logError("Task " + task.Id + " already exists!");
@@ -851,7 +897,7 @@ public class LanguageDataParser {
                 case "task":
                     Task task = new Task();
 
-                    if (!parseTask(task, line, words, references, generators, "")) continue;
+                    if (!parseTask(task, line, words, references, generators, "", null)) continue;
 
                     if (lessonTasks.containsKey(task.Id)) {
                         logError("Task " + task.Id + " already exists!");
@@ -923,8 +969,8 @@ public class LanguageDataParser {
         return ret;
     }
 
-    private void parseIncludeInLanguageFile(String base, LineNumberReader r,
-                                            int recursion) throws Exception {
+    private void parseIncludeInLanguageFile(String base, LineNumberReader r, int recursion) throws
+            Exception {
         String line;
 
         while ((line = r.readLine()) != null) {
