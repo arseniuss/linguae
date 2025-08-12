@@ -20,8 +20,8 @@ import lv.id.arseniuss.linguae.app.Constants;
 import lv.id.arseniuss.linguae.app.db.entities.TaskError;
 import lv.id.arseniuss.linguae.app.tasks.AbstractTaskViewModel;
 import lv.id.arseniuss.linguae.app.tasks.entities.SessionTaskData;
-import lv.id.arseniuss.linguae.tasks.TranslateTask;
 import lv.id.arseniuss.linguae.enumerators.TaskType;
+import lv.id.arseniuss.linguae.tasks.TranslateTask;
 
 public class TranslateViewModel extends AbstractTaskViewModel {
     private final MutableLiveData<List<WordViewModel>> _respoonses =
@@ -77,7 +77,9 @@ public class TranslateViewModel extends AbstractTaskViewModel {
 
                 if (i < answers.size()) {
                     for (String answer : answers.get(i)) {
-                        if (response != null && Objects.equals(response, answer)) {
+
+
+                        if (response != null && response.equalsIgnoreCase(answer)) {
                             hasError = false;
                             points++;
                             break;
@@ -249,7 +251,7 @@ public class TranslateViewModel extends AbstractTaskViewModel {
         public String Option;
 
         public WordViewModel(String option) {
-            Option = option;
+            Option = option.trim().toLowerCase();
         }
 
         public WordViewModel() {
