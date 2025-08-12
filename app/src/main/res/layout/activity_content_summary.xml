@@ -61,7 +61,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/margin_2"
-                    android:text="@string/TitleSentences" />
+                    android:text="@{String.format(@string/TitleSentences, viewmodel.Sentences().size())}" />
 
                 <lv.id.arseniuss.linguae.app.ui.AdapterFlexboxLayout
                     items="@{viewmodel.Sentences()}"

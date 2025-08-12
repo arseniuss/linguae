@@ -65,7 +65,7 @@
     <string name="ok">OK</string>
     <string name="save">Save</string>
     <string name="TitleVocabulary">Vocabulary (%d)</string>
-    <string name="TitleSentences">Sentences</string>
+    <string name="TitleSentences">Sentences (%d)</string>
     <string name="DescriptionAppLogo">Logo</string>
     <string name="TextEnglishLanguage" translatable="false">English</string>
     <string name="TextLatvianLanguage" translatable="false">latviešu</string>
