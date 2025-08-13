@@ -28,6 +28,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import lv.id.arseniuss.linguae.Utilities;
+import lv.id.arseniuss.linguae.Version;
 import lv.id.arseniuss.linguae.entities.Chapter;
 import lv.id.arseniuss.linguae.entities.Language;
 import lv.id.arseniuss.linguae.entities.Lesson;
@@ -125,15 +126,13 @@ public class LanguageDataParser {
         Predicate<LanguageGenerator.Description> predicate = d -> {
             Matcher matcher = d.Pattern.matcher(baseWord);
 
-            if (!matcher.find())
-                return false;
+            if (!matcher.find()) return false;
 
             return (task.Type == TaskType.UnknownTask || task.Type == d.TaskType) &&
                     (task.Category == null || task.Category.isEmpty() || d.Category.isEmpty() ||
                             task.Category.equals(d.Category)) &&
                     (task.Subcategory == null || task.Subcategory.isEmpty() ||
-                            d.Description.isEmpty() ||
-                            task.Subcategory.equals(d.Description));
+                            d.Description.isEmpty() || task.Subcategory.equals(d.Description));
         };
 
         List<LanguageGenerator.Description> descriptions =
@@ -1052,6 +1051,22 @@ public class LanguageDataParser {
             if (keyword.equals("skip")) continue;
 
             switch (keyword) {
+                case "parser":
+                    if (words.length != 2) {
+                        logError("Expected format: parser <comparison>");
+                        continue;
+                    }
+
+                    try {
+                        if (!VersionComparison.Compare(Version.VERSION, words[1])) {
+                            logError("Content expects parser " + words[1]);
+                            continue;
+                        }
+                    } catch (Exception e) {
+                        logError(e.getMessage());
+                        continue;
+                    }
+                    break;
                 case "include":
                     if (words.length != 2) {
                         logError("Expecting format: include <filename>");
