@@ -22,8 +22,8 @@ import lv.id.arseniuss.linguae.app.db.entities.TaskError;
 import lv.id.arseniuss.linguae.app.tasks.AbstractTaskAnswerViewModel;
 import lv.id.arseniuss.linguae.app.tasks.AbstractTaskViewModel;
 import lv.id.arseniuss.linguae.app.tasks.entities.SessionTaskData;
-import lv.id.arseniuss.linguae.tasks.ConjugateTask;
 import lv.id.arseniuss.linguae.enumerators.TaskType;
+import lv.id.arseniuss.linguae.tasks.ConjugateTask;
 
 public class ConjugateViewModel extends AbstractTaskViewModel {
 

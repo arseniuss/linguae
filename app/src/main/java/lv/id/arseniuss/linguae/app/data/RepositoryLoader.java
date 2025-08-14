@@ -8,13 +8,10 @@ import android.util.Pair;
 
 import androidx.preference.PreferenceManager;
 
-import com.google.gson.Gson;
-
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.core.Observable;

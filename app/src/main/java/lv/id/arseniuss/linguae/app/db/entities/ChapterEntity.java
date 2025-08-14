@@ -7,7 +7,8 @@ import androidx.room.PrimaryKey;
 
 import lv.id.arseniuss.linguae.entities.Chapter;
 
-@Entity(tableName = "chapter") public class ChapterEntity {
+@Entity(tableName = "chapter")
+public class ChapterEntity {
     @PrimaryKey
     @ColumnInfo(name = "id")
     @NonNull

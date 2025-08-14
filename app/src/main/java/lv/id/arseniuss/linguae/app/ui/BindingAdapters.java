@@ -97,7 +97,7 @@ public class BindingAdapters {
 
     @BindingAdapter("items")
     public static <T extends TabViewModel> void SetTabLayoutItems(TabLayout tabLayout,
-                                                                    List<T> entries) {
+                                                                  List<T> entries) {
         if (entries == null) return;
 
         tabLayout.removeAllTabs();

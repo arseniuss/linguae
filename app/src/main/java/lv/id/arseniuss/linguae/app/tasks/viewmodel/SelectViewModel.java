@@ -16,8 +16,8 @@ import lv.id.arseniuss.linguae.app.tasks.AbstractTaskAnswerViewModel;
 import lv.id.arseniuss.linguae.app.tasks.AbstractTaskFragment;
 import lv.id.arseniuss.linguae.app.tasks.AbstractTaskViewModel;
 import lv.id.arseniuss.linguae.app.tasks.entities.SessionTaskData;
-import lv.id.arseniuss.linguae.tasks.SelectTask;
 import lv.id.arseniuss.linguae.enumerators.TaskType;
+import lv.id.arseniuss.linguae.tasks.SelectTask;
 
 public class SelectViewModel extends AbstractTaskViewModel {
 
@@ -132,6 +132,7 @@ public class SelectViewModel extends AbstractTaskViewModel {
         public String Word;
         public String Answer;
         public List<String> Options;
+
         public WordViewModel(String word, String answer, List<String> options) {
             Word = word;
             Answer = answer;

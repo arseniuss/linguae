@@ -38,7 +38,7 @@ public class IntValueEnumTypeAdapterFactory implements TypeAdapterFactory {
                 }
 
                 int value = in.nextInt();
-                return IntValueSerializable.FromValue((Class<T>)rawType, value);
+                return IntValueSerializable.FromValue((Class<T>) rawType, value);
             }
         };
     }

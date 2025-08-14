@@ -11,7 +11,8 @@ import java.util.List;
 
 import lv.id.arseniuss.linguae.enumerators.TaskType;
 
-@Entity(tableName = "task_result") public class TaskResultEntity {
+@Entity(tableName = "task_result")
+public class TaskResultEntity {
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "id")
     public long Id;

@@ -7,7 +7,8 @@ import androidx.room.PrimaryKey;
 
 import lv.id.arseniuss.linguae.entities.License;
 
-@Entity(tableName = "license") public class LicenseEntity {
+@Entity(tableName = "license")
+public class LicenseEntity {
     @PrimaryKey
     @ColumnInfo(name = "id")
     @NonNull

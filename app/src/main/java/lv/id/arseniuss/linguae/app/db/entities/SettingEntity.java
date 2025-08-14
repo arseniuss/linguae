@@ -7,7 +7,8 @@ import androidx.room.PrimaryKey;
 
 import lv.id.arseniuss.linguae.entities.Setting;
 
-@Entity(tableName = "setting") public class SettingEntity {
+@Entity(tableName = "setting")
+public class SettingEntity {
     @PrimaryKey
     @NonNull
     @ColumnInfo(name = "key")

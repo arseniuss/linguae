@@ -64,7 +64,8 @@ public class RepositoryLoadViewModel extends AndroidViewModel
         _requestUpdateConfirm = requestUpdateConfirm;
         _restart = restart;
 
-        final String languageCode  = _sharedPreferences.getString(Constants.PreferenceLanguageCodeKey, "");
+        final String languageCode =
+                _sharedPreferences.getString(Constants.PreferenceLanguageCodeKey, "");
         _languageUrl = _sharedPreferences.getString(Constants.PreferenceLanguageUrlKey, "");
 
         UpdateDataAccess updateDataAccess =
@@ -131,7 +132,8 @@ public class RepositoryLoadViewModel extends AndroidViewModel
     }
 
     private void updateDatabase(boolean parseSuccessful) {
-        final String languageCode  = _sharedPreferences.getString(Constants.PreferenceLanguageCodeKey, "");
+        final String languageCode =
+                _sharedPreferences.getString(Constants.PreferenceLanguageCodeKey, "");
 
         UpdateDataAccess updateDataAccess =
                 LanguageDatabase.GetInstance(getApplication().getBaseContext(), languageCode)

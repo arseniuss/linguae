@@ -70,7 +70,8 @@ public class SessionActivity extends AppCompatActivity
 
             if (i.hasExtra(TrainingCategoriesExtraTag)) {
                 categories =
-                        Utilities.GetGson().fromJson(i.getStringExtra(TrainingCategoriesExtraTag), listType);
+                        Utilities.GetGson()
+                                .fromJson(i.getStringExtra(TrainingCategoriesExtraTag), listType);
             }
 
             _model.LoadTraining(i.getStringExtra(TrainingExtraTag), categories, this::loaded);

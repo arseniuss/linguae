@@ -7,7 +7,6 @@ import androidx.annotation.NonNull;
 import androidx.databinding.BaseObservable;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.Observer;
 import androidx.preference.PreferenceManager;
 
 import java.util.ArrayList;
