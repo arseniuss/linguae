@@ -21,6 +21,7 @@ import lv.id.arseniuss.linguae.app.db.dataaccess.TrainingDataAccess;
 import lv.id.arseniuss.linguae.app.db.dataaccess.UpdateDataAccess;
 import lv.id.arseniuss.linguae.app.db.entities.BugReportEntity;
 import lv.id.arseniuss.linguae.app.db.entities.ChapterEntity;
+import lv.id.arseniuss.linguae.app.db.entities.CheckpointEntity;
 import lv.id.arseniuss.linguae.app.db.entities.ConfigEntity;
 import lv.id.arseniuss.linguae.app.db.entities.LessonChapterCrossref;
 import lv.id.arseniuss.linguae.app.db.entities.LessonEntity;
@@ -43,7 +44,7 @@ import lv.id.arseniuss.linguae.app.db.entities.TrainingTaskCrossref;
                 SessionResultEntity.class, TaskResultEntity.class, ChapterEntity.class,
                 TheoryEntity.class, TheoryChapterCrossref.class, LessonTheoryCrossref.class,
                 ConfigEntity.class, TrainingCategoryEntity.class, LicenseEntity.class,
-                LessonChapterCrossref.class, BugReportEntity.class})
+                LessonChapterCrossref.class, BugReportEntity.class, CheckpointEntity.class})
 @TypeConverters({DatabaseConverters.class})
 public abstract class LanguageDatabase extends RoomDatabase {
     private static LanguageDatabase _instance;
