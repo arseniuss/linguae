@@ -50,12 +50,14 @@ in language lessons but also in the app.
 - no ads, ever;
 - content is open - teachers or students can create their own repositories for languages they're
 teaching and assist in learning process;
+- content can be loaded from either directory on a device or the Internet;
 - locally stored content - you can use the app anywhere;
 - highly configurable preferences like
     - task count per session;
     - usage of on-screen keyboard;
     - option count in choose tasks;
 - statistics of your achievements.
+- meaning of the word is taken from Wiktionary;
 
 Features relative to content:
 
