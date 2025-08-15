@@ -8,6 +8,7 @@ public class Theory {
     public int Index;
     public String Title = "";
     public String Description = "";
+    public String Section = "";
 
     public List<Chapter> Chapters = new ArrayList<>();
 }

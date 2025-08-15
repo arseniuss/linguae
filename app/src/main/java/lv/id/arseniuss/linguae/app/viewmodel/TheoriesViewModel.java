@@ -14,7 +14,9 @@ import androidx.preference.PreferenceManager;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
@@ -23,6 +25,7 @@ import io.reactivex.rxjava3.schedulers.Schedulers;
 import lv.id.arseniuss.linguae.app.Constants;
 import lv.id.arseniuss.linguae.app.db.LanguageDatabase;
 import lv.id.arseniuss.linguae.app.db.dataaccess.TheoryDataAccess;
+import lv.id.arseniuss.linguae.app.ui.BindingAdapters;
 
 public class TheoriesViewModel extends AndroidViewModel {
     private final SharedPreferences _sharedPreferences =
@@ -32,18 +35,21 @@ public class TheoriesViewModel extends AndroidViewModel {
     private final TheoryDataAccess _theoryDataAccess =
             LanguageDatabase.GetInstance(getApplication(), _language).GetTheoryDataAccess();
 
-    private final MutableLiveData<List<EntryViewModel>> _theories =
-            new MutableLiveData<List<EntryViewModel>>(new ArrayList<>());
+    private final MutableLiveData<List<SectionViewModel>> _sections =
+            new MutableLiveData<>(new ArrayList<>());
     private final MutableLiveData<Boolean> _hasError = new MutableLiveData<>(false);
     private final MutableLiveData<String> _error = new MutableLiveData<>("");
+    private final MutableLiveData<List<EntryViewModel>> _theories;
 
     public TheoriesViewModel(@NonNull Application application) {
         super(application);
 
+        _theories = new MutableLiveData<>(new ArrayList<>());
+
         loadData();
     }
 
-    public LiveData<List<EntryViewModel>> Data() {
+    public LiveData<List<EntryViewModel>> Theories() {
         return _theories;
     }
 
@@ -55,16 +61,15 @@ public class TheoriesViewModel extends AndroidViewModel {
         return _error;
     }
 
+    public LiveData<List<SectionViewModel>> Sections() {
+        return _sections;
+    }
+
     void loadData() {
         Disposable d = _theoryDataAccess.GetTheories()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(theoryWithCounts -> {
-                    _theories.setValue(theoryWithCounts.stream()
-                            .sorted(Comparator.comparingInt(t -> t.Theory.Index))
-                            .map(EntryViewModel::new)
-                            .collect(Collectors.toList()));
-                }, this::handleError);
+                .subscribe(this::acceptTheory, this::handleError);
     }
 
     private void handleError(Throwable throwable) {
@@ -79,6 +84,58 @@ public class TheoriesViewModel extends AndroidViewModel {
         res = viewModel._theory;
 
         return res;
+    }
+
+    private void acceptTheory(List<TheoryDataAccess.TheoryWithCount> theoryWithCounts) {
+        Map<String, List<TheoryDataAccess.TheoryWithCount>> sections =
+                theoryWithCounts.stream().collect(Collectors.groupingBy(t -> t.Theory.Section));
+
+        _sections.setValue(sections.entrySet()
+                .stream()
+                .map(s -> new SectionViewModel(s.getKey(), s.getValue()
+                        .stream()
+                        .map(EntryViewModel::new)
+                        .collect(Collectors.toList())))
+                .sorted(Comparator.comparing(SectionViewModel::Index))
+                .collect(Collectors.toList()));
+    }
+
+    public void SetSelectedSection(String tabName) {
+        Optional<SectionViewModel> section = Objects.requireNonNull(_sections.getValue())
+                .stream().filter(s -> Objects.equals(s.TabName(), tabName)).findAny();
+
+        section.ifPresent(sectionViewModel -> _theories.setValue(
+                sectionViewModel.Theories()));
+    }
+
+    public static class SectionViewModel extends BaseObservable
+            implements BindingAdapters.TabViewModel {
+        private final String _name;
+        private final List<EntryViewModel> _theories;
+
+        private int _index;
+
+        public SectionViewModel(String name, List<EntryViewModel> theories) {
+            _name = name;
+            _theories = theories;
+
+            theories.stream()
+                    .min(Comparator.comparing(t -> t._theory.Theory.Index))
+                    .ifPresent(t -> _index = t._theory.Theory.Index);
+        }
+
+        @Override
+        public String TabName() {
+            return _name;
+        }
+
+        public int Index() {
+            return _index;
+        }
+
+        public List<EntryViewModel> Theories() {
+            return _theories;
+        }
     }
 
     public static class EntryViewModel extends BaseObservable {

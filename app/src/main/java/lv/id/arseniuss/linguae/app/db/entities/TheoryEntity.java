@@ -17,6 +17,9 @@ public class TheoryEntity {
     @ColumnInfo(name = "index")
     public int Index;
 
+    @ColumnInfo(name = "section")
+    public String Section = "";
+
     @ColumnInfo(name = "title")
     public String Title = "";
 
@@ -32,5 +35,6 @@ public class TheoryEntity {
         Index = t.Index;
         Title = t.Title;
         Description = t.Description;
+        Section = t.Section;
     }
 }

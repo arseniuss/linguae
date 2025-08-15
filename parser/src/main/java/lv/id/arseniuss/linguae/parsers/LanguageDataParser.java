@@ -1420,6 +1420,19 @@ public class LanguageDataParser {
 
                     theory.Title = resolveReferences(words[1], references);
                     break;
+                case "section":
+                    if (words.length != 2) {
+                        logError("Expected format: section <name>");
+                        continue;
+                    }
+
+                    if (!theory.Section.isEmpty()) {
+                        logError("Lesson's section is already set");
+                        continue;
+                    }
+
+                    theory.Section = resolveReferences(words[1], references);
+                    break;
                 case "chapter":
                     if (words.length != 3) {
                         logError("Expected format: chapter <id> <text>");
