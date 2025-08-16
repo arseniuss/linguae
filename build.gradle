@@ -6,5 +6,5 @@ plugins {
 }
 
 ext {
-    versionName = project.hasProperty('gitTag') ? project.gitTag : "v0.0.1"
+    versionName = project.hasProperty('gitTag') ? project.gitTag : "v0.0.2"
 }
