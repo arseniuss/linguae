@@ -32,31 +32,17 @@ jobs:
       - name: Build Release APK
         env:
           GIT_TAG: ${{ github.ref_name }}
-        run: ./gradlew assembleRelease -PgitTag=${{ github.ref_name }}
-
-      - name: Sign APK
-        env:
-          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
-          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
-          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
         run: |
-          jarsigner -verbose -sigalg SHA256withRSA -digestalg SHA-256 \
-            -keystore app/keystore.jks \
-            -storepass "$KEYSTORE_PASSWORD" \
-            -keypass "$KEY_PASSWORD" \
-            app/build/outputs/apk/release/linguae-app-${{ github.ref_name }}-release.apk "$KEY_ALIAS"
-
-      - name: Align APK
-        run: |
-          ${ANDROID_SDK_ROOT}/build-tools/34.0.0/zipalign -v 4 \
-            app/build/outputs/apk/release/linguae-app-${{ github.ref_name }}-release.apk \
-            app/build/outputs/apk/release/linguae-app-${{ github.ref_name }}.apk
+          ./gradlew assembleRelease -PgitTag=${{ github.ref_name }} \
+            -PKEYSTORE_PASSWORD=${{ secrets.KEYSTORE_PASSWORD }} \
+            -PKEY_ALIAS=${{ secrets.KEY_ALIAS }} \
+            -PKEY_PASSWORD=${{ secrets.KEY_PASSWORD }}
 
       - name: Upload Release APK as Artifact
         uses: actions/upload-artifact@v4
         with:
           name: release-apk
-          path: app/build/outputs/apk/release/linguae-app-${{ github.ref_name }}.apk
+          path: app/build/outputs/apk/release/linguae-app-${{ github.ref_name }}-release.apk
 
   parser:
     name: Build content repository parser
@@ -142,7 +128,7 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           files: |
-            ./downloads/linguae-app-${{ github.ref_name }}.apk
+            ./downloads/linguae-app-${{ github.ref_name }}-release.apk
             ./downloads/linguae-parser-${{ github.ref_name }}-release.jar
           token: ${{ secrets.GITHUB_TOKEN }}
           tag_name: ${{ github.ref_name }}

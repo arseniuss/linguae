@@ -17,19 +17,28 @@ android {
         }
     }
 
+    signingConfigs {
+        release {
+            storeFile file("../app/keystore.jks")
+            storePassword project.findProperty("KEYSTORE_PASSWORD") ?: ""
+            keyAlias project.findProperty("KEY_ALIAS") ?: ""
+            keyPassword project.findProperty("KEY_PASSWORD") ?: ""
+        }
+    }
+
     buildTypes {
         debug {
             manifestPlaceholders = [networkSecurityConfig: "@xml/security_config_debug"]
             applicationIdSuffix '.debug'
             resValue("string", "DefaultLanguageRepositories",
-                    "https://raw.githubusercontent.com/arseniuss/linguae-data/refs/heads/master/," +
-                            "http://10.0.2.2:8000/," + "http://192.168.102.77:8000/," + "http://example.com")
+                    "https://raw.githubusercontent.com/arseniuss/linguae-data/refs/heads/master/," + "http://10.0.2.2:8000/," + "http://192.168.102.77:8000/," + "http://example.com")
         }
         release {
             manifestPlaceholders = [networkSecurityConfig: "@xml/security_config_release"]
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             resValue("string", "DefaultLanguageRepositories", "https://raw.githubusercontent.com/arseniuss/linguae-data/refs/heads/master/")
+            signingConfig signingConfigs.release
         }
     }
 
