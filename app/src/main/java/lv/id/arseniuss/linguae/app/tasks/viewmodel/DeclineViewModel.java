@@ -8,8 +8,9 @@ import android.text.Spanned;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
 
-import java.security.SecureRandom;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -62,9 +63,9 @@ public class DeclineViewModel extends AbstractTaskViewModel {
 
             if (valid) points += 1;
             else {
-                _taskResult.Result.Errors.add(new TaskError(TaskType.DeclineTask,
-                        caseViewModel.CaseName().getValue(), caseViewModel.Answer().getValue(),
-                        caseViewModel._correct));
+                _taskResult.Result.Errors.add(
+                        new TaskError(TaskType.DeclineTask, caseViewModel.CaseName().getValue(),
+                                caseViewModel.Answer().getValue(), caseViewModel._correct));
             }
             amount += 1;
 
@@ -83,23 +84,13 @@ public class DeclineViewModel extends AbstractTaskViewModel {
 
         assert declineTask().Cases.length == declineTask().Answers.length;
 
-        List<String> randomAnswers = new SecureRandom()
-                .ints(0, declineTask().Answers.length)
-                .distinct()
-                .limit(declineTask().Answers.length)
-                .mapToObj(i -> declineTask().Answers[i])
-                .collect(Collectors.toList());
+        String[] answers =
+                Arrays.stream(declineTask().Answers).map(this::StripAccents).toArray(String[]::new);
 
-        List<CaseViewModel> viewModels =
-                IntStream.range(0, declineTask().Cases.length)
-                        .mapToObj(idx ->
-                                new CaseViewModel(
-                                        StripAccents(declineTask().Cases[idx]),
-                                        randomAnswers,
-                                        StripAccents(declineTask().Answers[idx]),
-                                        _noKeyboard
-                                ))
-                        .collect(Collectors.toList());
+        List<CaseViewModel> viewModels = IntStream.range(0, declineTask().Cases.length)
+                .mapToObj(idx -> new CaseViewModel(StripAccents(declineTask().Cases[idx]), answers,
+                        StripAccents(declineTask().Answers[idx]), _noKeyboard))
+                .collect(Collectors.toList());
 
         _cases.setValue(viewModels);
     }
@@ -113,8 +104,13 @@ public class DeclineViewModel extends AbstractTaskViewModel {
         private final MutableLiveData<List<String>> _options =
                 new MutableLiveData<>(new ArrayList<>());
 
-        public CaseViewModel(String caseName, List<String> options, String correct,
+        public CaseViewModel(String caseName, String[] answers, String correct,
                              Boolean noKeyboard) {
+            List<String> options = new ArrayList<>(Arrays.asList(answers));
+
+            Collections.shuffle(options);
+            options.add(0, "");
+
             _caseName.setValue(caseName);
             _options.setValue(options);
             _correct = correct;
@@ -146,9 +142,8 @@ public class DeclineViewModel extends AbstractTaskViewModel {
             boolean result = answer.equals(correct);
 
             if (!result) {
-                _result.setValue(
-                        Html.fromHtml("<strike>" + answer + "</strike>        " + correct,
-                                Html.FROM_HTML_MODE_LEGACY));
+                _result.setValue(Html.fromHtml("<strike>" + answer + "</strike>        " + correct,
+                        Html.FROM_HTML_MODE_LEGACY));
             } else {
                 _result.setValue(Html.fromHtml(correct, Html.FROM_HTML_MODE_LEGACY));
             }

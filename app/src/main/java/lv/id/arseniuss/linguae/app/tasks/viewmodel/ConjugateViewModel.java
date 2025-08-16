@@ -9,10 +9,10 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-import java.util.Random;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -50,9 +50,9 @@ public class ConjugateViewModel extends AbstractTaskViewModel {
 
                 if (valid) points += 1;
                 else {
-                    _taskResult.Result.Errors.add(new TaskError(TaskType.ConjugateTask,
-                            viewModel.PersonName().getValue(), viewModel.Answer().getValue(),
-                            viewModel._correct));
+                    _taskResult.Result.Errors.add(
+                            new TaskError(TaskType.ConjugateTask, viewModel.PersonName().getValue(),
+                                    viewModel.Answer().getValue(), viewModel._correct));
                 }
 
                 allValid &= valid;
@@ -92,22 +92,14 @@ public class ConjugateViewModel extends AbstractTaskViewModel {
 
         assert conjugateTask().Persons.length == conjugateTask().Answers.length;
 
-        List<String> randomAnswers = new Random()
-                .ints(0, conjugateTask().Answers.length)
-                .distinct()
-                .limit(conjugateTask().Answers.length)
-                .mapToObj(i -> conjugateTask().Answers[i])
-                .collect(Collectors.toList());
+        String[] answers = Arrays.stream(conjugateTask().Answers)
+                .map(this::StripAccents)
+                .toArray(String[]::new);
 
-        List<PersonViewModel> viewModels =
-                IntStream.range(0, conjugateTask().Persons.length)
-                        .mapToObj(idx ->
-                                new PersonViewModel(
-                                        StripAccents(conjugateTask().Persons[idx]),
-                                        randomAnswers,
-                                        StripAccents(conjugateTask().Answers[idx]),
-                                        _noKeyboard))
-                        .collect(Collectors.toList());
+        List<PersonViewModel> viewModels = IntStream.range(0, conjugateTask().Persons.length)
+                .mapToObj(idx -> new PersonViewModel(StripAccents(conjugateTask().Persons[idx]),
+                        answers, StripAccents(conjugateTask().Answers[idx]), _noKeyboard))
+                .collect(Collectors.toList());
 
         _persons.setValue(viewModels);
 
@@ -124,14 +116,15 @@ public class ConjugateViewModel extends AbstractTaskViewModel {
         private final MutableLiveData<Spanned> _result =
                 new MutableLiveData<>(new SpannableString(""));
 
-        public PersonViewModel(String person, List<String> options, String correct,
+        public PersonViewModel(String person, String[] answers, String correct,
                                Boolean noKeyboard) {
-            List<String> o = new ArrayList<>(options);
+            List<String> options = new ArrayList<>(Arrays.asList(answers));
 
-            Collections.shuffle(o);
+            Collections.shuffle(options);
+            options.add(0, "");
 
             _personName.setValue(person);
-            _options.setValue(o);
+            _options.setValue(options);
             _correct = correct;
             if (noKeyboard) _state.setValue(TaskState.STATE_CHOOSE.ordinal());
             else _state.setValue(TaskState.STATE_EDIT.ordinal());
@@ -178,9 +171,8 @@ public class ConjugateViewModel extends AbstractTaskViewModel {
             }
 
             if (!result) {
-                _result.setValue(
-                        Html.fromHtml("<strike>" + answer + "</strike>\t" + correct,
-                                Html.FROM_HTML_MODE_LEGACY));
+                _result.setValue(Html.fromHtml("<strike>" + answer + "</strike>\t" + correct,
+                        Html.FROM_HTML_MODE_LEGACY));
             } else {
                 if (hasMultipleAnswers) {
                     List<String> results = new ArrayList<>();
@@ -194,9 +186,9 @@ public class ConjugateViewModel extends AbstractTaskViewModel {
                         }
                     }
 
-                    _result.setValue(Html.fromHtml(results.stream()
-                                    .collect(Collectors.joining("/")),
-                            Html.FROM_HTML_MODE_LEGACY));
+                    _result.setValue(
+                            Html.fromHtml(results.stream().collect(Collectors.joining("/")),
+                                    Html.FROM_HTML_MODE_LEGACY));
                 } else {
                     _result.setValue(Html.fromHtml(correct, Html.FROM_HTML_MODE_LEGACY));
                 }
