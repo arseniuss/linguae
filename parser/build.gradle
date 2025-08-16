@@ -5,8 +5,8 @@ plugins {
 }
 
 android {
-    namespace 'lv.id.arseniuss.linguae'
-    compileSdk 34
+    namespace = 'lv.id.arseniuss.linguae'
+    compileSdk 36
 
     defaultConfig {
         minSdk 24
@@ -17,31 +17,15 @@ android {
             minifyEnabled false
         }
     }
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_11
         targetCompatibility JavaVersion.VERSION_11
     }
-
-    libraryVariants.all { variant ->
-        variant.javaCompileProvider.get().dependsOn(generateVersionClass)
-    }
 }
 
-dependencies {
-    implementation 'com.google.code.gson:gson:2.11.0'
-}
-
-configurations {
-    jarDependencies {
-        canBeResolved = true
-        canBeConsumed = false
-        extendsFrom implementation
-    }
-}
-
-def versionName = rootProject.ext.versionName
-
-task generateVersionClass {
+// Generate Version.java
+def generateVersionClass = tasks.register('generateVersionClass') {
     def outputDir = file("$buildDir/generated/source/version/main")
     def packagePath = "lv/id/arseniuss/linguae"
 
@@ -60,11 +44,19 @@ public class Version {
     }
 }
 
+// Let Android know this generated source belongs to "main" and must be built first
+android.libraryVariants.configureEach { variant ->
+    variant.registerJavaGeneratingTask(generateVersionClass.get(), file("$buildDir/generated/source/version/main"))
+}
+
+// Ensure annotation extraction waits for version class generation
 tasks.withType(ExtractAnnotations).configureEach {
     dependsOn(generateVersionClass)
 }
 
-android.sourceSets.main.java.srcDirs += "$buildDir/generated/source/version/main"
+dependencies {
+    implementation 'com.google.code.gson:gson:2.13.1'
+}
 
 configurations {
     jarDependencies {
@@ -74,27 +66,31 @@ configurations {
     }
 }
 
-task createRunnableJar(type: Jar, dependsOn: [build, generateVersionClass]) {
-    archiveBaseName.set("linguae-parser-${rootProject.ext.versionName}")
+android.libraryVariants.configureEach { variant ->
+    def variantName = variant.name.capitalize()
+    def compileTask = variant.javaCompileProvider.get()
 
-    from fileTree(dir: "$buildDir/intermediates/javac/", includes: ["**/*.class"])
+    tasks.register("create${variantName}RunnableJar", Jar) {
+        dependsOn(compileTask, generateVersionClass)
+        archiveBaseName.set("linguae-parser-${rootProject.ext.versionName}-${variant.name}")
 
-    from android.sourceSets.main.java.srcDirs
+        // Pull classes from the compile task output dynamically
+        from compileTask.destinationDirectory
 
-    from {
-        configurations.jarDependencies.collect {
-            it.isDirectory() ? it : zipTree(it)
+        // Include generated sources if needed
+        from("$buildDir/generated/source/version/main")
+
+        manifest {
+            attributes(
+                    'Main-Class': 'lv.id.arseniuss.linguae.Main',
+                    'Implementation-Version': rootProject.ext.versionName
+            )
         }
     }
+}
 
-    exclude '**/R.class'
-    exclude '**/R$*.class'
-    exclude '**/BuildConfig.class'
-
-    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-
-    manifest {
-        attributes 'Main-Class': 'lv.id.arseniuss.linguae.Main',
-                'Implementation-Version': rootProject.ext.versionName
-    }
+tasks.register('createRunnableJar') {
+    group = 'build'
+    description = 'Builds both debug and release runnable JARs'
+    dependsOn('createDebugRunnableJar', 'createReleaseRunnableJar')
 }

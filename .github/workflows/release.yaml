@@ -82,17 +82,20 @@ jobs:
           ./gradlew createRunnableJar -PgitTag=${{ github.ref_name }}
 
       - name: Test parser
-        run: java -jar parser/build/libs/linguae-parser-${{ github.ref_name }}.jar -h
-      
+        run: java -jar parser/build/libs/linguae-parser${{ github.ref_name }}-debug.jar -h
+
+      - name: Test parser
+        run: java -jar parser/build/libs/linguae-parser${{ github.ref_name }}-release.jar -h
+
       - name: Upload Java executable
         uses: actions/upload-artifact@v4
         with:
           name: release-jar
-          path: parser/build/libs/linguae-parser-${{ github.ref_name }}.jar
+          path: parser/build/libs/linguae-parser-${{ github.ref_name }}-release.jar
 
   release:
     name: Create GitHub Release
-    needs: [build, parser]
+    needs: [ build, parser ]
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -128,7 +131,7 @@ jobs:
         with:
           name: release-apk
           path: ./downloads/
-      
+
       - name: Download Built Jar
         uses: actions/download-artifact@v4
         with:
