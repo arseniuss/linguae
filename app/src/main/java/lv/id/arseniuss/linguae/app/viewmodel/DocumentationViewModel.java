@@ -16,11 +16,12 @@ import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.disposables.Disposable;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 import lv.id.arseniuss.linguae.app.Constants;
+import lv.id.arseniuss.linguae.app.R;
 import lv.id.arseniuss.linguae.app.db.LanguageDatabase;
 import lv.id.arseniuss.linguae.app.db.dataaccess.LicenseDataAccess;
 import lv.id.arseniuss.linguae.app.db.entities.LicenseEntity;
 
-public class LicenseViewModel extends AndroidViewModel {
+public class DocumentationViewModel extends AndroidViewModel {
 
     private final SharedPreferences _sharedPreferences =
             PreferenceManager.getDefaultSharedPreferences(getApplication().getBaseContext());
@@ -36,7 +37,7 @@ public class LicenseViewModel extends AndroidViewModel {
     private final MutableLiveData<List<EntryViewModel>> _licenses =
             new MutableLiveData<>(new ArrayList<>());
 
-    public LicenseViewModel(Application app) {
+    public DocumentationViewModel(Application app) {
         super(app);
 
         load();
@@ -67,6 +68,9 @@ public class LicenseViewModel extends AndroidViewModel {
     }
 
     private void parse(List<LicenseEntity> result) {
+        String copyright = getApplication().getResources().getString(R.string.CopyrightText);
+
+        result.add(0, new LicenseEntity(copyright));
 
         _licenses.postValue(result.stream().map(EntryViewModel::new).collect(Collectors.toList()));
     }

@@ -22,6 +22,10 @@ public class LicenseEntity {
 
     }
 
+    public LicenseEntity(String text) {
+        Text = text;
+    }
+
     public LicenseEntity(License l) {
         Id = l.Id;
         Text = l.Text;

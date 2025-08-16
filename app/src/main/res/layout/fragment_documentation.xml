@@ -7,11 +7,11 @@
 
         <variable
             name="presenter"
-            type="lv.id.arseniuss.linguae.app.ui.fragments.LicensesFragment" />
+            type="lv.id.arseniuss.linguae.app.ui.fragments.DocumentationFragment" />
 
         <variable
             name="viewmodel"
-            type="lv.id.arseniuss.linguae.app.viewmodel.LicenseViewModel" />
+            type="lv.id.arseniuss.linguae.app.viewmodel.DocumentationViewModel" />
     </data>
 
     <LinearLayout
@@ -31,7 +31,7 @@
                 android:layout_height="?attr/actionBarSize"
                 android:elevation="4dp"
                 app:popupTheme="@style/MyAppTheme"
-                app:title="@string/TitleLicenses" />
+                app:title="@string/TitleDocumentation" />
 
         </com.google.android.material.appbar.AppBarLayout>
 
@@ -47,7 +47,7 @@
                 app:items="@{viewmodel.GetLicenses()}"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 tools:itemCount="5"
-                tools:listitem="@layout/item_license" />
+                tools:listitem="@layout/item_documentation" />
 
             <TextView
                 android:layout_width="match_parent"

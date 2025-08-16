@@ -46,7 +46,6 @@
     <string name="TitleNoKeyboard">Enter answers without usage of keyboard</string>
     <string name="TitleTaskPreferences">Task preferences</string>
     <string name="TitleStartTraining">Start training</string>
-    <string name="TitleLicenses">Licenses</string>
     <string name="SaveRepositoriesTitle">Do you want to save repository list?</string>
     <string name="TextSummaryPoints">Points</string>
     <string name="DescriptionLanguageLogo">Logo of language</string>
@@ -101,4 +100,11 @@
     <string name="EnumTaskTypeTranslateTask">Translate task</string>
     <string name="TextErrors">Errors</string>
     <string name="TitleStrictTaskCount">Do not allow less tasks in session than task count</string>
+    <string name="TitleDocumentation">Documentation</string>
+    <string name="CopyrightText">
+        ## Application copyright\n
+        \n
+        This application is licensed under the GNU General Public License version 3 or later (GPLv3+).\n
+        You can obtain a copy of the full license at [https://www.gnu.org/licenses/gpl-3.0.html](https://www.gnu.org/licenses/gpl-3.0.html).
+    </string>
 </resources>

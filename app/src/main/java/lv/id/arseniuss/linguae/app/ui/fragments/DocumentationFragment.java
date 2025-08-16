@@ -19,22 +19,23 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.List;
 
 import lv.id.arseniuss.linguae.app.R;
-import lv.id.arseniuss.linguae.app.databinding.FragmentLicensesBinding;
-import lv.id.arseniuss.linguae.app.databinding.ItemLicenseBinding;
+import lv.id.arseniuss.linguae.app.databinding.FragmentDocumentationBinding;
+import lv.id.arseniuss.linguae.app.databinding.ItemDocumentationBinding;
 import lv.id.arseniuss.linguae.app.ui.MyRecyclerViewAdapter;
 import lv.id.arseniuss.linguae.app.ui.activities.MainActivity;
-import lv.id.arseniuss.linguae.app.viewmodel.LicenseViewModel;
+import lv.id.arseniuss.linguae.app.viewmodel.DocumentationViewModel;
 
-public class LicensesFragment extends Fragment {
-    private LicenseViewModel _model;
+public class DocumentationFragment extends Fragment {
+    private DocumentationViewModel _model;
 
-    private FragmentLicensesBinding _binding;
+    private FragmentDocumentationBinding _binding;
 
     @BindingAdapter("items")
     public static void BindLanguagesList(RecyclerView recyclerView,
-                                         List<LicenseViewModel.EntryViewModel> entries) {
-        MyRecyclerViewAdapter<LicenseViewModel.EntryViewModel, ItemLicenseBinding> adapter =
-                (MyRecyclerViewAdapter<LicenseViewModel.EntryViewModel, ItemLicenseBinding>) recyclerView.getAdapter();
+                                         List<DocumentationViewModel.EntryViewModel> entries) {
+        MyRecyclerViewAdapter<DocumentationViewModel.EntryViewModel, ItemDocumentationBinding>
+                adapter =
+                (MyRecyclerViewAdapter<DocumentationViewModel.EntryViewModel, ItemDocumentationBinding>) recyclerView.getAdapter();
 
         assert adapter != null;
         assert entries != null;
@@ -45,14 +46,14 @@ public class LicensesFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        _model = new ViewModelProvider(this).get(LicenseViewModel.class);
+        _model = new ViewModelProvider(this).get(DocumentationViewModel.class);
     }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        _binding = FragmentLicensesBinding.inflate(inflater, container, false);
+        _binding = FragmentDocumentationBinding.inflate(inflater, container, false);
 
         _binding.setViewmodel(_model);
         _binding.setPresenter(this);
@@ -88,8 +89,8 @@ public class LicensesFragment extends Fragment {
     @NonNull
     private RecyclerView.Adapter getMyAdapter() {
 
-        MyRecyclerViewAdapter<LicenseViewModel.EntryViewModel, ItemLicenseBinding> adapter =
-                new MyRecyclerViewAdapter<>(this, R.layout.item_license);
+        MyRecyclerViewAdapter<DocumentationViewModel.EntryViewModel, ItemDocumentationBinding>
+                adapter = new MyRecyclerViewAdapter<>(this, R.layout.item_documentation);
 
         return adapter;
     }

@@ -23,6 +23,6 @@
         <item
             android:id="@+id/nav_license"
             android:icon="@drawable/baseline_library_add_check_24"
-            android:title="@string/TitleLicenses" />
+            android:title="@string/TitleDocumentation" />
     </group>
 </menu>

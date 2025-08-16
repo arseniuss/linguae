@@ -27,7 +27,7 @@
         tools:layout="@layout/fragment_theories" />
     <fragment
         android:id="@+id/nav_license"
-        android:name="lv.id.arseniuss.linguae.app.ui.fragments.LicensesFragment"
-        android:label="@string/TitleLicenses"
-        tools:layout="@layout/fragment_licenses" />
+        android:name="lv.id.arseniuss.linguae.app.ui.fragments.DocumentationFragment"
+        android:label="@string/TitleDocumentation"
+        tools:layout="@layout/fragment_documentation" />
 </navigation>

@@ -47,7 +47,6 @@
     <string name="TitleNoKeyboard">Atbildēt bez klaviatūras</string>
     <string name="TitleTaskPreferences">Uzdevumu iestatījumi</string>
     <string name="TitleStartTraining">Sākt treniņu</string>
-    <string name="TitleLicenses">Licences</string>
     <string name="SaveRepositoriesTitle">Vai jūs vēlaties saglabāt krātuvju sarakstu?</string>
     <string name="TextSummaryPoints">Punkti</string>
     <string name="DescriptionLanguageLogo">Valodas logo</string>
@@ -93,4 +92,11 @@
     <string name="TextBugDescribe">Aprakstiet kļūdu:</string>
     <string name="TitleConnectedInformation">Savāktie dati</string>
     <string name="DescriptionScreenshot">Ekrānattēls</string>
+    <string name="TitleDocumentation">Documentation</string>
+    <string name="CopyrightText">
+        ## Lietotnes autortiesības\n
+        \n
+        Šī lietotne ir licencēta saskaņā ar GNU vispārējo publisko licenci, versiju 3 vai jaunāku (GPLv3+).\n
+        Pilnu licences tekstu var iegūt šeit: [https://www.gnu.org/licenses/gpl-3.0.html](https://www.gnu.org/licenses/gpl-3.0.html).
+    </string>
 </resources>
