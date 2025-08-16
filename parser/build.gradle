@@ -1,3 +1,5 @@
+import com.android.build.gradle.tasks.ExtractAnnotations
+
 plugins {
     id 'com.android.library'
 }
@@ -56,6 +58,10 @@ public class Version {
 }
 """
     }
+}
+
+tasks.withType(ExtractAnnotations).configureEach {
+    dependsOn(generateVersionClass)
 }
 
 android.sourceSets.main.java.srcDirs += "$buildDir/generated/source/version/main"
