@@ -1441,7 +1441,7 @@ public class LanguageDataParser {
 
                     Chapter chapter = new Chapter();
 
-                    chapter.Id = words[1];
+                    chapter.Id = _filenames.get(0) + "#" + words[1];
                     chapter.Text = resolveReferences(words[2], references);
 
                     theoryChapters.put(chapter.Id, chapter);
