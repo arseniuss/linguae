@@ -69,7 +69,7 @@ public class LanguageLoadFragment extends Fragment {
 
     private void requestDatabaseUpdate(RepositoryLoadViewModel.ConfirmResponseCallback callback) {
         new MaterialAlertDialogBuilder(requireActivity()).setMessage(R.string.MessageConfirmUpdate)
-                .setPositiveButton(R.string.ok, (d, w) -> callback.ConfirmResponse(true))
+                .setPositiveButton(R.string.yes, (d, w) -> callback.ConfirmResponse(true))
                 .setNegativeButton(R.string.no, (d, w) -> callback.ConfirmResponse(false))
                 .show();
     }
