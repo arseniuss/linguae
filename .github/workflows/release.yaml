@@ -143,7 +143,7 @@ jobs:
         with:
           files: |
             ./downloads/linguae-app-${{ github.ref_name }}.apk
-            ./downloads/linguae-parser-${{ github.ref_name }}.jar
+            ./downloads/linguae-parser-${{ github.ref_name }}-release.jar
           token: ${{ secrets.GITHUB_TOKEN }}
           tag_name: ${{ github.ref_name }}
           draft: false
