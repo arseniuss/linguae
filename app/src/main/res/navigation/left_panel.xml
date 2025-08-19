@@ -26,6 +26,11 @@
         android:label="@string/TitleTheories"
         tools:layout="@layout/fragment_theories" />
     <fragment
+        android:id="@+id/nav_vocabulary"
+        android:name="lv.id.arseniuss.linguae.app.ui.fragments.VocabularyFragment"
+        android:label="@string/TitleVocabulary"
+        tools:layout="@layout/fragment_vocabulary" />
+    <fragment
         android:id="@+id/nav_license"
         android:name="lv.id.arseniuss.linguae.app.ui.fragments.DocumentationFragment"
         android:label="@string/TitleDocumentation"

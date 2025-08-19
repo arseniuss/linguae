@@ -9,10 +9,11 @@ import androidx.room.TypeConverters;
 
 import java.util.Objects;
 
+import lv.id.arseniuss.linguae.app.Configuration;
 import lv.id.arseniuss.linguae.app.db.dataaccess.BugReportDataAccess;
+import lv.id.arseniuss.linguae.app.db.dataaccess.CommonDataAccess;
 import lv.id.arseniuss.linguae.app.db.dataaccess.LessonDataAccess;
 import lv.id.arseniuss.linguae.app.db.dataaccess.LicenseDataAccess;
-import lv.id.arseniuss.linguae.app.db.dataaccess.MainDataAccess;
 import lv.id.arseniuss.linguae.app.db.dataaccess.SessionDataAccess;
 import lv.id.arseniuss.linguae.app.db.dataaccess.SummaryDataAccess;
 import lv.id.arseniuss.linguae.app.db.dataaccess.TaskDataAccess;
@@ -37,6 +38,7 @@ import lv.id.arseniuss.linguae.app.db.entities.TheoryEntity;
 import lv.id.arseniuss.linguae.app.db.entities.TrainingCategoryEntity;
 import lv.id.arseniuss.linguae.app.db.entities.TrainingEntity;
 import lv.id.arseniuss.linguae.app.db.entities.TrainingTaskCrossref;
+import lv.id.arseniuss.linguae.app.db.entities.VocabularyEntity;
 
 @Database(version = 1, exportSchema = false,
         entities = {LessonEntity.class, LessonTaskCrossref.class, SettingEntity.class,
@@ -44,7 +46,8 @@ import lv.id.arseniuss.linguae.app.db.entities.TrainingTaskCrossref;
                 SessionResultEntity.class, TaskResultEntity.class, ChapterEntity.class,
                 TheoryEntity.class, TheoryChapterCrossref.class, LessonTheoryCrossref.class,
                 ConfigEntity.class, TrainingCategoryEntity.class, LicenseEntity.class,
-                LessonChapterCrossref.class, BugReportEntity.class, CheckpointEntity.class})
+                LessonChapterCrossref.class, BugReportEntity.class, CheckpointEntity.class,
+                VocabularyEntity.class})
 @TypeConverters({DatabaseConverters.class})
 public abstract class LanguageDatabase extends RoomDatabase {
     private static LanguageDatabase _instance;
@@ -60,6 +63,10 @@ public abstract class LanguageDatabase extends RoomDatabase {
         return _instance;
     }
 
+    public static LanguageDatabase GetInstance(Context context) {
+        return GetInstance(context, Configuration.GetLanguageCode());
+    }
+
     public abstract SummaryDataAccess GetSummaryDataAccess();
 
     public abstract UpdateDataAccess GetUpdateDataAccess();
@@ -72,11 +79,11 @@ public abstract class LanguageDatabase extends RoomDatabase {
 
     public abstract SessionDataAccess GetSessionDataAccess();
 
-    public abstract MainDataAccess GetMainDataAccess();
-
     public abstract TheoryDataAccess GetTheoryDataAccess();
 
     public abstract LicenseDataAccess GetLicenseDataAccess();
 
     public abstract BugReportDataAccess GetBugReportDataAccess();
+
+    public abstract CommonDataAccess GetCommonDataAccess();
 }

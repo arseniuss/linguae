@@ -2,6 +2,7 @@ package lv.id.arseniuss.linguae.app.ui.activities;
 
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.ImageView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -42,8 +43,22 @@ public class MainActivity extends AppCompatActivity {
 
         _appBarConfiguration =
                 new AppBarConfiguration.Builder(R.id.nav_summary, R.id.nav_lessons,
-                        R.id.nav_training, R.id.nav_theory, R.id.nav_license)
+                        R.id.nav_training, R.id.nav_theory, R.id.nav_vocabulary, R.id.nav_license)
                         .setOpenableLayout(drawer).build();
+
+
+        View headerView = _binding.navView.getHeaderView(0);
+
+        ImageView imageView = headerView.findViewById(R.id.header_image);
+        if (imageView != null) {
+            Bitmap bitmap = Configuration.GetLanguageImage();
+
+            if (bitmap != null) {
+                imageView.setImageBitmap(bitmap);
+            } else {
+                BindingAdapters.SetImageByUrl(imageView, Configuration.GetLanguageImageUrl());
+            }
+        }
     }
 
     public void SetupDrawer() {
@@ -57,30 +72,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onStart() {
-        super.onStart();
-        _model.Start(this::onStarted);
-    }
-
-    @Override
     public boolean onSupportNavigateUp() {
         NavController navController = Navigation.findNavController(this,
                 R.id.nav_host_fragment_content_main);
 
         return NavigationUI.navigateUp(navController, _appBarConfiguration) ||
                 super.onSupportNavigateUp();
-    }
-
-    private void onStarted() {
-        ImageView imageView = _binding.drawerLayout.findViewById(R.id.header_image);
-        if (imageView != null) {
-            Bitmap bitmap = Configuration.GetLanguageImage();
-
-            if (bitmap != null) {
-                imageView.setImageBitmap(bitmap);
-            } else {
-                BindingAdapters.SetImageByUrl(imageView, Configuration.GetLanguageImageUrl());
-            }
-        }
     }
 }

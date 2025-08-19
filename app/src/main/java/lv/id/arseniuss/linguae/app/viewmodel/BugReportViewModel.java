@@ -1,12 +1,10 @@
 package lv.id.arseniuss.linguae.app.viewmodel;
 
 import android.app.Application;
-import android.content.SharedPreferences;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.MutableLiveData;
-import androidx.preference.PreferenceManager;
 
 import com.google.gson.Gson;
 
@@ -18,7 +16,6 @@ import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.disposables.Disposable;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 import lv.id.arseniuss.linguae.app.BugReportHelper;
-import lv.id.arseniuss.linguae.app.Constants;
 import lv.id.arseniuss.linguae.app.Utilities;
 import lv.id.arseniuss.linguae.app.db.LanguageDatabase;
 import lv.id.arseniuss.linguae.app.db.dataaccess.BugReportDataAccess;
@@ -28,12 +25,8 @@ import lv.id.arseniuss.linguae.app.entities.SystemReport;
 import lv.id.arseniuss.linguae.app.enumerators.BugDataType;
 
 public class BugReportViewModel extends AndroidViewModel {
-    private final SharedPreferences _sharedPreferences =
-            PreferenceManager.getDefaultSharedPreferences(getApplication().getBaseContext());
-    private final String _language =
-            _sharedPreferences.getString(Constants.PreferenceLanguageCodeKey, "");
     private final BugReportDataAccess _bugReportDataAccess =
-            LanguageDatabase.GetInstance(getApplication(), _language).GetBugReportDataAccess();
+            LanguageDatabase.GetInstance(getApplication()).GetBugReportDataAccess();
 
     private final MutableLiveData<String> _text = new MutableLiveData<>("");
     private final MutableLiveData<String> _data = new MutableLiveData<>("");

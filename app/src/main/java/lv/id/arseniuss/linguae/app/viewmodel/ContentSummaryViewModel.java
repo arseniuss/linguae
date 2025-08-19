@@ -1,12 +1,10 @@
 package lv.id.arseniuss.linguae.app.viewmodel;
 
 import android.app.Application;
-import android.content.SharedPreferences;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.MutableLiveData;
-import androidx.preference.PreferenceManager;
 
 import java.text.Collator;
 import java.text.ParseException;
@@ -23,7 +21,6 @@ import io.reactivex.rxjava3.disposables.Disposable;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 import lv.id.arseniuss.linguae.Utilities;
 import lv.id.arseniuss.linguae.app.Configuration;
-import lv.id.arseniuss.linguae.app.Constants;
 import lv.id.arseniuss.linguae.app.Settings;
 import lv.id.arseniuss.linguae.app.db.LanguageDatabase;
 import lv.id.arseniuss.linguae.app.db.dataaccess.TaskDataAccess;
@@ -35,12 +32,8 @@ import lv.id.arseniuss.linguae.tasks.SelectTask;
 import lv.id.arseniuss.linguae.tasks.TranslateTask;
 
 public class ContentSummaryViewModel extends AndroidViewModel {
-    private final SharedPreferences _sharedPreferences =
-            PreferenceManager.getDefaultSharedPreferences(getApplication().getBaseContext());
-    private final String _language =
-            _sharedPreferences.getString(Constants.PreferenceLanguageCodeKey, "");
     private final TaskDataAccess _taskDataAccess =
-            LanguageDatabase.GetInstance(getApplication(), _language).GetTaskDataAccess();
+            LanguageDatabase.GetInstance(getApplication()).GetTaskDataAccess();
 
     private final MutableLiveData<List<ItemMarkdownViewModel>> _vocabulary =
             new MutableLiveData<>(new ArrayList<>());

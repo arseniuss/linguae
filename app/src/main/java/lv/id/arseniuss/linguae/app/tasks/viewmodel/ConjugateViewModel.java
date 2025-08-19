@@ -16,8 +16,6 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import lv.id.arseniuss.linguae.app.db.LanguageDatabase;
-import lv.id.arseniuss.linguae.app.db.dataaccess.TaskDataAccess;
 import lv.id.arseniuss.linguae.app.db.entities.TaskError;
 import lv.id.arseniuss.linguae.app.tasks.AbstractTaskAnswerViewModel;
 import lv.id.arseniuss.linguae.app.tasks.AbstractTaskViewModel;
@@ -26,9 +24,6 @@ import lv.id.arseniuss.linguae.enumerators.TaskType;
 import lv.id.arseniuss.linguae.tasks.ConjugateTask;
 
 public class ConjugateViewModel extends AbstractTaskViewModel {
-
-    private final TaskDataAccess _taskDataAccess =
-            LanguageDatabase.GetInstance(getApplication(), _language).GetTaskDataAccess();
     private final MutableLiveData<List<PersonViewModel>> _persons =
             new MutableLiveData<>(new ArrayList<>());
     private final MutableLiveData<String> _word = new MutableLiveData<>("");

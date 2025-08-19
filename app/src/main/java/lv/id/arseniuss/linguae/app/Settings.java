@@ -12,6 +12,7 @@ public class Settings {
     private static List<SettingEntity> _settingEntities = null;
 
     public static void Parse(List<SettingEntity> settings) {
+
         _settingEntities = settings;
 
         for (SettingEntity setting : settings) {

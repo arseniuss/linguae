@@ -32,7 +32,8 @@ public class SummaryViewModel extends AndroidViewModel {
     private final String _languageName =
             _sharedPreferences.getString(Constants.PreferenceLanguageNameKey, "");
 
-    private final SummaryDataAccess _summaryDataAccess;
+    private final SummaryDataAccess _summaryDataAccess =
+            LanguageDatabase.GetInstance(getApplication()).GetSummaryDataAccess();
 
     private final MutableLiveData<Bitmap> _image = new MutableLiveData<>(null);
     private final MutableLiveData<String> _version = new MutableLiveData<>("");
@@ -43,13 +44,6 @@ public class SummaryViewModel extends AndroidViewModel {
 
     public SummaryViewModel(Application app) {
         super(app);
-
-        if (!_languageCode.isEmpty())
-            _summaryDataAccess =
-                    LanguageDatabase.GetInstance(getApplication(), _languageCode)
-                            .GetSummaryDataAccess();
-        else
-            _summaryDataAccess = null;
     }
 
     public MutableLiveData<Bitmap> Image() {
@@ -73,21 +67,6 @@ public class SummaryViewModel extends AndroidViewModel {
     }
 
     public void Load() {
-        Configuration.AddConfigChangeLister(this::onConfigChanged);
-
-        if (_summaryDataAccess != null) {
-            Disposable d = _summaryDataAccess.GetBestLessons()
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(bestLessons -> {
-                        _lessons.setValue(
-                                bestLessons.stream().map(BestLessonViewModel::new).collect(
-                                        Collectors.toList()));
-                    });
-        }
-    }
-
-    private void onConfigChanged() {
         Bitmap bitmap = Configuration.GetLanguageImage();
 
         if (bitmap != null) {
@@ -102,6 +81,16 @@ public class SummaryViewModel extends AndroidViewModel {
 
         _version.setValue(Configuration.GetLanguageVersion());
         _author.setValue(Configuration.GetLanguageAuthor());
+
+
+        Disposable d = _summaryDataAccess.GetBestLessons()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(bestLessons -> {
+                    _lessons.setValue(
+                            bestLessons.stream().map(BestLessonViewModel::new).collect(
+                                    Collectors.toList()));
+                });
     }
 
     public static class BestLessonViewModel extends BaseObservable {

@@ -30,12 +30,12 @@ import lv.id.arseniuss.linguae.app.R;
 import lv.id.arseniuss.linguae.app.Settings;
 import lv.id.arseniuss.linguae.app.Utilities;
 import lv.id.arseniuss.linguae.app.db.LanguageDatabase;
-import lv.id.arseniuss.linguae.app.db.dataaccess.MainDataAccess;
+import lv.id.arseniuss.linguae.app.db.dataaccess.CommonDataAccess;
 import lv.id.arseniuss.linguae.app.db.entities.SettingEntity;
 import lv.id.arseniuss.linguae.app.entities.ItemLanguageRepo;
 
 public class PreferencesActivity extends AppCompatActivity {
-    private MainDataAccess _mainDataAccess;
+    private CommonDataAccess _commonDataAccess;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,8 +59,8 @@ public class PreferencesActivity extends AppCompatActivity {
                 PreferenceManager.getDefaultSharedPreferences(getBaseContext());
         String language = sharedPreferences.getString(Constants.PreferenceLanguageCodeKey, "");
 
-        _mainDataAccess =
-                LanguageDatabase.GetInstance(getBaseContext(), language).GetMainDataAccess();
+        _commonDataAccess =
+                LanguageDatabase.GetInstance(getBaseContext(), language).GetCommonDataAccess();
     }
 
     @Override
@@ -72,7 +72,7 @@ public class PreferencesActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (android.R.id.home == item.getItemId()) {
-            Disposable d = _mainDataAccess.SaveSetting(Settings.Get())
+            Disposable d = _commonDataAccess.SaveSetting(Settings.Get())
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(this::finish, error -> {

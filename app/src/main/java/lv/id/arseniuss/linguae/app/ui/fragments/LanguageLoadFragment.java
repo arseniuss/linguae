@@ -1,6 +1,5 @@
 package lv.id.arseniuss.linguae.app.ui.fragments;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.text.Spanned;
 import android.view.LayoutInflater;
@@ -16,23 +15,26 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import lv.id.arseniuss.linguae.app.R;
 import lv.id.arseniuss.linguae.app.databinding.FragmentLanguageLoadBinding;
-import lv.id.arseniuss.linguae.app.ui.activities.MainActivity;
+import lv.id.arseniuss.linguae.app.interfaces.IContinueListener;
 import lv.id.arseniuss.linguae.app.viewmodel.RepositoryLoadViewModel;
 
 public class LanguageLoadFragment extends Fragment {
 
     private final Boolean _restart;
+    private final IContinueListener _continue;
     private FragmentLanguageLoadBinding _binding;
     private RepositoryLoadViewModel _model;
 
-    public LanguageLoadFragment() {
+    public LanguageLoadFragment(IContinueListener continueListener) {
         super();
         _restart = false;
+        _continue = continueListener;
     }
 
-    public LanguageLoadFragment(boolean restart) {
+    public LanguageLoadFragment(boolean restart, IContinueListener continueListener) {
         super();
         _restart = restart;
+        _continue = continueListener;
     }
 
     @Nullable
@@ -60,11 +62,7 @@ public class LanguageLoadFragment extends Fragment {
     }
 
     public void Continue() {
-        Intent i = new Intent(requireActivity(), MainActivity.class);
-
-        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-
-        startActivity(i);
+        _continue.Continue();
     }
 
     private void requestDatabaseUpdate(RepositoryLoadViewModel.ConfirmResponseCallback callback) {

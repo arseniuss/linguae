@@ -63,8 +63,8 @@
     <string name="cancel">Cancel</string>
     <string name="ok">OK</string>
     <string name="save">Save</string>
-    <string name="TitleVocabulary">Vocabulary (%d)</string>
-    <string name="TitleSentences">Sentences (%d)</string>
+    <string name="TitleVocabularyCount">Vocabulary (%d)</string>
+    <string name="TitleSentencesCount">Sentences (%d)</string>
     <string name="DescriptionAppLogo">Logo</string>
     <string name="TextEnglishLanguage" translatable="false">English</string>
     <string name="TextLatvianLanguage" translatable="false">latviešu</string>
@@ -106,5 +106,16 @@
         \n
         This application is licensed under the GNU General Public License version 3 or later (GPLv3+).\n
         You can obtain a copy of the full license at [https://www.gnu.org/licenses/gpl-3.0.html](https://www.gnu.org/licenses/gpl-3.0.html).
+    </string>
+    <string name="TitleVocabulary">Vocabulary</string>
+    <string name="EmptyListMessage">Nothing to show</string>
+    <string name="WiktionaryCachedText">This content is cached from Wiktionary</string>
+    <string name="WiktionaryText">
+        ## Thanks to Wiktionary\n
+        \n
+        All definitions in this app are provided courtesy of Wiktionary, the free, collaborative
+        dictionary. We deeply appreciate the dedication of its contributors in building this
+        valuable resource. Please visit [https://www.wiktionary.org](https://www.wiktionary.org) to explore, learn, and
+        contribute — every improvement helps keep this amazing project thriving for everyone.
     </string>
 </resources>

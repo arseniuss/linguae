@@ -1,7 +1,6 @@
 package lv.id.arseniuss.linguae.app.viewmodel;
 
 import android.app.Application;
-import android.content.SharedPreferences;
 
 import androidx.annotation.NonNull;
 import androidx.databinding.BaseObservable;
@@ -9,7 +8,6 @@ import androidx.databinding.Bindable;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
-import androidx.preference.PreferenceManager;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -22,24 +20,18 @@ import java.util.stream.Collectors;
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.disposables.Disposable;
 import io.reactivex.rxjava3.schedulers.Schedulers;
-import lv.id.arseniuss.linguae.app.Constants;
 import lv.id.arseniuss.linguae.app.Settings;
 import lv.id.arseniuss.linguae.app.Utilities;
 import lv.id.arseniuss.linguae.app.db.LanguageDatabase;
-import lv.id.arseniuss.linguae.app.db.dataaccess.MainDataAccess;
+import lv.id.arseniuss.linguae.app.db.dataaccess.CommonDataAccess;
 import lv.id.arseniuss.linguae.app.db.dataaccess.TrainingDataAccess;
 import lv.id.arseniuss.linguae.app.ui.BindingAdapters;
 
 public class TrainingsViewModel extends AndroidViewModel {
-
-    private final SharedPreferences _sharedPreferences =
-            PreferenceManager.getDefaultSharedPreferences(getApplication().getBaseContext());
-    private final String _language =
-            _sharedPreferences.getString(Constants.PreferenceLanguageCodeKey, "");
     private final TrainingDataAccess _trainingDataAccess =
-            LanguageDatabase.GetInstance(getApplication(), _language).GetTrainingsDataAccess();
-    private final MainDataAccess _mainDataAccess =
-            LanguageDatabase.GetInstance(getApplication(), _language).GetMainDataAccess();
+            LanguageDatabase.GetInstance(getApplication()).GetTrainingsDataAccess();
+    private final CommonDataAccess _commonDataAccess =
+            LanguageDatabase.GetInstance(getApplication()).GetCommonDataAccess();
 
     private final MutableLiveData<List<EntryViewModel>> _trainings;
     private final MutableLiveData<List<SectionViewModel>> _sections =

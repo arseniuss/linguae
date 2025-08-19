@@ -1,7 +1,6 @@
 package lv.id.arseniuss.linguae.app.viewmodel;
 
 import android.app.Application;
-import android.content.SharedPreferences;
 
 import androidx.annotation.NonNull;
 import androidx.databinding.BaseObservable;
@@ -9,7 +8,6 @@ import androidx.databinding.Bindable;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
-import androidx.preference.PreferenceManager;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -22,18 +20,13 @@ import java.util.stream.Collectors;
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.disposables.Disposable;
 import io.reactivex.rxjava3.schedulers.Schedulers;
-import lv.id.arseniuss.linguae.app.Constants;
 import lv.id.arseniuss.linguae.app.db.LanguageDatabase;
 import lv.id.arseniuss.linguae.app.db.dataaccess.TheoryDataAccess;
 import lv.id.arseniuss.linguae.app.ui.BindingAdapters;
 
 public class TheoriesViewModel extends AndroidViewModel {
-    private final SharedPreferences _sharedPreferences =
-            PreferenceManager.getDefaultSharedPreferences(getApplication().getBaseContext());
-    private final String _language =
-            _sharedPreferences.getString(Constants.PreferenceLanguageCodeKey, "");
     private final TheoryDataAccess _theoryDataAccess =
-            LanguageDatabase.GetInstance(getApplication(), _language).GetTheoryDataAccess();
+            LanguageDatabase.GetInstance(getApplication()).GetTheoryDataAccess();
 
     private final MutableLiveData<List<SectionViewModel>> _sections =
             new MutableLiveData<>(new ArrayList<>());

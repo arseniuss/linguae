@@ -21,6 +21,10 @@
             android:icon="@drawable/baseline_menu_book_24"
             android:title="@string/TitleTheories" />
         <item
+            android:id="@+id/nav_vocabulary"
+            android:icon="@drawable/outline_assignment_24"
+            android:title="@string/TitleVocabulary" />
+        <item
             android:id="@+id/nav_license"
             android:icon="@drawable/baseline_library_add_check_24"
             android:title="@string/TitleDocumentation" />

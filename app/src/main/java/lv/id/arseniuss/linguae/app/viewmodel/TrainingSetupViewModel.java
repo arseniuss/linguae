@@ -18,7 +18,6 @@ import java.util.stream.Collectors;
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.disposables.Disposable;
 import io.reactivex.rxjava3.schedulers.Schedulers;
-import lv.id.arseniuss.linguae.app.Constants;
 import lv.id.arseniuss.linguae.app.db.LanguageDatabase;
 import lv.id.arseniuss.linguae.app.db.dataaccess.TaskDataAccess;
 import lv.id.arseniuss.linguae.app.db.dataaccess.TrainingDataAccess;
@@ -29,10 +28,9 @@ public class TrainingSetupViewModel extends AndroidViewModel {
     private static String _trainingId = "";
     private final SharedPreferences _sharedPreferences =
             PreferenceManager.getDefaultSharedPreferences(getApplication().getBaseContext());
-    private final String _language =
-            _sharedPreferences.getString(Constants.PreferenceLanguageCodeKey, "");
+
     private final TrainingDataAccess _trainingDataAccess =
-            LanguageDatabase.GetInstance(getApplication(), _language).GetTrainingsDataAccess();
+            LanguageDatabase.GetInstance(getApplication()).GetTrainingsDataAccess();
     private final MutableLiveData<List<TrainingTaskViewModel>> _tasks =
             new MutableLiveData<>(new ArrayList<>());
 

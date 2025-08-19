@@ -12,10 +12,17 @@ import androidx.preference.PreferenceManager;
 
 import java.util.List;
 
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
+import io.reactivex.rxjava3.disposables.Disposable;
+import io.reactivex.rxjava3.schedulers.Schedulers;
+import lv.id.arseniuss.linguae.app.Configuration;
 import lv.id.arseniuss.linguae.app.Constants;
 import lv.id.arseniuss.linguae.app.R;
 import lv.id.arseniuss.linguae.app.Utilities;
 import lv.id.arseniuss.linguae.app.data.RepositoryLoader;
+import lv.id.arseniuss.linguae.app.db.LanguageDatabase;
+import lv.id.arseniuss.linguae.app.db.dataaccess.CommonDataAccess;
+import lv.id.arseniuss.linguae.app.db.entities.ConfigEntity;
 import lv.id.arseniuss.linguae.app.ui.fragments.LanguageLoadFragment;
 import lv.id.arseniuss.linguae.app.ui.fragments.LocaleSelectFragment;
 import lv.id.arseniuss.linguae.app.ui.fragments.RepositorySelectFragment;
@@ -29,6 +36,7 @@ public class InitialActivity extends AppCompatActivity {
     public static final int LOAD_LANGUAGE = 3;
 
     private RepositoryLoader _loader;
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -62,7 +70,8 @@ public class InitialActivity extends AppCompatActivity {
                     break;
                 case LOAD_LANGUAGE:
                     getSupportFragmentManager().beginTransaction()
-                            .replace(R.id.container, new LanguageLoadFragment(true))
+                            .replace(R.id.container,
+                                    new LanguageLoadFragment(true, this::setupMain))
                             .commit();
                     break;
                 default:
@@ -99,7 +108,7 @@ public class InitialActivity extends AppCompatActivity {
         }
 
         getSupportFragmentManager().beginTransaction()
-                .replace(R.id.container, new LanguageLoadFragment())
+                .replace(R.id.container, new LanguageLoadFragment(this::setupMain))
                 .commit();
     }
 
@@ -137,9 +146,35 @@ public class InitialActivity extends AppCompatActivity {
         Intent intent = getIntent();
 
         if (intent.hasExtra(ACTION)) {
-            gotoMain();
+            setupMain();
         } else {
             restart();
+        }
+    }
+
+    private void setupMain() {
+        SharedPreferences sharedPreferences =
+                PreferenceManager.getDefaultSharedPreferences(getBaseContext());
+        String languageCode = sharedPreferences.getString(Constants.PreferenceLanguageCodeKey, "");
+
+        assert !languageCode.isEmpty();
+
+        CommonDataAccess commonDataAccess =
+                LanguageDatabase.GetInstance(getBaseContext(), languageCode).GetCommonDataAccess();
+
+        Disposable d = commonDataAccess.GetConfig()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(this::accept);
+    }
+
+    private void accept(List<ConfigEntity> configEntities, Throwable throwable) {
+        if (throwable != null) {
+
+        } else {
+            Configuration.Parse(configEntities);
+
+            gotoMain();
         }
     }
 

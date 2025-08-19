@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <variable
+            name="prsenter"
+            type="lv.id.arseniuss.linguae.app.ui.fragments.VocabularyFragment" />
+
+        <variable
+            name="viewmodel"
+            type="lv.id.arseniuss.linguae.app.viewmodel.VocabularyViewModel" />
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <com.google.android.material.appbar.AppBarLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?attr/colorSurfaceContainer"
+            android:theme="@style/MyAppTheme">
+
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:elevation="4dp"
+                app:popupTheme="@style/MyAppTheme"
+                app:title="@string/TitleVocabulary" />
+
+
+        </com.google.android.material.appbar.AppBarLayout>
+
+
+        <ViewSwitcher
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:switchIndex="@{viewmodel.HasError() ? 1 : 0}">
+
+
+            <LinearLayout
+                style="@style/MyAppTheme.Layout.RoundedPadded"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView xmlns:tools="http://schemas.android.com/tools"
+                    style="@style/MyAppTheme.TextView.Header.1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/margin_1"
+                    android:text="@{String.format(@string/TitleVocabularyCount, viewmodel.Vocabulary().size())}"
+                    tools:text="@string/TitleVocabularyCount" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/margin_2"
+                    android:text="@string/WiktionaryCachedText" />
+
+                <lv.id.arseniuss.linguae.app.ui.AdapterFlexboxLayout
+                    items="@{viewmodel.Vocabulary()}"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:minHeight="10dp"
+                    app:dividerDrawable="@drawable/divider_1"
+                    app:flexWrap="wrap"
+                    app:itemLayout="@layout/item_bubble_markdown"
+                    app:justifyContent="flex_start"
+                    app:showDivider="middle" />
+
+                <TextView xmlns:tools="http://schemas.android.com/tools"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:text="@{viewmodel.Error()}"
+                    android:textAlignment="center"
+                    tools:text="@string/EmptyListMessage" />
+            </LinearLayout>
+
+
+        </ViewSwitcher>
+
+    </LinearLayout>
+</layout>

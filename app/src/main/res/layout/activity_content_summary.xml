@@ -34,8 +34,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/margin_2"
-                    android:text="@{String.format(@string/TitleVocabulary, viewmodel.Vocabulary().size())}"
-                    tools:text="@string/TitleVocabulary" />
+                    android:text="@{String.format(@string/TitleVocabularyCount, viewmodel.Vocabulary().size())}"
+                    tools:text="@string/TitleVocabularyCount" />
 
                 <lv.id.arseniuss.linguae.app.ui.AdapterFlexboxLayout
                     items="@{viewmodel.Vocabulary()}"
@@ -61,7 +61,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/margin_2"
-                    android:text="@{String.format(@string/TitleSentences, viewmodel.Sentences().size())}" />
+                    android:text="@{String.format(@string/TitleSentencesCount, viewmodel.Sentences().size())}" />
 
                 <lv.id.arseniuss.linguae.app.ui.AdapterFlexboxLayout
                     items="@{viewmodel.Sentences()}"

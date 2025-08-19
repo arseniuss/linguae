@@ -33,10 +33,8 @@ public class SessionViewModel extends AndroidViewModel {
 
     private final SharedPreferences _sharedPreferences =
             PreferenceManager.getDefaultSharedPreferences(getApplication().getBaseContext());
-    private final String _language =
-            _sharedPreferences.getString(Constants.PreferenceLanguageCodeKey, "");
     private final TaskDataAccess _taskDataAccess =
-            LanguageDatabase.GetInstance(getApplication(), _language).GetTaskDataAccess();
+            LanguageDatabase.GetInstance(getApplication()).GetTaskDataAccess();
     private final boolean _strictTaskCount = _sharedPreferences.getBoolean(
             getApplication().getString(R.string.PreferenceStrictTaskCountKey), true);
     private final MutableLiveData<String> _counterString = new MutableLiveData<>("0");

@@ -2,14 +2,12 @@ package lv.id.arseniuss.linguae.app.viewmodel;
 
 import android.annotation.SuppressLint;
 import android.app.Application;
-import android.content.SharedPreferences;
 import android.text.Html;
 import android.text.Spanned;
 
 import androidx.annotation.NonNull;
 import androidx.databinding.BaseObservable;
 import androidx.lifecycle.AndroidViewModel;
-import androidx.preference.PreferenceManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,7 +16,6 @@ import java.util.stream.Collectors;
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.functions.Action;
 import io.reactivex.rxjava3.schedulers.Schedulers;
-import lv.id.arseniuss.linguae.app.Constants;
 import lv.id.arseniuss.linguae.app.db.LanguageDatabase;
 import lv.id.arseniuss.linguae.app.db.dataaccess.SessionDataAccess;
 import lv.id.arseniuss.linguae.app.db.entities.SessionResultWithTaskResults;
@@ -27,14 +24,8 @@ import lv.id.arseniuss.linguae.app.db.entities.TaskResultEntity;
 import lv.id.arseniuss.linguae.enumerators.TaskType;
 
 public class SessionResultViewModel extends AndroidViewModel {
-
-    private final SharedPreferences _sharedPreferences =
-            PreferenceManager.getDefaultSharedPreferences(getApplication().getBaseContext());
-    private final String _language =
-            _sharedPreferences.getString(Constants.PreferenceLanguageCodeKey, "");
-
     private final SessionDataAccess _sessionDataAccess =
-            LanguageDatabase.GetInstance(getApplication(), _language).GetSessionDataAccess();
+            LanguageDatabase.GetInstance(getApplication()).GetSessionDataAccess();
     private SessionResultWithTaskResults _result;
 
     private List<TaskErrorViewModel> _errors = new ArrayList<>();

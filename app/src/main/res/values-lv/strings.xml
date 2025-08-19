@@ -64,8 +64,8 @@
     <string name="cancel">Atcelt</string>
     <string name="ok">Labi</string>
     <string name="save">Saglabāt</string>
-    <string name="TitleVocabulary">Vārdu krājums (%d)</string>
-    <string name="TitleSentences">Teikumi (%d)</string>
+    <string name="TitleVocabularyCount">Vārdu krājums (%d)</string>
+    <string name="TitleSentencesCount">Teikumi (%d)</string>
     <string name="DescriptionAppLogo">Logo</string>
     <string name="TitleSelectLanguage">Izvēlieties saskarnes valodu</string>
     <string name="TitleSystemPreferences">Vispārējie iestatījumi</string>
@@ -99,4 +99,6 @@
         Šī lietotne ir licencēta saskaņā ar GNU vispārējo publisko licenci, versiju 3 vai jaunāku (GPLv3+).\n
         Pilnu licences tekstu var iegūt šeit: [https://www.gnu.org/licenses/gpl-3.0.html](https://www.gnu.org/licenses/gpl-3.0.html).
     </string>
+    <string name="TitleVocabulary">Vārdu krājums</string>
+    <string name="EmptyListMessage">Nothing to show</string>
 </resources>
