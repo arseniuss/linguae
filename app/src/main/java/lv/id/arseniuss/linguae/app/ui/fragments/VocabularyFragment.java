@@ -37,7 +37,7 @@ public class VocabularyFragment extends Fragment {
         _binding = FragmentVocabularyBinding.inflate(inflater, container, false);
 
         _binding.setViewmodel(_model);
-        _binding.setPrsenter(this);
+        _binding.setPresenter(this);
         _binding.setLifecycleOwner(getViewLifecycleOwner());
 
         MainActivity mainActivity = (MainActivity) getActivity();

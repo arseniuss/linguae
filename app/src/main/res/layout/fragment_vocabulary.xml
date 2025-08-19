@@ -5,7 +5,7 @@
     <data>
 
         <variable
-            name="prsenter"
+            name="presenter"
             type="lv.id.arseniuss.linguae.app.ui.fragments.VocabularyFragment" />
 
         <variable
@@ -31,7 +31,6 @@
                 android:elevation="4dp"
                 app:popupTheme="@style/MyAppTheme"
                 app:title="@string/TitleVocabulary" />
-
 
         </com.google.android.material.appbar.AppBarLayout>
 
@@ -72,16 +71,15 @@
                     app:itemLayout="@layout/item_bubble_markdown"
                     app:justifyContent="flex_start"
                     app:showDivider="middle" />
-
-                <TextView xmlns:tools="http://schemas.android.com/tools"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:gravity="center"
-                    android:text="@{viewmodel.Error()}"
-                    android:textAlignment="center"
-                    tools:text="@string/EmptyListMessage" />
             </LinearLayout>
 
+            <TextView xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:text="@{viewmodel.Error()}"
+                android:textAlignment="center"
+                tools:text="@string/EmptyListMessage" />
 
         </ViewSwitcher>
 
