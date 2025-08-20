@@ -132,6 +132,11 @@ public class RepositoryLoadViewModel extends AndroidViewModel
     }
 
     private void updateDatabase(boolean parseSuccessful) {
+        if (!parseSuccessful) {
+            _canContinue.postValue(true);
+            return;
+        }
+
         final String languageCode =
                 _sharedPreferences.getString(Constants.PreferenceLanguageCodeKey, "");
 
